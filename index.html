@@ -5,6 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <title>指数信号台 · 个人指数交易模型</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#F4F2EC">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="指数信号台">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<script>
+/* 自动主题：19:00-次日8:00 黑夜模式，其余白天（放 head 防闪烁） */
+(function(){
+  try{
+    var h = new Date().getHours();
+    var dark = (h >= 19 || h < 8);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    var m = document.querySelector('meta[name="theme-color"]');
+    if(m) m.setAttribute('content', dark ? '#0E1116' : '#F4F2EC');
+  }catch(e){}
+})();
+</script>
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;900&display=swap">
 <style>
 :root{
@@ -532,6 +552,70 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
   .detail{overflow-x:auto;}
 }
 .ver-tag{font-size:11px;color:var(--muted);border:1px solid var(--border);padding:1px 7px;border-radius:10px;margin-left:8px;letter-spacing:.5px;}
+
+/* ===== 自动黑夜模式（19:00-08:00） ===== */
+html[data-theme="dark"]{
+  --bg:#0E1116;
+  --card:#171B22;
+  --ink:#E8EAED;
+  --muted:#9AA3AF;
+  --line:rgba(232,234,237,0.13);
+  --red:#FF6B5E;
+  --red-bg:rgba(255,107,94,0.13);
+  --green:#3ECF8E;
+  --green-bg:rgba(62,207,142,0.13);
+  --amber:#E3B341;
+  --amber-bg:rgba(227,179,65,0.14);
+  --navy:#7FA8D8;
+}
+html[data-theme="dark"] header{background:rgba(14,17,22,0.92);}
+html[data-theme="dark"] .suggest-list{background:#1B2028;box-shadow:0 10px 28px rgba(0,0,0,0.55);}
+html[data-theme="dark"] .add-input:focus,
+html[data-theme="dark"] .hold-input:focus,
+html[data-theme="dark"] .hold-panel select:focus{background:#1B2028;}
+html[data-theme="dark"] .rv-sec{background:linear-gradient(180deg,#171B22 0%,#131720 100%);}
+html[data-theme="dark"] .core-card{background:linear-gradient(160deg,#171B22 0%,#131720 100%);}
+html[data-theme="dark"] .rv-tbl td{background:#171B22;}
+html[data-theme="dark"] .rv-tbl tbody tr:nth-child(even) td{background:#131720;}
+html[data-theme="dark"] .rv-tbl tbody tr:hover td{background:#1D232D;}
+html[data-theme="dark"] .pick-cell,
+html[data-theme="dark"] .imp-txt.digest,
+html[data-theme="dark"] .pick-txt{color:#C7CDD6;}
+html[data-theme="dark"] .pick-basis{background:rgba(232,234,237,0.055);}
+html[data-theme="dark"] .hero-banner{background:#131720;border-color:rgba(232,234,237,0.13);}
+html[data-theme="dark"] .hero-banner::before{background:linear-gradient(90deg,#131720 0%,rgba(19,23,32,0) 100%);}
+html[data-theme="dark"] .hero-banner::after{background:linear-gradient(270deg,#131720 0%,rgba(19,23,32,0) 100%);}
+html[data-theme="dark"] .ver-group{background:rgba(232,234,237,0.08);}
+html[data-theme="dark"] .badge.err{background:rgba(232,234,237,0.09);}
+html[data-theme="dark"] .empty{border-color:rgba(232,234,237,0.18);}
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .news-src{border-color:rgba(232,234,237,0.18);}
+html[data-theme="dark"] .rel-stock{background:rgba(127,168,216,0.10);border-color:rgba(127,168,216,0.35);}
+html[data-theme="dark"] .hold-box{border-color:rgba(232,234,237,0.25);}
+html[data-theme="dark"] .rv-idx,
+html[data-theme="dark"] .rv-srow,
+html[data-theme="dark"] .rv-dir,
+html[data-theme="dark"] .rv-event{border-color:rgba(232,234,237,0.09);}
+html[data-theme="dark"] .imp-k.core{background:rgba(127,168,216,0.12);border-color:rgba(127,168,216,0.30);}
+html[data-theme="dark"] .imp-k.impact,
+html[data-theme="dark"] .pick-tag.hot{background:rgba(255,107,94,0.12);border-color:rgba(255,107,94,0.30);}
+html[data-theme="dark"] .pick-tag.warm{background:rgba(232,126,24,0.16);border-color:rgba(232,126,24,0.35);color:#FFA64D;}
+html[data-theme="dark"] .pick-tag.blue{background:rgba(127,168,216,0.12);border-color:rgba(127,168,216,0.30);}
+html[data-theme="dark"] .rv-duo .tag2.fund{background:rgba(127,168,216,0.12);border-color:rgba(127,168,216,0.30);}
+html[data-theme="dark"] .rv-duo .tag2.news{background:rgba(255,107,94,0.12);border-color:rgba(255,107,94,0.30);}
+html[data-theme="dark"] .rv-impact{background:rgba(127,168,216,0.10);border-color:rgba(127,168,216,0.25);}
+/* 亮色底+白字 → 深色字，保证对比度 */
+html[data-theme="dark"] .tab.on,
+html[data-theme="dark"] .ver-pill.on,
+html[data-theme="dark"] .btn-primary,
+html[data-theme="dark"] .hold-save,
+html[data-theme="dark"] .rv-h .no,
+html[data-theme="dark"] .rv-tbl th,
+html[data-theme="dark"] .imp-rank,
+html[data-theme="dark"] .rv-event .etime,
+html[data-theme="dark"] .ma-table .key{color:#0E1116;}
+html[data-theme="dark"] .pick-no,
+html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
 </style>
 </head>
 <body>
@@ -566,7 +650,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v55</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v56</span>
     </div>
   </div>
 </header>
@@ -3211,6 +3295,24 @@ setInterval(fetchCoreIdx, 20000);
 setInterval(reviewAutoTick, 60000);
 setInterval(picksAutoTick, 60000);
 setInterval(etfAutoTick, 60000);
+
+/* 自动黑夜模式：每 5 分钟检查一次时段（19:00-08:00 变黑） */
+setInterval(function(){
+  try{
+    var h = new Date().getHours();
+    var dark = (h >= 19 || h < 8);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    var m = document.querySelector('meta[name="theme-color"]');
+    if(m) m.setAttribute('content', dark ? '#0E1116' : '#F4F2EC');
+  }catch(e){}
+}, 300000);
+
+/* PWA Service Worker（仅 https 环境注册，本地 file:// 不启用） */
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(){});
+  });
+}
 
 })();
 </script>
