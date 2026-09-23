@@ -246,6 +246,9 @@ main{max-width:1100px;margin:0 auto;padding:18px 20px 40px;}
 /* ===== 页脚 ===== */
 footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:var(--muted);line-height:1.7;}
 
+/* ===== 移动端底部导航（桌面隐藏） ===== */
+.m-nav{display:none;}
+
 /* ===== 顶部标签 ===== */
 .tabs{display:flex;gap:6px;margin:14px 0 14px;flex-wrap:wrap;}
 .tab{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:6px 16px;font-size:12.5px;font-family:inherit;cursor:pointer;}
@@ -573,15 +576,118 @@ html[data-theme="dark"] .core-nav{background:#1B2028;color:#E8EAED;}
 .pick-added{font-size:12px;color:var(--green);font-weight:500;padding:6px 12px;border:1px solid var(--green);border-radius:999px;background:var(--green-bg);}
 html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8D8;background:rgba(127,168,216,0.10);}
 
-/* ===== 响应式 ===== */
+/* ===== 响应式 · 移动端 UI 重构 ===== */
 @media (max-width:768px){
-  .head-inner{padding:10px 14px;gap:10px;}
-  .brand{width:100%;}
+  /* 顶部：紧凑单行 */
+  .head-inner{padding:9px 12px;gap:8px;}
+  .brand{width:auto;margin-right:auto;min-width:0;}
   .brand h1{font-size:15px;}
-  main{padding:14px 14px 32px;}
-  .grid{grid-template-columns:1fr;}
-  .price{font-size:21px;}
+  .brand .sub{display:none;}
+  .head-ctrl{gap:6px;}
+  .ver-pill{padding:6px 11px;}
+  .upd{display:none;}
+  main{padding:12px 12px 84px;}
+  /* 顶部 tab 隐藏，改用底部导航 */
+  .tabs{display:none;}
+
+  /* banner + 快讯：纵向堆叠 */
+  .top-row{flex-direction:column;gap:10px;}
+  .hero-banner{aspect-ratio:21/3;border-radius:12px;}
+  .hero-banner::before,.hero-banner::after{width:16%;}
+  .news-panel{flex:1 1 auto;max-height:240px;border-radius:12px;}
+  .news-panel .news-item{padding:8px 12px;}
+  .news-panel .news-title{font-size:12.5px;}
+
+  /* 核心指数滑块：更紧凑 */
+  .core-idx{padding:2px 30px 6px;gap:8px;}
+  .core-card{flex:0 0 160px;padding:12px 13px;border-radius:12px;}
+  .core-card .ck-price{font-size:25px;}
+  .core-card .ck-chg{font-size:12.5px;}
+  .core-card .ck-meta{font-size:10.5px;gap:8px;}
+  .core-nav{width:30px;height:30px;font-size:17px;}
+  .core-nav:hover{border-color:var(--line);color:var(--ink);}
+
+  /* 自选信号：单列全宽卡片 */
+  .grid{grid-template-columns:1fr;gap:10px;}
+  .card{padding:13px 14px;border-radius:12px;}
+  .price{font-size:22px;}
+
+  /* 按钮触控 ≥44px */
+  .btn-primary{padding:11px 18px;font-size:14px;border-radius:11px;}
+  .icon-btn{padding:8px 13px;font-size:12.5px;border-radius:999px;}
+  .tab,.chip{padding:8px 14px;}
+  .hold-save{padding:9px 14px;}
+  .hold-input{padding:8px 9px;width:88px;}
+  .s-remove{padding:6px 9px;font-size:16px;}
+  .core-nav{padding:0;}
+  .suggest-item{padding:11px 12px;}
+
+  /* 搜索区 */
+  .add-input{padding:11px 12px;font-size:15px;flex:1 1 auto;}
+  .add-row .btn-primary{flex:0 0 auto;}
+  .add-panel{padding:14px;border-radius:12px;}
+  .hint{font-size:11px;line-height:1.6;}
+
+  /* 板块标题 */
+  .section-title{font-size:13px;margin-bottom:9px;}
+  .picks-tt{font-size:14px;}
+  .picks-sub{display:block;margin-top:3px;}
+
+  /* 荐股 / ETF 卡片 */
+  .pick-card{padding:14px;border-radius:12px;}
+  .pick-name{font-size:15px;}
+  .pick-price{font-size:23px;}
+  .pick-grid{grid-template-columns:1fr 1fr;gap:6px 10px;}
+  .pick-cell{font-size:11.5px;line-height:1.65;}
+  .pick-cell .lab{min-width:44px;}
+  .pick-txt{font-size:12px;}
+  .pick-basis{font-size:11px;}
+  .pick-add-row .icon-btn{width:100%;justify-content:center;padding:10px;}
+  .pick-added{display:block;text-align:center;width:100%;padding:9px;}
+
+  /* 复盘区 */
+  .rv-sec{padding:13px 14px;border-radius:12px;}
+
+  /* 个股监测表格 */
+  .s-table{min-width:840px;font-size:12px;}
+  .s-table th,.s-table td{padding:9px 10px;}
+  .s-table-wrap{border-radius:12px;}
+  .hold-panel{padding:11px 12px;border-radius:12px;}
+  .hold-panel select{padding:8px;}
+  .hold-panel .k{width:100%;margin-bottom:2px;}
+
+  /* 全球动态卡片 */
+  .imp-card{padding:12px 13px;border-radius:12px;}
+  .imp-title{font-size:13px;}
+  .imp-txt{font-size:12px;}
+  .imp-txt.digest{font-size:12px;}
+
+  /* 详情 */
+  .detail{padding:15px 14px;border-radius:12px;}
+  .detail-price .price{font-size:28px;}
   .detail{overflow-x:auto;}
+  .btn-ghost{padding:11px 16px;font-size:14px;}
+
+  /* 规则面板 */
+  .rules summary{padding:13px 14px;}
+  .rules-body{padding:2px 14px 14px;}
+
+  /* 底部导航 */
+  .m-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(244,242,236,0.96);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);
+    padding:4px 6px calc(4px + env(safe-area-inset-bottom));
+    justify-content:space-around;
+  }
+  .m-nav-item{
+    flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;
+    border:0;background:transparent;color:var(--muted);
+    font-size:10.5px;font-family:inherit;padding:6px 2px;cursor:pointer;
+  }
+  .m-nav-item svg{width:21px;height:21px;display:block;}
+  .m-nav-item.on{color:var(--navy);font-weight:700;}
+  footer{padding-bottom:calc(22px + env(safe-area-inset-bottom));}
 }
 .ver-tag{font-size:11px;color:var(--muted);border:1px solid var(--border);padding:1px 7px;border-radius:10px;margin-left:8px;letter-spacing:.5px;}
 
@@ -648,6 +754,10 @@ html[data-theme="dark"] .rv-event .etime,
 html[data-theme="dark"] .ma-table .key{color:#0E1116;}
 html[data-theme="dark"] .pick-no,
 html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
+html[data-theme="dark"] .m-nav{background:rgba(14,17,22,0.96);}
+html[data-theme="dark"] .m-nav-item{color:#9AA3AF;}
+html[data-theme="dark"] .m-nav-item.on{color:#7FA8D8;}
+html[data-theme="dark"] .hero-banner img{opacity:0.92;}
 </style>
 </head>
 <body>
@@ -682,7 +792,7 @@ html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v57</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v58</span>
     </div>
   </div>
 </header>
@@ -690,25 +800,15 @@ html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
 <main>
   <div class="tabs">
     <button class="tab on" data-action="tab" data-tab="index" id="tab-index">指数信号</button>
+    <button class="tab" data-action="tab" data-tab="watch" id="tab-watch">自选股</button>
     <button class="tab" data-action="tab" data-tab="stock" id="tab-stock">个股监测</button>
     <button class="tab" data-action="tab" data-tab="review" id="tab-review">每日复盘</button>
     <button class="tab" data-action="tab" data-tab="picks" id="tab-picks">每日荐股</button>
     <button class="tab" data-action="tab" data-tab="etf" id="tab-etf">每日ETF</button>
   </div>
 
-  <!-- 首页视图 -->
+  <!-- 首页视图：核心指数置前 -->
   <section id="view-home">
-    <div class="add-panel">
-      <div class="add-title">添加自选</div>
-      <div class="chips" id="presets"></div>
-      <div class="add-row suggest-wrap">
-        <input class="add-input num" id="code-input" placeholder="搜索 名称 / 拼音 / 代码，如 沪深300、hs300、510300" autocomplete="off">
-        <button class="btn-primary" data-action="add-input">加入自选</button>
-        <div class="suggest-list" id="code-suggest"></div>
-      </div>
-      <div class="hint">支持智能检索：中文名称（沪深300）、拼音首字母（hs300）、6 位代码（510300）。指数与 ETF 可加入自选信号。</div>
-    </div>
-
     <div class="section-title"><span class="dot"></span>核心指数<span class="core-upd" id="core-upd"></span></div>
     <div class="core-idx-wrap">
     <button class="core-nav core-prev" data-action="core-prev" aria-label="上一个">‹</button>
@@ -716,10 +816,7 @@ html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
     <button class="core-nav core-next" data-action="core-next" aria-label="下一个">›</button>
   </div>
 
-    <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）</div>
-    <div class="grid" id="grid"></div>
-
-    <div class="section-title" style="margin-top:18px;"><span class="dot"></span>全球股市重要动态 · 过去 24 小时<span class="core-upd" id="imp-upd"></span></div>
+    <div class="section-title"><span class="dot"></span>全球股市重要动态 · 过去 24 小时<span class="core-upd" id="imp-upd"></span></div>
     <div id="imp-box"><div class="news-empty">动态分析加载中…</div></div>
 
     <details class="rules" id="rules">
@@ -741,6 +838,23 @@ html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
         <div class="muted">当前年化波动率 = 近 20 日收益率标准差 × √252。行情来自东方财富公开接口，仅供研究参考，不构成投资建议。</div>
       </div>
     </details>
+  </section>
+
+  <!-- 自选股视图：添加自选 + 自选信号（独立 tab） -->
+  <section id="view-watch" style="display:none;">
+    <div class="add-panel">
+      <div class="add-title">添加自选</div>
+      <div class="chips" id="presets"></div>
+      <div class="add-row suggest-wrap">
+        <input class="add-input num" id="code-input" placeholder="搜索 名称 / 拼音 / 代码，如 沪深300、hs300、510300" autocomplete="off">
+        <button class="btn-primary" data-action="add-input">加入自选</button>
+        <div class="suggest-list" id="code-suggest"></div>
+      </div>
+      <div class="hint">支持智能检索：中文名称（沪深300）、拼音首字母（hs300）、6 位代码（510300）。指数与 ETF 可加入自选信号。</div>
+    </div>
+
+    <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）</div>
+    <div class="grid" id="grid"></div>
   </section>
 
   <!-- 个股监测视图 -->
@@ -812,6 +926,34 @@ html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
   <!-- 详情视图 -->
   <section id="view-detail" style="display:none;"></section>
 </main>
+
+<!-- 移动端底部导航 -->
+<nav class="m-nav" aria-label="主导航">
+  <button class="m-nav-item on" data-action="tab" data-tab="index">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 4 6-8 3 3"/></svg>
+    <span>指数</span>
+  </button>
+  <button class="m-nav-item" data-action="tab" data-tab="watch">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.5 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
+    <span>自选</span>
+  </button>
+  <button class="m-nav-item" data-action="tab" data-tab="stock">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16"/></svg>
+    <span>监测</span>
+  </button>
+  <button class="m-nav-item" data-action="tab" data-tab="review">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M9 14h2M13 14h2M9 17h2"/></svg>
+    <span>复盘</span>
+  </button>
+  <button class="m-nav-item" data-action="tab" data-tab="picks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4"/></svg>
+    <span>荐股</span>
+  </button>
+  <button class="m-nav-item" data-action="tab" data-tab="etf">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1.5 12h-13z"/><path d="M9 8V5a3 3 0 0 1 6 0v3"/></svg>
+    <span>ETF</span>
+  </button>
+</nav>
 
 <footer>
   行情与信号仅供研究参考，不构成投资建议。数据接口可能存在延迟或中断，实际交易前请以券商行情为准。
@@ -3178,29 +3320,40 @@ function renderDetailView(){
 function renderTabs(){
   var hash = location.hash;
   var inStock = hash.indexOf('#/stock') === 0;
+  var inWatch = hash.indexOf('#/watch') === 0;
   var inReview = hash.indexOf('#/review') === 0;
   var inPicks = hash.indexOf('#/picks') === 0;
   var inEtf = hash.indexOf('#/etf') === 0;
   var t1 = document.getElementById('tab-index');
-  var t2 = document.getElementById('tab-stock');
-  var t3 = document.getElementById('tab-review');
-  var t4 = document.getElementById('tab-picks');
-  var t5 = document.getElementById('tab-etf');
-  if(t1) t1.classList.toggle('on', !inStock && !inReview && !inPicks && !inEtf);
-  if(t2) t2.classList.toggle('on', inStock);
-  if(t3) t3.classList.toggle('on', inReview);
-  if(t4) t4.classList.toggle('on', inPicks);
-  if(t5) t5.classList.toggle('on', inEtf);
+  var t2 = document.getElementById('tab-watch');
+  var t3 = document.getElementById('tab-stock');
+  var t4 = document.getElementById('tab-review');
+  var t5 = document.getElementById('tab-picks');
+  var t6 = document.getElementById('tab-etf');
+  if(t1) t1.classList.toggle('on', !inStock && !inWatch && !inReview && !inPicks && !inEtf);
+  if(t2) t2.classList.toggle('on', inWatch);
+  if(t3) t3.classList.toggle('on', inStock);
+  if(t4) t4.classList.toggle('on', inReview);
+  if(t5) t5.classList.toggle('on', inPicks);
+  if(t6) t6.classList.toggle('on', inEtf);
+  // 移动端底部导航高亮
+  var navMap = { index:'index', watch:'watch', stock:'stock', review:'review', picks:'picks', etf:'etf' };
+  var active = inWatch ? 'watch' : (inStock ? 'stock' : (inReview ? 'review' : (inPicks ? 'picks' : (inEtf ? 'etf' : 'index'))));
+  document.querySelectorAll('.m-nav-item').forEach(function(b){
+    b.classList.toggle('on', navMap[b.getAttribute('data-tab')] === active);
+  });
 }
 
 function route(){
   var home = document.getElementById('view-home');
+  var watchV = document.getElementById('view-watch');
   var stockV = document.getElementById('view-stock');
   var reviewV = document.getElementById('view-review');
   var view = document.getElementById('view-detail');
   function hideViews(){
     view.style.display = 'none';
     home.style.display = 'none';
+    if(watchV) watchV.style.display = 'none';
     stockV.style.display = 'none';
     reviewV.style.display = 'none';
     var pv = document.getElementById('view-picks');
@@ -3213,6 +3366,10 @@ function route(){
     hideViews();
     view.style.display = 'block';
     view.innerHTML = detailHTML(m[1]);
+  } else if(location.hash.indexOf('#/watch') === 0){
+    hideViews();
+    if(watchV) watchV.style.display = 'block';
+    renderWatch();
   } else if(location.hash.indexOf('#/stock') === 0){
     hideViews();
     stockV.style.display = 'block';
@@ -3247,9 +3404,12 @@ function route(){
 
 function renderHome(){
   renderVerGroup();
+  renderUpd();
+}
+
+function renderWatch(){
   renderPresets();
   renderCards();
-  renderUpd();
 }
 
 /* ========== 事件委托 ========== */
@@ -3260,6 +3420,7 @@ document.addEventListener('click', function(e){
   var secid = el.getAttribute('data-secid');
 
   if(a === 'open-detail'){
+    try{ sessionStorage.setItem('iq_back', location.hash.indexOf('#/watch') === 0 ? '#/watch' : '#/'); }catch(e){}
     location.hash = '#/detail?code=' + secid;
   } else if(a === 'remove'){
     e.stopPropagation();
@@ -3283,10 +3444,12 @@ document.addEventListener('click', function(e){
     var item = el.closest('.news-item');
     if(item) item.classList.toggle('open');
   } else if(a === 'back'){
-    location.hash = '#/';
+    var bk = '#/';
+    try{ bk = sessionStorage.getItem('iq_back') || '#/'; }catch(e){}
+    location.hash = bk;
   } else if(a === 'tab'){
     var tab = el.getAttribute('data-tab');
-    location.hash = tab === 'stock' ? '#/stock' : (tab === 'review' ? '#/review' : (tab === 'picks' ? '#/picks' : (tab === 'etf' ? '#/etf' : '#/')));
+    location.hash = tab === 'stock' ? '#/stock' : (tab === 'watch' ? '#/watch' : (tab === 'review' ? '#/review' : (tab === 'picks' ? '#/picks' : (tab === 'etf' ? '#/etf' : '#/'))));
   } else if(a === 'picks-refresh'){
     refreshPicks(true);
   } else if(a === 'etf-refresh'){
