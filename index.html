@@ -850,7 +850,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v66</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v67</span>
     </div>
   </div>
 </header>
@@ -1007,7 +1007,8 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
     </div>
     <div class="kline-bar">
       <div class="kline-tabs">
-        <button class="kline-tab on" data-action="kline-tab" data-period="day">日K</button>
+        <button class="kline-tab on" data-action="kline-tab" data-period="min">分时</button>
+        <button class="kline-tab" data-action="kline-tab" data-period="day">日K</button>
         <button class="kline-tab" data-action="kline-tab" data-period="week">周K</button>
         <button class="kline-tab" data-action="kline-tab" data-period="month">月K</button>
       </div>
@@ -3474,7 +3475,7 @@ function sparkSVG(list, tone){
 }
 
 /* ========== K线图（券商风格 Canvas 自绘，数据 1:1 对应 secid） ========== */
-var KL = { secid: null, name: '', period: 'day', list: [], quote: null, timer: null, _geo: null };
+var KL = { secid: null, name: '', period: 'min', list: [], quote: null, timer: null, _geo: null, bars: 170, minDate: '' };
 function isKlineRoute(){
   return location.hash.indexOf('#/kline') === 0;
 }
@@ -3501,6 +3502,20 @@ function klineTxSym(secid){
   }
   var map = { 'HSI':'hkHSI', 'HSTECH':'hkHSTECH', 'DJIA':'usDJI', 'NDX':'usIXIC', 'SPX':'usINX' };
   return map[code] || '';
+}
+function klineMinute(secid){
+  var sym = klineTxSym(secid);
+  if(!sym) return Promise.reject(new Error('nosym'));
+  var us = sym.indexOf('us') === 0;
+  var base = us ? 'https://web.ifzq.gtimg.cn/appstock/app/minute/query?code=' + sym.replace('us','us.') : 'https://web.ifzq.gtimg.cn/appstock/app/minute/query?code=' + sym;
+  return fetch(base, { referrerPolicy: 'no-referrer' })
+    .then(function(r){ return r.json(); }).then(function(j){
+      var d = j && j.data && j.data[sym];
+      if(!d || !d.data || !d.data.data || !d.data.data.length) throw new Error('nodata');
+      var arr = d.data.data;
+      var list = arr.map(function(p){ return { t: String(p[0]), price: +p[1], vol: +p[2] || 0, amt: +p[3] || 0 }; });
+      return { name: sym, date: d.data.date || '', list: list };
+    });
 }
 function klineTencent(secid, period){
   var sym = klineTxSym(secid);
@@ -3553,6 +3568,127 @@ function volFmt(v){
   if(v >= 1e4) return (v/1e4).toFixed(1) + '万';
   return v.toFixed(0);
 }
+function klineDrawMin(){
+  var cv = document.getElementById('kline-canvas');
+  if(!cv) return;
+  var wrap = cv.parentNode;
+  var em = wrap.querySelector('.kline-empty');
+  if(em) em.remove();
+  var list = KL.list;
+  var info = document.getElementById('kline-info');
+  if(!list || !list.length){ if(info) info.textContent = '暂无分时数据'; return; }
+  var dpr = window.devicePixelRatio || 1;
+  var W = cv.clientWidth, H = cv.clientHeight;
+  if(!W || !H) return;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  var ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var col = {
+    grid: dark ? 'rgba(232,234,237,0.10)' : 'rgba(28,30,33,0.08)',
+    axis: dark ? '#8A93A1' : '#69707A',
+    up: '#C8402F', down: '#1F8A5A', flat: dark ? '#AEB6C0' : '#8A8F96',
+    price: dark ? '#7FB0E8' : '#2E5FA3', avg: '#E3B341',
+    volUp: 'rgba(200,64,47,0.55)', volDown: 'rgba(31,138,90,0.55)'
+  };
+  var prev = (KL.quote && KL.quote.prev > 0) ? KL.quote.prev : (list[0] ? list[0].price : 0);
+  var padL = 8, padR = 58, padT = 16, padB = 22;
+  var volH = 64, volGap = 8;
+  var mainH = H - padB - volGap - volH - padT;
+  var plotW = W - padL - padR;
+  var n = list.length;
+  var minP = Infinity, maxP = -Infinity;
+  list.forEach(function(k){ if(k.price < minP) minP = k.price; if(k.price > maxP) maxP = k.price; });
+  var half = Math.max((maxP - minP) / 2, prev * 0.015);
+  var yTop = prev + half, yBot = prev - half;
+  if(maxP > yTop) yTop = maxP; if(minP < yBot) yBot = minP;
+  var span = (yTop - yBot) || 1;
+  function Y(v){ return padT + (yTop - v) / span * mainH; }
+  var cw = plotW / n;
+  var volMax = 1;
+  list.forEach(function(k){ if(k.vol > volMax) volMax = k.vol; });
+  var cumAmt = 0, cumVol = 0, avgArr = [];
+  list.forEach(function(k){ cumAmt += k.amt; cumVol += k.vol; avgArr.push(cumVol > 0 ? cumAmt / cumVol : k.price); });
+  for(var t = 0; t <= 4; t++){
+    var y = padT + mainH * t / 4;
+    var pv = yTop - span * t / 4;
+    ctx.strokeStyle = col.grid; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    ctx.fillStyle = col.axis; ctx.font = '11px Consolas,monospace';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(fmtPrice(pv), W - padR + 4, y);
+  }
+  var vy = Y(prev);
+  ctx.setLineDash([4, 3]); ctx.strokeStyle = col.flat; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(padL, vy); ctx.lineTo(W - padR, vy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = col.flat; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillText('昨收 ' + fmtPrice(prev), W - padR + 4, vy);
+  ctx.beginPath();
+  for(var i = 0; i < n; i++){
+    var x = padL + (i + 0.5) * cw;
+    var yp = Y(list[i].price);
+    if(i === 0) ctx.moveTo(x, yp); else ctx.lineTo(x, yp);
+  }
+  ctx.strokeStyle = col.price; ctx.lineWidth = 1.4; ctx.stroke();
+  ctx.beginPath();
+  for(var i2 = 0; i2 < n; i2++){
+    var x2 = padL + (i2 + 0.5) * cw;
+    var ya = Y(avgArr[i2]);
+    if(i2 === 0) ctx.moveTo(x2, ya); else ctx.lineTo(x2, ya);
+  }
+  ctx.strokeStyle = col.avg; ctx.lineWidth = 1.1; ctx.stroke();
+  var volBase = padT + mainH + volGap;
+  ctx.strokeStyle = col.grid;
+  ctx.beginPath(); ctx.moveTo(padL, volBase); ctx.lineTo(W - padR, volBase); ctx.stroke();
+  ctx.fillStyle = col.axis; ctx.font = '10px Consolas,monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+  ctx.fillText('成交量', W - padR - 2, volBase + 2);
+  var bodyW = Math.max(1, Math.min(4, cw * 0.6));
+  for(var i3 = 0; i3 < n; i3++){
+    var k3 = list[i3];
+    var x3 = padL + (i3 + 0.5) * cw;
+    var up3 = k3.price >= prev;
+    ctx.fillStyle = up3 ? col.volUp : col.volDown;
+    var vh = (k3.vol / volMax) * (volH - 10);
+    ctx.fillRect(x3 - bodyW / 2, volBase + (volH - 10) - vh, bodyW, vh);
+  }
+  var labels = ['0930','1030','1130','1300','1400','1500'];
+  ctx.fillStyle = col.axis; ctx.font = '10.5px Consolas,monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  labels.forEach(function(lb){
+    var idx = -1;
+    for(var i4 = 0; i4 < n; i4++){
+      if(list[i4].t >= lb){ idx = i4; break; }
+    }
+    if(idx < 0) return;
+    var xl = padL + (idx + 0.5) * cw;
+    ctx.fillText(lb.slice(0, 2) + ':' + lb.slice(2), xl, H - padB + 4);
+  });
+  var lastK = list[n - 1];
+  var lastColor = lastK.price >= prev ? col.up : col.down;
+  ctx.fillStyle = col.axis; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.font = '10px Consolas,monospace';
+  ctx.fillText('均价', padL + 6, 3);
+  ctx.fillStyle = col.avg; ctx.fillText(fmtPrice(avgArr[n - 1]), padL + 34, 3);
+  ctx.fillStyle = col.axis; ctx.fillText('  ' + KL.minDate, padL + 110, 3);
+  var chgPct = prev > 0 ? (lastK.price - prev) / prev * 100 : 0;
+  info.innerHTML = '开 <b>' + fmtPrice(list[0].price) + '</b>　高 <b>' + fmtPrice(maxP) + '</b>　低 <b>' + fmtPrice(minP) + '</b>　收 <b>' + fmtPrice(lastK.price) + '</b>　' +
+    (chgPct >= 0 ? '+' : '') + chgPct.toFixed(2) + '%　量 <b>' + volFmt(list[n-1].amt) + '</b>　' + (KL.minDate ? KL.minDate.slice(0,4) + '-' + KL.minDate.slice(4,6) + '-' + KL.minDate.slice(6) : '') +
+    '<span style="margin-left:10px;color:var(--muted);">点击/滑动查看历史</span>';
+  KL._geo = { isMin: true, padL: padL, padR: padR, padT: padT, padB: padB, mainH: mainH, volBase: volBase, volH: volH, cw: cw, n: n, data: list, avgArr: avgArr, Y: Y, W: W, H: H };
+  if(!cv.__boundMin){
+    cv.__boundMin = true;
+    function evPos(ev){
+      if(ev.touches && ev.touches.length) return { clientX: ev.touches[0].clientX, clientY: ev.touches[0].clientY };
+      return { clientX: ev.clientX, clientY: ev.clientY };
+    }
+    cv.addEventListener('mousemove', function(ev){ klineCross(evPos(ev)); });
+    cv.addEventListener('mouseleave', function(){ klineDrawMin(); });
+    cv.addEventListener('touchstart', function(ev){ if(ev.touches && ev.touches.length === 1) klineCross(evPos(ev)); });
+    cv.addEventListener('touchmove', function(ev){ if(ev.touches && ev.touches.length === 1){ ev.preventDefault(); klineCross(evPos(ev)); } }, { passive: false });
+    cv.addEventListener('touchend', function(){ klineDrawMin(); });
+  }
+}
 function klineDraw(){
   var cv = document.getElementById('kline-canvas');
   if(!cv) return;
@@ -3565,7 +3701,8 @@ function klineDraw(){
     info.textContent = '暂无 K 线数据';
     return;
   }
-  var data = list.slice(-170);
+  var bars = Math.max(30, Math.min(250, KL.bars || 170));
+  var data = list.slice(-bars);
   var dpr = window.devicePixelRatio || 1;
   var W = cv.clientWidth, H = cv.clientHeight;
   if(!W || !H) return;
@@ -3685,8 +3822,36 @@ function klineDraw(){
     cv.addEventListener('mousemove', function(ev){ klineCross(evPos(ev)); });
     cv.addEventListener('mouseleave', function(){ klineDraw(); });
     cv.addEventListener('touchstart', function(ev){ if(ev.touches && ev.touches.length) klineCross(evPos(ev)); });
-    cv.addEventListener('touchmove', function(ev){ if(ev.touches && ev.touches.length){ ev.preventDefault(); klineCross(evPos(ev)); } }, { passive: false });
+    cv.addEventListener('touchmove', function(ev){ if(ev.touches && ev.touches.length === 1){ ev.preventDefault(); klineCross(evPos(ev)); } }, { passive: false });
     cv.addEventListener('touchend', function(){ klineDraw(); });
+  }
+  if(!cv.__bound2){
+    cv.__bound2 = true;
+    cv.addEventListener('wheel', function(ev){
+      if(KL.period === 'min') return;
+      ev.preventDefault();
+      KL.bars = Math.max(30, Math.min(250, (KL.bars || 170) + (ev.deltaY > 0 ? 20 : -20)));
+      klineDraw();
+    }, { passive: false });
+    cv.addEventListener('touchstart', function(ev){
+      if(ev.touches.length === 2 && KL.period !== 'min'){
+        KL._pinch = {
+          d: Math.hypot(ev.touches[0].clientX - ev.touches[1].clientX, ev.touches[0].clientY - ev.touches[1].clientY),
+          bars: KL.bars || 170
+        };
+      }
+    });
+    cv.addEventListener('touchmove', function(ev){
+      if(ev.touches.length === 2 && KL._pinch && KL.period !== 'min'){
+        ev.preventDefault();
+        var d = Math.hypot(ev.touches[0].clientX - ev.touches[1].clientX, ev.touches[0].clientY - ev.touches[1].clientY);
+        if(d > 0){
+          KL.bars = Math.max(30, Math.min(250, Math.round(KL._pinch.bars * KL._pinch.d / d)));
+          klineDraw();
+        }
+      }
+    });
+    cv.addEventListener('touchend', function(){ KL._pinch = null; });
   }
 }
 function klineCross(pos){
@@ -3701,17 +3866,22 @@ function klineCross(pos){
   var ctx = cv.getContext('2d');
   var k = g.data[idx];
   var cx = g.padL + (idx + 0.5) * g.cw;
-  var cy = g.Y(k.close);
+  var cy = g.Y(k.close !== undefined ? k.close : k.price);
   ctx.setLineDash([4, 3]);
   ctx.strokeStyle = 'rgba(127,168,216,0.9)'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(cx, g.padT); ctx.lineTo(cx, g.H - g.padB + 2); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(g.padL, cy); ctx.lineTo(g.W - g.padR, cy); ctx.stroke();
   ctx.setLineDash([]);
   ctx.fillStyle = 'rgba(28,30,33,0.80)';
-  var tx = Math.max(4, Math.min(g.W - 230, cx - 70));
-  ctx.fillRect(tx, 2, 224, 18);
+  var tx = Math.max(4, Math.min(g.W - 250, cx - 80));
+  ctx.fillRect(tx, 2, 244, 18);
   ctx.fillStyle = '#fff'; ctx.font = '11px Consolas,monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-  ctx.fillText(k.date + '  开' + fmtPrice(k.open) + ' 高' + fmtPrice(k.high) + ' 低' + fmtPrice(k.low) + ' 收' + fmtPrice(k.close), tx + 6, 11);
+  if(g.isMin){
+    var tt = k.t.slice(0, 2) + ':' + k.t.slice(2);
+    ctx.fillText(tt + '  价' + fmtPrice(k.price) + '  均价' + fmtPrice(g.avgArr[idx]) + '  量' + volFmt(k.vol), tx + 6, 11);
+  } else {
+    ctx.fillText(k.date + '  开' + fmtPrice(k.open) + ' 高' + fmtPrice(k.high) + ' 低' + fmtPrice(k.low) + ' 收' + fmtPrice(k.close), tx + 6, 11);
+  }
 }
 function setKlineHead(){
   var nEl = document.getElementById('kl-name'), cEl = document.getElementById('kl-code');
@@ -3742,12 +3912,15 @@ function klineUpdateHead(q){
 }
 function klineLoad(){
   var info = document.getElementById('kline-info');
-  if(info) info.textContent = '加载 ' + (KL.period === 'week' ? '周K' : KL.period === 'month' ? '月K' : '日K') + ' 数据…';
-  klineFetch(KL.secid, KL.period).then(function(r){
+  var perLb = KL.period === 'week' ? '周K' : KL.period === 'month' ? '月K' : KL.period === 'min' ? '分时' : '日K';
+  if(info) info.textContent = '加载 ' + perLb + ' 数据…';
+  var pr = KL.period === 'min' ? klineMinute(KL.secid) : klineFetch(KL.secid, KL.period);
+  pr.then(function(r){
     KL.list = r.list;
     if(r.name) KL.name = r.name;
+    if(r.date) KL.minDate = r.date;
     setKlineHead();
-    klineDraw();
+    if(KL.period === 'min') klineDrawMin(); else klineDraw();
     return fetchQuote(KL.secid).then(function(q){
       KL.quote = q;
       klineUpdateHead(q);
@@ -3797,8 +3970,8 @@ function renderKlineView(){
   var secid = decodeURIComponent(m[1]);
   var name = m[2] ? decodeURIComponent(m[2]) : '';
   if(KL.secid !== secid){
-    KL.secid = secid; KL.name = name; KL.period = 'day'; KL.list = [];
-    document.querySelectorAll('.kline-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-period') === 'day'); });
+    KL.secid = secid; KL.name = name; KL.period = 'min'; KL.list = []; KL.bars = 170;
+    document.querySelectorAll('.kline-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-period') === 'min'); });
     setKlineHead();
     klineLoad();
   } else {
