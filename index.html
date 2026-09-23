@@ -3367,8 +3367,9 @@ function cardHTML(s){
 
   var name = q && q.name ? q.name : (s.name || s.code);
   var addRow = '';
-  if(s.addPrice > 0 && q && q.price > 0){
-    var addRet = (q.price - s.addPrice) / s.addPrice * 100;
+  var curP = (q && q.price > 0) ? q.price : (sig && sig.latest > 0 ? sig.latest : 0);
+  if(s.addPrice > 0 && curP > 0){
+    var addRet = (curP - s.addPrice) / s.addPrice * 100;
     var srcTxt = s.addFrom === 'picks' ? '荐股' : (s.addFrom === 'etf' ? 'ETF' : '自选');
     var addTxt = '';
     if(s.addAt){ var dd = new Date(s.addAt); addTxt = ' <span style="opacity:.65;">' + (dd.getMonth()+1) + '-' + dd.getDate() + ' ' + ('0'+dd.getHours()).slice(-2) + ':' + ('0'+dd.getMinutes()).slice(-2) + '</span>'; }
@@ -3427,6 +3428,11 @@ function detailHTML(secid){
       '<span class="pct num ' + cls(sig.changePct) + '">' + fmtPct(sig.changePct*100) + '</span>' +
       '<span class="badge ' + (sig.tone==='bull'?'bull':(sig.tone==='bear'?'bear':'flat')) + '"><span class="led"></span>' + sig.stateText + '</span></div>';
     html += '<div class="detail-meta">基于日线收盘（实时快照获取中）</div>';
+    if(s.addPrice > 0 && sig.latest > 0){
+      var addRet3 = (sig.latest - s.addPrice) / s.addPrice * 100;
+      var srcTxt3 = s.addFrom === 'picks' ? '荐股' : (s.addFrom === 'etf' ? 'ETF' : '自选');
+      html += '<div class="detail-meta">' + srcTxt3 + '加入价 ' + fmtPrice(s.addPrice) + ' · 加入以来 <b class="' + (addRet3 >= 0 ? 'up' : 'down') + '">' + (addRet3 >= 0 ? '+' : '') + addRet3.toFixed(2) + '%</b></div>';
+    }
   } else {
     html += '<div class="detail-meta">数据获取中…</div>';
   }
