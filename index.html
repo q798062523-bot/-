@@ -850,7 +850,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v67</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v68</span>
     </div>
   </div>
 </header>
@@ -2637,7 +2637,7 @@ function picksCard(p, i){
         : '<button class="icon-btn" data-action="pick-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入个股监测</button>') +
       (state.watch.some(function(w){ return w.secid === (p.secid || ''); })
         ? '<span class="pick-added">✓ 已在自选中</span>'
-        : '<button class="icon-btn" data-action="watch-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入自选</button>') +
+        : '<button class="icon-btn" data-action="watch-add" data-from="picks" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入自选</button>') +
     '</div>' +
     '</div>';
 }
@@ -2930,7 +2930,7 @@ function etfCard(p, i){
         : '<button class="icon-btn" data-action="pick-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入个股监测</button>') +
       (state.watch.some(function(w){ return w.secid === (p.secid || ''); })
         ? '<span class="pick-added">✓ 已在自选中</span>'
-        : '<button class="icon-btn" data-action="watch-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入自选</button>') +
+        : '<button class="icon-btn" data-action="watch-add" data-from="etf" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入自选</button>') +
     '</div>' +
     '</div>';
 }
@@ -3188,11 +3188,17 @@ function addCode(code, opt){
   var secid = opt.secid || secidOf(code);
   if(!secid){ flash('代码格式不正确，请输入 6 位数字'); return; }
   if(inWatch(secid)){ flash('该标已 在自选中'); return; }
-  var item = { secid: secid, code: secid.split('.')[1], name: opt.name || '' };
+  var item = { secid: secid, code: secid.split('.')[1], name: opt.name || '', addFrom: opt.from || '', addAt: Date.now() };
   state.watch.push(item);
   save();
   renderAll();
   refreshOne(item);
+  fetchQuote(secid).then(function(q){
+    if(q && q.price > 0){
+      var it = state.watch.filter(function(w){ return w.secid === secid; })[0];
+      if(it && !(it.addPrice > 0)){ it.addPrice = q.price; save(); renderAll(); }
+    }
+  }).catch(function(){});
 }
 
 function removeSym(secid){
@@ -3237,6 +3243,7 @@ function refreshOne(item){
   }).then(function(q){
     state.quotes[item.secid] = q;
     state.lastQuoteAt = new Date();
+    if(q && q.price > 0 && !(item.addPrice > 0)){ item.addPrice = q.price; save(); }
     renderAll();
   }).catch(function(){
     state.errors[item.secid] = true;
@@ -3359,12 +3366,21 @@ function cardHTML(s){
   }
 
   var name = q && q.name ? q.name : (s.name || s.code);
+  var addRow = '';
+  if(s.addPrice > 0 && q && q.price > 0){
+    var addRet = (q.price - s.addPrice) / s.addPrice * 100;
+    var srcTxt = s.addFrom === 'picks' ? '荐股' : (s.addFrom === 'etf' ? 'ETF' : '自选');
+    var addTxt = '';
+    if(s.addAt){ var dd = new Date(s.addAt); addTxt = ' <span style="opacity:.65;">' + (dd.getMonth()+1) + '-' + dd.getDate() + ' ' + ('0'+dd.getHours()).slice(-2) + ':' + ('0'+dd.getMinutes()).slice(-2) + '</span>'; }
+    addRow = '<div class="card-add" style="margin-top:8px;padding-top:7px;border-top:1px solid rgba(128,138,150,.16);font-size:12px;color:var(--muted);">' + srcTxt + '入 ' + fmtPrice(s.addPrice) + ' 元 → 现价 <b class="' + (addRet >= 0 ? 'up' : 'down') + '">' + (addRet >= 0 ? '+' : '') + addRet.toFixed(2) + '%</b>' + addTxt + '</div>';
+  }
   return '<div class="card" data-action="open-detail" data-secid="' + s.secid + '">' +
     '<button class="card-remove" data-action="remove" data-secid="' + s.secid + '" title="移出自选">' +
       '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
     '</button>' +
     '<div class="card-top"><div><div class="card-name">' + esc(name) + '</div><div class="card-code num">' + s.code + '</div></div>' + badgeHTML + '</div>' +
     bodyHTML +
+    addRow +
     '</div>';
 }
 
@@ -3401,6 +3417,11 @@ function detailHTML(secid){
       '<span class="pct num ' + cls(q.chg) + '">' + fmtPct(q.pct) + '</span>' +
       '<span class="badge ' + (sig ? (sig.tone==='bull'?'bull':(sig.tone==='bear'?'bear':'flat')) : 'err') + '"><span class="led"></span>' + (sig ? sig.stateText : '--') + '</span></div>';
     html += '<div class="detail-meta">昨收 ' + fmtPrice(q.prev) + ' · 涨跌 ' + (q.chg>=0?'+':'') + fmtPrice(q.chg) + '</div>';
+    if(s.addPrice > 0){
+      var addRet2 = (q.price - s.addPrice) / s.addPrice * 100;
+      var srcTxt2 = s.addFrom === 'picks' ? '荐股' : (s.addFrom === 'etf' ? 'ETF' : '自选');
+      html += '<div class="detail-meta">' + srcTxt2 + '加入价 ' + fmtPrice(s.addPrice) + ' · 加入以来 <b class="' + (addRet2 >= 0 ? 'up' : 'down') + '">' + (addRet2 >= 0 ? '+' : '') + addRet2.toFixed(2) + '%</b></div>';
+    }
   } else if(sig){
     html += '<div class="detail-price"><span class="price num ' + cls(sig.changePct) + '">' + fmtPrice(sig.latest) + '</span>' +
       '<span class="pct num ' + cls(sig.changePct) + '">' + fmtPct(sig.changePct*100) + '</span>' +
@@ -4209,7 +4230,8 @@ document.addEventListener('click', function(e){
     var wc = el.getAttribute('data-code');
     var wn = el.getAttribute('data-name');
     var ws = el.getAttribute('data-secid');
-    addCode(wc, { secid: ws, name: wn });
+    var wf = el.getAttribute('data-from') || '';
+    addCode(wc, { secid: ws, name: wn, from: wf });
     picksRender(); etfRender();
   } else if(a === 'core-prev'){
     var ci = document.getElementById('core-idx');
