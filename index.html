@@ -817,7 +817,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v60</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v61</span>
     </div>
   </div>
 </header>
@@ -2555,6 +2555,9 @@ function picksCard(p, i){
       (sWatch.some(function(x){ return x.code === p.code; })
         ? '<span class="pick-added">✓ 已在监测中</span>'
         : '<button class="icon-btn" data-action="pick-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入个股监测</button>') +
+      (state.watch.some(function(w){ return w.secid === (p.secid || ''); })
+        ? '<span class="pick-added">✓ 已在自选中</span>'
+        : '<button class="icon-btn" data-action="watch-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入自选</button>') +
     '</div>' +
     '</div>';
 }
@@ -2845,6 +2848,9 @@ function etfCard(p, i){
       (sWatch.some(function(x){ return x.code === p.code; })
         ? '<span class="pick-added">✓ 已在监测中</span>'
         : '<button class="icon-btn" data-action="pick-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入个股监测</button>') +
+      (state.watch.some(function(w){ return w.secid === (p.secid || ''); })
+        ? '<span class="pick-added">✓ 已在自选中</span>'
+        : '<button class="icon-btn" data-action="watch-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入自选</button>') +
     '</div>' +
     '</div>';
 }
@@ -3504,6 +3510,12 @@ document.addEventListener('click', function(e){
     var pn = el.getAttribute('data-name');
     var ps = el.getAttribute('data-secid');
     addStock(pc, pn, ps);
+    picksRender(); etfRender();
+  } else if(a === 'watch-add'){
+    var wc = el.getAttribute('data-code');
+    var wn = el.getAttribute('data-name');
+    var ws = el.getAttribute('data-secid');
+    addCode(wc, { secid: ws, name: wn });
     picksRender(); etfRender();
   } else if(a === 'core-prev'){
     var ci = document.getElementById('core-idx');
