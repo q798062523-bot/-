@@ -3513,7 +3513,7 @@ function klineMinute(secid){
       var d = j && j.data && j.data[sym];
       if(!d || !d.data || !d.data.data || !d.data.data.length) throw new Error('nodata');
       var arr = d.data.data;
-      var list = arr.map(function(p){ return { t: String(p[0]), price: +p[1], vol: +p[2] || 0, amt: +p[3] || 0 }; });
+      var list = arr.map(function(s){ var pp = String(s).split(/\s+/); return { t: pp[0], price: +pp[1], vol: +pp[2] || 0, amt: +pp[3] || 0 }; });
       return { name: sym, date: d.data.date || '', list: list };
     });
 }
