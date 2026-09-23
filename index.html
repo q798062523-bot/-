@@ -249,6 +249,41 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 /* ===== 移动端底部导航（桌面隐藏） ===== */
 .m-nav{display:none;}
 
+/* ===== 启动页（Splash） ===== */
+.splash{
+  position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 50% 18%,#1C2332 0%,#0B0E15 72%);
+  transition:opacity .45s ease;opacity:1;
+}
+.splash.hide{opacity:0;pointer-events:none;}
+.splash-inner{display:flex;flex-direction:column;align-items:center;position:relative;text-align:center;}
+.splash-glow{
+  position:absolute;left:50%;top:56px;transform:translateX(-50%);
+  width:190px;height:190px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(227,179,65,0.30) 0%,rgba(227,179,65,0) 70%);
+  animation:splashPulse 1.6s ease-in-out infinite;
+}
+@keyframes splashPulse{0%,100%{opacity:0.55;}50%{opacity:1;}}
+.splash-icon{
+  width:96px;height:96px;border-radius:24px;position:relative;z-index:1;
+  box-shadow:0 10px 40px rgba(0,0,0,0.45), 0 0 34px rgba(227,179,65,0.30);
+}
+.splash-tt{
+  margin-top:22px;font-size:26px;font-weight:800;letter-spacing:0.10em;
+  color:#F0C964;text-shadow:0 0 26px rgba(227,179,65,0.35);
+}
+.splash-sub{
+  margin-top:6px;font-size:12px;letter-spacing:0.34em;color:#9AA3AF;
+  text-transform:uppercase;font-weight:500;
+}
+.splash-line{width:150px;height:1px;margin:18px 0 14px;background:linear-gradient(90deg,rgba(227,179,65,0) 0%,rgba(227,179,65,0.55) 50%,rgba(227,179,65,0) 100%);position:relative;}
+.splash-line span{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:7px;height:7px;border-radius:50%;background:#F0C964;
+  box-shadow:0 0 12px rgba(227,179,65,0.8);
+}
+.splash-foot{font-size:11px;color:#6B7280;letter-spacing:0.14em;}
+
 /* ===== 顶部标签 ===== */
 .tabs{display:flex;gap:6px;margin:14px 0 14px;flex-wrap:wrap;}
 .tab{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:6px 16px;font-size:12.5px;font-family:inherit;cursor:pointer;}
@@ -672,22 +707,34 @@ html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8
   .rules summary{padding:13px 14px;}
   .rules-body{padding:2px 14px 14px;}
 
-  /* 底部导航 */
+  /* 底部导航：加大触控 + 点击状态 + 线性/面状图标切换 */
   .m-nav{
     display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;
     background:rgba(244,242,236,0.96);backdrop-filter:blur(12px);
     border-top:1px solid var(--line);
-    padding:4px 6px calc(4px + env(safe-area-inset-bottom));
+    padding:6px 8px calc(8px + env(safe-area-inset-bottom));
     justify-content:space-around;
   }
   .m-nav-item{
-    flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;
+    flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     border:0;background:transparent;color:var(--muted);
-    font-size:10.5px;font-family:inherit;padding:6px 2px;cursor:pointer;
+    font-size:11px;font-family:inherit;padding:9px 2px;cursor:pointer;
+    min-height:58px;border-radius:16px;position:relative;
+    transition:color .18s ease, transform .12s ease;
+    -webkit-tap-highlight-color:transparent;
   }
-  .m-nav-item svg{width:21px;height:21px;display:block;}
-  .m-nav-item.on{color:var(--navy);font-weight:700;}
-  footer{padding-bottom:calc(22px + env(safe-area-inset-bottom));}
+  .m-nav-item svg{width:24px;height:24px;display:block;}
+  .m-nav-item .ico-fill{display:none;}
+  .m-nav-item:active{transform:scale(0.90);}
+  .m-nav-item.on{color:#E3B341;font-weight:700;}
+  .m-nav-item.on .ico-line{display:none;}
+  .m-nav-item.on .ico-fill{display:block;animation:navPop .22s ease;}
+  .m-nav-item.on::before{
+    content:'';position:absolute;left:7px;right:7px;top:4px;bottom:4px;z-index:-1;
+    border-radius:16px;background:rgba(227,179,65,0.15);
+  }
+  @keyframes navPop{0%{transform:scale(0.6);opacity:0.4;}60%{transform:scale(1.08);}100%{transform:scale(1);opacity:1;}}
+  footer{padding-bottom:calc(26px + env(safe-area-inset-bottom));}
 }
 .ver-tag{font-size:11px;color:var(--muted);border:1px solid var(--border);padding:1px 7px;border-radius:10px;margin-left:8px;letter-spacing:.5px;}
 
@@ -756,11 +803,23 @@ html[data-theme="dark"] .pick-no,
 html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
 html[data-theme="dark"] .m-nav{background:rgba(14,17,22,0.96);}
 html[data-theme="dark"] .m-nav-item{color:#9AA3AF;}
-html[data-theme="dark"] .m-nav-item.on{color:#7FA8D8;}
+html[data-theme="dark"] .m-nav-item.on::before{background:rgba(227,179,65,0.16);}
 html[data-theme="dark"] .hero-banner img{opacity:0.92;}
 </style>
 </head>
 <body>
+
+<!-- ===== 启动页（App 打开时显示，自动淡出） ===== -->
+<div class="splash" id="splash">
+  <div class="splash-inner">
+    <div class="splash-glow"></div>
+    <img class="splash-icon" src="icon-512.png" alt="指数信号台">
+    <div class="splash-tt">我在A股杀疯了</div>
+    <div class="splash-sub">Pig gets rich</div>
+    <div class="splash-line"><span></span></div>
+    <div class="splash-foot">指数信号台 · 个人指数交易模型</div>
+  </div>
+</div>
 
 <!-- ===== 顶部横幅 + 全球快讯 ===== -->
 <div class="top-row">
@@ -792,7 +851,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v58</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v59</span>
     </div>
   </div>
 </header>
@@ -930,27 +989,33 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
 <!-- 移动端底部导航 -->
 <nav class="m-nav" aria-label="主导航">
   <button class="m-nav-item on" data-action="tab" data-tab="index">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 4 6-8 3 3"/></svg>
+    <svg class="ico-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 4 6-8 3 3"/></svg>
+    <svg class="ico-fill" viewBox="0 0 24 24"><path d="M3 17.5l4.6-5.8 3.9 3.6L17.5 6.6 21 9.8v8.2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="currentColor"/></svg>
     <span>指数</span>
   </button>
   <button class="m-nav-item" data-action="tab" data-tab="watch">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.5 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
+    <svg class="ico-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.5 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
+    <svg class="ico-fill" viewBox="0 0 24 24"><path d="M12 2.6l2.9 5.8 6.6.9-4.8 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5-4.8-4.6 6.6-.9z" fill="currentColor"/></svg>
     <span>自选</span>
   </button>
   <button class="m-nav-item" data-action="tab" data-tab="stock">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16"/></svg>
+    <svg class="ico-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16"/></svg>
+    <svg class="ico-fill" viewBox="0 0 24 24"><path d="M4 4h7.5v7.5H4zM12.5 4H20v7.5h-7.5zM4 12.5h7.5V20H4zM12.5 12.5H20V20h-7.5z" fill="currentColor"/></svg>
     <span>监测</span>
   </button>
   <button class="m-nav-item" data-action="tab" data-tab="review">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M9 14h2M13 14h2M9 17h2"/></svg>
+    <svg class="ico-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M9 14h2M13 14h2M9 17h2"/></svg>
+    <svg class="ico-fill" viewBox="0 0 24 24"><path d="M3 5.5A1.5 1.5 0 0 1 4.5 4h15A1.5 1.5 0 0 1 21 5.5V7H3z" fill="currentColor"/><path d="M3 10h18v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 21z" fill="currentColor" opacity="0.9"/></svg>
     <span>复盘</span>
   </button>
   <button class="m-nav-item" data-action="tab" data-tab="picks">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4"/></svg>
+    <svg class="ico-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4"/></svg>
+    <svg class="ico-fill" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21zm0 3.4a7.1 7.1 0 1 1 0 14.2 7.1 7.1 0 0 1 0-14.2zM12 9.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2z" fill="currentColor"/></svg>
     <span>荐股</span>
   </button>
   <button class="m-nav-item" data-action="tab" data-tab="etf">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1.5 12h-13z"/><path d="M9 8V5a3 3 0 0 1 6 0v3"/></svg>
+    <svg class="ico-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1.5 12h-13z"/><path d="M9 8V5a3 3 0 0 1 6 0v3"/></svg>
+    <svg class="ico-fill" viewBox="0 0 24 24"><path d="M4.2 8h15.6l-1.4 11a2 2 0 0 1-2 1.7H7.6a2 2 0 0 1-2-1.7z" fill="currentColor"/><path d="M9 8V5.2a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     <span>ETF</span>
   </button>
 </nav>
@@ -3608,6 +3673,14 @@ document.addEventListener('mouseout', function(e){
 var mpTmpTimer = null;
 
 /* ========== 启动 ========== */
+/* 启动页：1.9 秒后淡出移除 */
+(function(){
+  var sp = document.getElementById('splash');
+  if(sp){
+    setTimeout(function(){ sp.classList.add('hide'); }, 1900);
+    setTimeout(function(){ if(sp && sp.parentNode) sp.parentNode.removeChild(sp); }, 2450);
+  }
+})();
 bindSuggest('code-input', 'code-suggest', ['Index','Fund'], pickCode);
 bindSuggest('stock-input', 'stock-suggest', ['AStock','Fund','Index'], pickStock);
 route();
