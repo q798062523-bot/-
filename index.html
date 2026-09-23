@@ -3507,34 +3507,50 @@ function klineMinute(secid){
   var sym = klineTxSym(secid);
   if(!sym) return Promise.reject(new Error('nosym'));
   var us = sym.indexOf('us') === 0;
-  var base = us ? 'https://web.ifzq.gtimg.cn/appstock/app/minute/query?code=' + sym.replace('us','us.') : 'https://web.ifzq.gtimg.cn/appstock/app/minute/query?code=' + sym;
-  var ctrl1 = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  var tm1 = ctrl1 ? setTimeout(function(){ ctrl1.abort(); }, 8000) : null;
-  return fetch(base, { referrerPolicy: 'no-referrer', signal: ctrl1 ? ctrl1.signal : undefined })
-    .then(function(r){ return r.json(); }).then(function(j){
-      var d = j && j.data && j.data[sym];
-      if(!d || !d.data || !d.data.data || !d.data.data.length) throw new Error('nodata');
-      var arr = d.data.data;
-      var list = arr.map(function(s){ var pp = String(s).split(/\s+/); return { t: pp[0], price: +pp[1], vol: +pp[2] || 0, amt: +pp[3] || 0 }; });
-      return { name: sym, date: d.data.date || '', list: list };
-    }).finally(function(){ if(tm1) clearTimeout(tm1); });
+  var q = us ? sym.replace('us','us.') : sym;
+  var hosts = ['https://web.ifzq.gtimg.cn', 'https://ifzq.gtimg.cn'];
+  function tryH(i){
+    if(i >= hosts.length) return Promise.reject(new Error('allfail'));
+    var ctrl1 = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var tm1 = ctrl1 ? setTimeout(function(){ ctrl1.abort(); }, 8000) : null;
+    return fetch(hosts[i] + '/appstock/app/minute/query?code=' + q, { referrerPolicy: 'no-referrer', signal: ctrl1 ? ctrl1.signal : undefined })
+      .then(function(r){ return r.json(); }).then(function(j){
+        var d = j && j.data && j.data[sym];
+        if(!d || !d.data || !d.data.data || !d.data.data.length) throw new Error('nodata');
+        var arr = d.data.data;
+        var list = arr.map(function(s){ var pp = String(s).split(/\s+/); return { t: pp[0], price: +pp[1], vol: +pp[2] || 0, amt: +pp[3] || 0 }; });
+        return { name: sym, date: d.data.date || '', list: list };
+      }).catch(function(e){
+        if(tm1) clearTimeout(tm1);
+        return tryH(i + 1);
+      }).finally(function(){ if(tm1) clearTimeout(tm1); });
+  }
+  return tryH(0);
 }
 function klineTencent(secid, period){
   var sym = klineTxSym(secid);
   if(!sym) return Promise.reject(new Error('nosym'));
   var per = period === 'week' ? 'week' : (period === 'month' ? 'month' : 'day');
   var us = sym.indexOf('us') === 0;
-  var base = us ? 'https://web.ifzq.gtimg.cn/appstock/app/usfqkline/get' : 'https://web.ifzq.gtimg.cn/appstock/app/fqkline/get';
-  var ctrl2 = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  var tm2 = ctrl2 ? setTimeout(function(){ ctrl2.abort(); }, 8000) : null;
-  return fetch(base + '?param=' + sym + ',' + per + ',,,250,qfq', { referrerPolicy: 'no-referrer', signal: ctrl2 ? ctrl2.signal : undefined })
-    .then(function(r){ return r.json(); }).then(function(j){
-      var d = j && j.data && j.data[sym];
-      var arr = d && (d['qfq' + per] || d[per] || d.day);
-      if(!arr || !arr.length) throw new Error('nodata');
-      var list = arr.map(function(p){ return { date:p[0], open:+p[1], close:+p[2], high:+p[3], low:+p[4], vol:+p[5] }; });
-      return { name: sym, list: list };
-    }).finally(function(){ if(tm2) clearTimeout(tm2); });
+  var hosts = ['https://web.ifzq.gtimg.cn', 'https://ifzq.gtimg.cn'];
+  function tryH(i){
+    if(i >= hosts.length) return Promise.reject(new Error('allfail'));
+    var path = us ? '/appstock/app/usfqkline/get' : '/appstock/app/fqkline/get';
+    var ctrl2 = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var tm2 = ctrl2 ? setTimeout(function(){ ctrl2.abort(); }, 8000) : null;
+    return fetch(hosts[i] + path + '?param=' + sym + ',' + per + ',,,250,qfq', { referrerPolicy: 'no-referrer', signal: ctrl2 ? ctrl2.signal : undefined })
+      .then(function(r){ return r.json(); }).then(function(j){
+        var d = j && j.data && j.data[sym];
+        var arr = d && (d['qfq' + per] || d[per] || d.day);
+        if(!arr || !arr.length) throw new Error('nodata');
+        var list = arr.map(function(p){ return { date:p[0], open:+p[1], close:+p[2], high:+p[3], low:+p[4], vol:+p[5] }; });
+        return { name: sym, list: list };
+      }).catch(function(e){
+        if(tm2) clearTimeout(tm2);
+        return tryH(i + 1);
+      }).finally(function(){ if(tm2) clearTimeout(tm2); });
+  }
+  return tryH(0);
 }
 function klineFetch(secid, period){
   return klineTencent(secid, period).catch(function(){
