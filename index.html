@@ -273,7 +273,19 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 .hold-summary .pnl{font-weight:700;}
 
 /* ===== 个股监测表格 ===== */
-.s-table-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto;}
+.s-table-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto;position:relative;}
+/* 分时悬浮图 */
+.minute-pop{
+  position:fixed;z-index:90;width:322px;padding:10px 12px;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 10px 32px rgba(0,0,0,0.18);pointer-events:none;display:none;
+}
+.minute-pop .mp-head{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--muted);margin-bottom:6px;gap:10px;}
+.minute-pop .mp-head b{font-size:13px;color:var(--ink);}
+.minute-pop .mp-last{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;}
+.minute-pop svg{display:block;width:100%;height:112px;}
+.minute-pop .mp-loading{height:112px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;}
+.minute-pop .mp-foot{font-size:10.5px;color:var(--muted);margin-top:5px;display:flex;gap:12px;}
 .s-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:880px;}
 .s-table th{font-size:11px;color:var(--muted);font-weight:500;text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;letter-spacing:0.02em;}
 .s-table td{padding:10px 12px;border-bottom:0.5px solid rgba(28,30,33,0.05);vertical-align:middle;white-space:nowrap;}
@@ -453,16 +465,31 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
   .news-panel{flex:1 1 auto;max-height:230px;}
 }
 
-/* ===== 核心指数大模块 ===== */
+/* ===== 核心指数大模块（横向滑块） ===== */
+.core-idx-wrap{position:relative;}
 .core-idx{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin-bottom:16px;
+  display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+  margin-bottom:16px;padding:2px 34px 8px;scrollbar-width:none;
 }
+.core-idx::-webkit-scrollbar{display:none;}
 .core-card{
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;flex:0 0 212px;scroll-snap-align:start;
   background:linear-gradient(160deg,#FFFFFF 0%,#FBF8F1 100%);
   border:1px solid var(--line);border-radius:14px;padding:14px 16px;
   box-shadow:0 2px 10px rgba(28,30,33,0.05);
 }
+.core-nav{
+  position:absolute;top:45%;transform:translateY(-50%);z-index:5;
+  width:27px;height:27px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);
+  font-size:16px;line-height:1;font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  box-shadow:0 2px 8px rgba(0,0,0,0.10);
+}
+.core-nav:hover{border-color:var(--navy);color:var(--navy);}
+.core-prev{left:0;}
+.core-next{right:0;}
+html[data-theme="dark"] .core-nav{background:#1B2028;color:#E8EAED;}
 .core-card::before{
   content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
   background:var(--navy);opacity:0.85;border-radius:3px 0 0 3px;
@@ -540,6 +567,11 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 .pick-txt b.lab2{display:inline-block;font-size:10.5px;font-weight:800;color:var(--navy);margin-right:6px;letter-spacing:0.02em;}
 .pick-txt.money b.lab2{color:var(--red);}
 .pick-basis{font-size:11.5px;color:var(--muted);line-height:1.65;background:rgba(28,30,33,0.035);border-radius:8px;padding:7px 10px;}
+.pick-add-row{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.pick-add-row .icon-btn{border-color:var(--navy);color:var(--navy);background:rgba(44,74,110,0.06);}
+.pick-add-row .icon-btn:hover{background:var(--navy);color:#fff;}
+.pick-added{font-size:12px;color:var(--green);font-weight:500;padding:6px 12px;border:1px solid var(--green);border-radius:999px;background:var(--green-bg);}
+html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8D8;background:rgba(127,168,216,0.10);}
 
 /* ===== 响应式 ===== */
 @media (max-width:768px){
@@ -650,7 +682,7 @@ html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v56</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v57</span>
     </div>
   </div>
 </header>
@@ -678,7 +710,11 @@ html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
     </div>
 
     <div class="section-title"><span class="dot"></span>核心指数<span class="core-upd" id="core-upd"></span></div>
+    <div class="core-idx-wrap">
+    <button class="core-nav core-prev" data-action="core-prev" aria-label="上一个">‹</button>
     <div class="core-idx" id="core-idx"><div class="core-loading">行情加载中…</div></div>
+    <button class="core-nav core-next" data-action="core-next" aria-label="下一个">›</button>
+  </div>
 
     <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）</div>
     <div class="grid" id="grid"></div>
@@ -1408,7 +1444,7 @@ function sRowHTML(item){
     holdHTML = '<td class="s-hold"><span class="na">未录入</span></td>';
   }
 
-  return '<tr>' + nameHTML + priceHTML + metricsHTML + targetHTML + holdHTML + actHTML +
+  return '<tr data-code="' + code + '">' + nameHTML + priceHTML + metricsHTML + targetHTML + holdHTML + actHTML +
     '<td><button class="s-remove" data-action="stock-remove" data-code="' + code + '" title="移出监测">×</button></td></tr>';
 }
 
@@ -2342,6 +2378,11 @@ function picksCard(p, i){
     '<div class="pick-txt money"><b class="lab2">资金面</b>' + moneyTxt + '</div>' +
     '<div class="pick-txt"><b class="lab2">仓位建议</b>单只不超过总资金 20%，单笔亏损控制在总资金 2% 以内（跌到止损位就卖，不扛单）。</div>' +
     '<div class="pick-basis"><b>推荐依据</b>：' + picksBasisTxt(p) + '。数据来自东财实时接口（行情/K线/资金流），目标价与止损按技术位自动计算。</div>' +
+    '<div class="pick-add-row">' +
+      (sWatch.some(function(x){ return x.code === p.code; })
+        ? '<span class="pick-added">✓ 已在监测中</span>'
+        : '<button class="icon-btn" data-action="pick-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入个股监测</button>') +
+    '</div>' +
     '</div>';
 }
 function picksRender(){
@@ -2627,6 +2668,11 @@ function etfCard(p, i){
     (newsTxt ? '<div class="pick-txt"><b class="lab2">消息面/政策面</b>' + esc(newsTxt) + '</div>' : '') +
     '<div class="pick-txt money"><b class="lab2">资金面</b>' + moneyTxt + '</div>' +
     '<div class="pick-txt"><b class="lab2">仓位建议</b>单只不超过总资金 20%，单笔亏损控制在总资金 2% 以内（跌到止损就卖，不扛单）。</div>' +
+    '<div class="pick-add-row">' +
+      (sWatch.some(function(x){ return x.code === p.code; })
+        ? '<span class="pick-added">✓ 已在监测中</span>'
+        : '<button class="icon-btn" data-action="pick-add" data-code="' + p.code + '" data-name="' + esc(p.name) + '" data-secid="' + (p.secid || '') + '">＋ 加入个股监测</button>') +
+    '</div>' +
     '</div>';
 }
 function etfTable(){
@@ -2697,7 +2743,17 @@ var CORE_IDX = [
   { secid: '1.000001', name: '上证指数' },
   { secid: '0.399001', name: '深证成指' },
   { secid: '0.399006', name: '创业板指' },
-  { secid: '1.000688', name: '科创50' }
+  { secid: '1.000688', name: '科创50' },
+  { secid: '1.000300', name: '沪深300' },
+  { secid: '1.000905', name: '中证500' },
+  { secid: '1.000852', name: '中证1000' },
+  { secid: '1.000016', name: '上证50' },
+  { secid: '0.899050', name: '北证50' },
+  { secid: '100.HSI', name: '恒生指数' },
+  { secid: '124.HSTECH', name: '恒生科技' },
+  { secid: '100.DJIA', name: '道琼斯' },
+  { secid: '100.NDX', name: '纳斯达克' },
+  { secid: '100.SPX', name: '标普500' }
 ];
 var coreQuotes = {};
 
@@ -2711,11 +2767,15 @@ function renderCoreIdx(){
     }
     var chgCls = d.pct > 0.0001 ? 'up' : (d.pct < -0.0001 ? 'down' : '');
     var chgTxt = (d.pct > 0 ? '+' : '') + d.pct.toFixed(2) + '%';
+    var meta = '';
+    if(d.amount > 0){
+      meta = '<div class="ck-meta"><span>成交 ' + fmtYi(d.amount) + '</span>' + (d.turnover ? '<span class="amt">' + d.turnover.toFixed(2) + '%</span>' : '') + '</div>';
+    }
     return '<div class="core-card">' +
       '<div class="ck-name">' + c.name + '</div>' +
       '<div class="ck-price num">' + fmtPrice(d.price) + '</div>' +
       '<div class="ck-chg num ' + chgCls + '">' + chgTxt + ' <span style="font-weight:500;font-size:11px;color:var(--muted);">' + (d.chg > 0 ? '+' : '') + d.chg.toFixed(2) + '</span></div>' +
-      '<div class="ck-meta"><span>成交 ' + fmtYi(d.amount) + '</span><span class="amt">' + (d.turnover ? d.turnover.toFixed(2) + '%' : '--') + '</span></div>' +
+      meta +
       '</div>';
   }).join('');
 }
@@ -2725,8 +2785,10 @@ function fetchCoreIdx(){
   return reqEM('https://push2.eastmoney.com/api/qt/ulist.np/get', {
     fltt: 2, secids: secids, fields: 'f2,f3,f4,f6,f8,f12,f14'
   }, 8000).then(applyCore).catch(function(){
-    // 腾讯兜底：一次请求多个指数（sh000001,sz399001,sz399006,sh000688）
-    var txMap = { '1.000001':'sh000001', '0.399001':'sz399001', '0.399006':'sz399006', '1.000688':'sh000688' };
+    // 腾讯兜底：一次请求多个指数（A股指数；港股美股指数腾讯符号格式不同，兜底缺省时显示 --）
+    var txMap = { '1.000001':'sh000001', '0.399001':'sz399001', '0.399006':'sz399006', '1.000688':'sh000688',
+      '1.000300':'sh000300', '1.000905':'sh000905', '1.000852':'sh000852', '1.000016':'sh000016',
+      '0.899050':'bj899050', '100.HSI':'hkHSI', '124.HSTECH':'hkHSTECH', '100.DJIA':'usDJI', '100.NDX':'usIXIC', '100.SPX':'usINX' };
     var syms = CORE_IDX.map(function(c){ return txMap[c.secid]; }).filter(Boolean);
     if(!syms.length) return;
     return fetch('https://qt.gtimg.cn/q=' + syms.join(','), { referrerPolicy: 'no-referrer' })
@@ -3243,6 +3305,18 @@ document.addEventListener('click', function(e){
   } else if(a === 'hold-save'){
     e.stopPropagation();
     saveHold();
+  } else if(a === 'pick-add'){
+    var pc = el.getAttribute('data-code');
+    var pn = el.getAttribute('data-name');
+    var ps = el.getAttribute('data-secid');
+    addStock(pc, pn, ps);
+    picksRender(); etfRender();
+  } else if(a === 'core-prev'){
+    var ci = document.getElementById('core-idx');
+    if(ci) ci.scrollBy({ left: -260, behavior: 'smooth' });
+  } else if(a === 'core-next'){
+    var ci2 = document.getElementById('core-idx');
+    if(ci2) ci2.scrollBy({ left: 260, behavior: 'smooth' });
   }
 });
 
@@ -3272,6 +3346,103 @@ document.addEventListener('click', function(e){
 });
 
 window.addEventListener('hashchange', route);
+
+/* ========== 个股分时悬浮图（hover 显示当日分时） ========== */
+var MP_CACHE = {}, mpTimer = null, mpCode = null, mpBox = null;
+function minutePopShow(code, ev){
+  var wrap = document.getElementById('sgrid');
+  if(!wrap) return;
+  mpCode = code;
+  if(!mpBox){
+    mpBox = document.createElement('div');
+    mpBox.className = 'minute-pop';
+    document.body.appendChild(mpBox);
+  }
+  var px = ev.clientX + 14, py = ev.clientY - 158;
+  if(px + 322 > window.innerWidth) px = ev.clientX - 336;
+  if(py < 8) py = ev.clientY + 18;
+  mpBox.style.left = Math.max(4, px) + 'px';
+  mpBox.style.top = Math.max(4, py) + 'px';
+  mpBox.innerHTML = '<div class="mp-head"><b>' + esc(code) + '</b></div><div class="mp-loading">分时加载中…</div>';
+  mpBox.style.display = 'block';
+  loadMinute(code);
+}
+function loadMinute(code){
+  var c = MP_CACHE[code];
+  if(c && Date.now() - c.at < 300e3){ renderMinute(code, c); return; }
+  var item = sWatch.find(function(x){ return x.code === code; });
+  var sid = item && item.secid ? item.secid : secidOfStock(code);
+  if(!sid){ renderMinute(code, null); return; }
+  fetch('https://web.ifzq.gtimg.cn/appstock/app/minute/query?code=' + txSymbol(sid), { referrerPolicy: 'no-referrer' })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      var d = (j.data || {})[txSymbol(sid)] || {};
+      var dd = (d.data || {}).data || [];
+      var list = [];
+      dd.forEach(function(s){
+        var p = s.split(' ');
+        if(p.length >= 2 && +p[1] > 0) list.push({ t: p[0], price: +p[1] });
+      });
+      if(!list.length){ renderMinute(code, null); return; }
+      var q = sQuotes[code];
+      var pre = q && q.prev && q.prev > 0 ? q.prev : list[0].price;
+      MP_CACHE[code] = { at: Date.now(), data: list, pre: pre };
+      renderMinute(code, MP_CACHE[code]);
+    })
+    .catch(function(){ renderMinute(code, null); });
+}
+function renderMinute(code, c){
+  if(mpCode !== code || !mpBox) return;
+  if(!c || !c.data || !c.data.length){
+    mpBox.innerHTML = '<div class="mp-head"><b>' + esc(code) + '</b></div><div class="mp-loading">分时数据暂不可用</div>';
+    return;
+  }
+  var list = c.data, pre = c.pre;
+  var min = list[0].price, max = list[0].price, i;
+  for(i = 1; i < list.length; i++){
+    if(list[i].price < min) min = list[i].price;
+    if(list[i].price > max) max = list[i].price;
+  }
+  if(pre < min) min = pre;
+  if(pre > max) max = pre;
+  var pad = (max - min) * 0.08 || max * 0.002;
+  min -= pad; max += pad;
+  var W = 296, H = 104, n = list.length;
+  function X(i2){ return 6 + (W - 12) * i2 / Math.max(n - 1, 1); }
+  function Y(v){ return 8 + (H - 16) * (max - v) / (max - min); }
+  var last = list[n - 1].price;
+  var up = last >= pre;
+  var col = up ? '#FF6B5E' : '#3ECF8E';
+  var pts = [];
+  for(i = 0; i < n; i++) pts.push(X(i).toFixed(1) + ',' + Y(list[i].price).toFixed(1));
+  var preY = Y(pre).toFixed(1);
+  var pctTxt = pre > 0 ? ((last - pre) / pre * 100).toFixed(2) : '0.00';
+  mpBox.innerHTML =
+    '<div class="mp-head"><b>' + esc(code) + ' 分时</b><span class="mp-last" style="color:' + col + '">' + fmtPrice(last) + ' ' + (up ? '+' : '') + pctTxt + '%</span></div>' +
+    '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
+    '<line x1="6" y1="' + preY + '" x2="' + (W - 6) + '" y2="' + preY + '" stroke="#9AA3AF" stroke-width="1" stroke-dasharray="3,3" opacity="0.55"/>' +
+    '<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + col + '" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>' +
+    '</svg>' +
+    '<div class="mp-foot"><span>昨收 ' + fmtPrice(pre) + '</span><span style="color:' + col + '">' + (up ? '现价在昨收上方' : '现价在昨收下方') + '</span></div>';
+}
+document.addEventListener('mouseover', function(e){
+  var tr = e.target.closest('.s-table tbody tr[data-code]');
+  if(tr){
+    var code = tr.getAttribute('data-code');
+    if(!code) return;
+    clearTimeout(mpTmpTimer);
+    mpTmpTimer = setTimeout(function(){ minutePopShow(code, e); }, 240);
+  }
+});
+document.addEventListener('mouseout', function(e){
+  var tr = e.target.closest('.s-table tbody tr[data-code]');
+  if(tr && !tr.contains(e.relatedTarget)){
+    clearTimeout(mpTmpTimer);
+    if(mpBox) mpBox.style.display = 'none';
+    mpCode = null;
+  }
+});
+var mpTmpTimer = null;
 
 /* ========== 启动 ========== */
 bindSuggest('code-input', 'code-suggest', ['Index','Fund'], pickCode);
