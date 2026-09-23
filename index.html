@@ -850,7 +850,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v62</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v64</span>
     </div>
   </div>
 </header>
@@ -1211,6 +1211,17 @@ function fetchQuote(secid){
       chg: prev > 0 ? price - prev : 0,
       pct: prev > 0 ? (price - prev) / prev * 100 : 0
     };
+  }).catch(function(){
+    return fetch('https://push2.eastmoney.com/api/qt/ulist.np/get?' + emQs({
+      fltt: 2, secids: secid, fields: 'f2,f3,f4,f6,f8,f12,f14'
+    }), { referrerPolicy: 'no-referrer' }).then(function(r){ return r.json(); }).then(function(j){
+      var d = ((j && j.data) || {}).diff || [];
+      if(!d.length) throw new Error('nodata');
+      var x = d[0], price = x.f2, pct = x.f3;
+      if(!(price > 0) || pct === null || pct === undefined || pct === '-') throw new Error('nodata');
+      var prev = price / (1 + pct / 100);
+      return { secid: secid, name: x.f14, code: String(x.f12), price: price, prev: prev, chg: x.f4, pct: pct };
+    });
   });
 }
 
@@ -3116,9 +3127,9 @@ function renderGlobalIdx(){
 
 function fetchGlobalIdx(){
   var secids = GLOBAL_IDX.map(function(c){ return c.secid; }).join(',');
-  return reqEM('https://push2.eastmoney.com/api/qt/ulist.np/get', {
+  return fetch('https://push2.eastmoney.com/api/qt/ulist.np/get?' + emQs({
     fltt: 2, secids: secids, fields: 'f2,f3,f4,f6,f8,f12,f14'
-  }, 8000).then(function(j){
+  }), { referrerPolicy: 'no-referrer' }).then(function(r){ return r.json(); }).then(function(j){
     var diff = ((j && j.data) || {}).diff || [];
     diff.forEach(function(d){
       var code = String(d.f12);
@@ -3737,10 +3748,10 @@ function klineLoad(){
     if(r.name) KL.name = r.name;
     setKlineHead();
     klineDraw();
-    return fetchQuote(KL.secid);
-  }).then(function(q){
-    KL.quote = q;
-    klineUpdateHead(q);
+    return fetchQuote(KL.secid).then(function(q){
+      KL.quote = q;
+      klineUpdateHead(q);
+    }).catch(function(){ });
   }).catch(function(){
     var cv = document.getElementById('kline-canvas');
     if(cv && !cv.parentNode.querySelector('.kline-empty')){
