@@ -850,7 +850,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v65</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v66</span>
     </div>
   </div>
 </header>
@@ -3757,11 +3757,15 @@ function klineLoad(){
     if(cv && !cv.parentNode.querySelector('.kline-empty')){
       var em = document.createElement('div');
       em.className = 'kline-empty';
-      em.textContent = 'K 线数据获取失败，请稍后重试';
+      em.textContent = 'K 线数据获取失败，4 秒后自动重试';
       cv.parentNode.appendChild(em);
     }
     var info2 = document.getElementById('kline-info');
     if(info2) info2.textContent = 'K 线数据获取失败';
+    if(!KL._retry){
+      KL._retry = true;
+      setTimeout(function(){ KL._retry = false; if(isKlineRoute()) klineLoad(); }, 4000);
+    }
   });
 }
 function klineStartPoll(){
