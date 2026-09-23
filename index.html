@@ -251,38 +251,11 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 
 /* ===== 启动页（Splash） ===== */
 .splash{
-  position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(120% 120% at 50% 18%,#1C2332 0%,#0B0E15 72%);
+  position:fixed;inset:0;z-index:200;background:#000;
   transition:opacity .45s ease;opacity:1;
 }
 .splash.hide{opacity:0;pointer-events:none;}
-.splash-inner{display:flex;flex-direction:column;align-items:center;position:relative;text-align:center;}
-.splash-glow{
-  position:absolute;left:50%;top:56px;transform:translateX(-50%);
-  width:190px;height:190px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(227,179,65,0.30) 0%,rgba(227,179,65,0) 70%);
-  animation:splashPulse 1.6s ease-in-out infinite;
-}
-@keyframes splashPulse{0%,100%{opacity:0.55;}50%{opacity:1;}}
-.splash-icon{
-  width:96px;height:96px;border-radius:24px;position:relative;z-index:1;
-  box-shadow:0 10px 40px rgba(0,0,0,0.45), 0 0 34px rgba(227,179,65,0.30);
-}
-.splash-tt{
-  margin-top:22px;font-size:26px;font-weight:800;letter-spacing:0.10em;
-  color:#F0C964;text-shadow:0 0 26px rgba(227,179,65,0.35);
-}
-.splash-sub{
-  margin-top:6px;font-size:12px;letter-spacing:0.34em;color:#9AA3AF;
-  text-transform:uppercase;font-weight:500;
-}
-.splash-line{width:150px;height:1px;margin:18px 0 14px;background:linear-gradient(90deg,rgba(227,179,65,0) 0%,rgba(227,179,65,0.55) 50%,rgba(227,179,65,0) 100%);position:relative;}
-.splash-line span{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:7px;height:7px;border-radius:50%;background:#F0C964;
-  box-shadow:0 0 12px rgba(227,179,65,0.8);
-}
-.splash-foot{font-size:11px;color:#6B7280;letter-spacing:0.14em;}
+.splash-bg{width:100%;height:100%;object-fit:contain;display:block;}
 
 /* ===== 顶部标签 ===== */
 .tabs{display:flex;gap:6px;margin:14px 0 14px;flex-wrap:wrap;}
@@ -811,14 +784,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
 
 <!-- ===== 启动页（App 打开时显示，自动淡出） ===== -->
 <div class="splash" id="splash">
-  <div class="splash-inner">
-    <div class="splash-glow"></div>
-    <img class="splash-icon" src="icon-512.png" alt="指数信号台">
-    <div class="splash-tt">我在A股杀疯了</div>
-    <div class="splash-sub">Pig gets rich</div>
-    <div class="splash-line"><span></span></div>
-    <div class="splash-foot">指数信号台 · 个人指数交易模型</div>
-  </div>
+  <img class="splash-bg" src="splash.jpg" alt="指数信号台">
 </div>
 
 <!-- ===== 顶部横幅 + 全球快讯 ===== -->
@@ -851,7 +817,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v59</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v60</span>
     </div>
   </div>
 </header>
