@@ -1,5 +1,5 @@
 /* 指数信号台 Service Worker —— 页面壳网络优先 + 离线兜底，数据接口一律直连不缓存 */
-var CACHE = 'signal-desk-v7';
+var CACHE = 'signal-desk-v8';
 var CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-180.png'];
 
 self.addEventListener('install', function(e){
