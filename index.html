@@ -1079,9 +1079,9 @@ html[data-theme="dark"] #view-watch .watch-scroll{background:rgba(23,27,34,0.55)
 #view-watch .watch-scroll::-webkit-scrollbar{height:6px;}
 #view-watch .watch-scroll::-webkit-scrollbar-thumb{background:rgba(127,168,216,0.35);border-radius:6px;}
 #view-watch .watch-scroll::-webkit-scrollbar-track{background:transparent;}
-#view-watch #grid{display:block;min-width:560px;}
+#view-watch #grid{display:block;min-width:700px;}
 #view-watch .wt-row{
-  display:grid;grid-template-columns:1.35fr 0.7fr 0.85fr 0.7fr 0.95fr 0.6fr 0.8fr 0.6fr 0.8fr 0.8fr;
+  display:grid;grid-template-columns:1.35fr 0.65fr 0.8fr 0.7fr 0.85fr 0.7fr 0.95fr 0.6fr 0.8fr 0.6fr 0.8fr 0.8fr;
   align-items:center;gap:4px;padding:8px 12px;border-bottom:0.5px solid rgba(28,30,33,0.05);
   font-size:12.5px;cursor:pointer;transition:background .15s ease;
 }
@@ -1097,6 +1097,13 @@ html[data-theme="dark"] #view-watch .wt-row.head:hover{background:rgba(23,27,34,
 #view-watch .wt-name .cd{font-size:10.5px;color:var(--muted);}
 #view-watch .wt-num{text-align:right;white-space:nowrap;}
 #view-watch .wt-sig{text-align:right;white-space:nowrap;}
+
+/* v81：名称代码紧凑 + 标题分隔线 */
+#view-watch .wt-name{display:flex;flex-direction:column;gap:1px;line-height:1.25;min-width:0;}
+#view-watch .wt-name .nm{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#view-watch .wt-name .cd{font-size:10.5px;color:var(--muted);}
+#view-watch .section-title{border-bottom:1px solid rgba(28,30,33,0.08);padding-bottom:8px;margin-bottom:10px;}
+html[data-theme="dark"] #view-watch .section-title{border-bottom-color:rgba(255,255,255,0.10);}
 </style>
 </head>
 <body>
@@ -1134,7 +1141,7 @@ html[data-theme="dark"] #view-watch .wt-row.head:hover{background:rgba(23,27,34,
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v80</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v81</span>
     </div>
   </div>
 </header>
@@ -4144,8 +4151,16 @@ function watchRowHTML(s){
   else if(err && !sig) sigHTML = '<span class="badge err"><span class="led"></span>获取失败</span>';
   else if(t) sigHTML = '<span class="badge ' + t[0] + '"><span class="led"></span>' + t[1] + '</span>';
   else sigHTML = '<span class="badge err"><span class="led"></span>--</span>';
+  var atPrice = s.addPrice || 0;
+  var atHTML = atPrice > 0 ? fmtPrice(atPrice) : '--';
+  var curP = (q && q.price > 0) ? q.price : (sig && sig.latest > 0 ? sig.latest : 0);
+  var ret = (atPrice > 0 && curP > 0) ? (curP - atPrice) / atPrice * 100 : null;
+  var retHTML = ret === null ? '--' : fmtPct(ret);
+  var retCls = ret === null ? '' : cls(ret);
   return '<div class="wt-row" data-action="core-open" data-secid="' + esc(s.secid) + '">' +
-    '<span class="wt-name"><span class="nm">' + esc(name) + '</span><br><span class="cd">' + esc(s.code) + '</span></span>' +
+    '<span class="wt-name"><span class="nm">' + esc(name) + '</span><span class="cd">' + esc(s.code) + '</span></span>' +
+    '<span class="wt-num num">' + atHTML + '</span>' +
+    '<span class="wt-num num ' + retCls + '">' + retHTML + '</span>' +
     '<span class="wt-num num ' + c + '">' + price + '</span>' +
     '<span class="wt-num num ' + c + '">' + pct + '</span>' +
     '<span class="wt-num num ' + c + '">' + diff + '</span>' +
@@ -4164,7 +4179,7 @@ function renderCards(){
     grid.innerHTML = '<div class="empty">自选池还是空的。从上方预设池点一个标的，或输入代码加入，系统会自动计算模型信号。</div>';
     return;
   }
-  var head = '<div class="wt-row head"><span class="wt-name">名称</span><span class="wt-num">现价</span><span class="wt-num">涨跌幅</span><span class="wt-num">涨跌额</span><span class="wt-sig">信号</span><span class="wt-num">仓位</span><span class="wt-num">成交额</span><span class="wt-num">换手</span><span class="wt-num">MA短</span><span class="wt-num">MA长</span></div>';
+  var head = '<div class="wt-row head"><span class="wt-name">名称</span><span class="wt-num">自选价</span><span class="wt-num">跟踪收益率</span><span class="wt-num">现价</span><span class="wt-num">涨跌幅</span><span class="wt-num">涨跌额</span><span class="wt-sig">信号</span><span class="wt-num">仓位</span><span class="wt-num">成交额</span><span class="wt-num">换手</span><span class="wt-num">MA短</span><span class="wt-num">MA长</span></div>';
   grid.innerHTML = head + state.watch.map(watchRowHTML).join('');
 }
 
