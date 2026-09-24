@@ -655,8 +655,10 @@ html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8
   /* banner + 快讯：纵向堆叠 */
   .top-row{flex-direction:column;gap:10px;}
   .news-panel{flex:1 1 auto;max-height:300px;border-radius:12px;}
-  .news-panel .news-item{padding:8px 12px;}
-  .news-panel .news-title{font-size:12.5px;}
+  .news-panel .news-item{padding:9px 11px;gap:8px;}
+  .news-panel .news-title{font-size:13.5px;}
+  .news-panel .news-digest{font-size:12px;}
+  .news-panel .news-pic{flex-basis:56px;width:56px;height:42px;}
 
   /* 核心指数滑块：更紧凑 */
   .core-idx{padding:2px 30px 6px;gap:8px;}
@@ -863,7 +865,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v70</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v71</span>
     </div>
   </div>
 </header>
@@ -1796,7 +1798,7 @@ function strategyRun(){
         if(mm){
           var pp = mm[1].split('~');
           if(pe === null) pe = +pp[39] || null;
-          if(mv === null) mv = +pp[45] || null;
+          if(mv === null) mv = (+pp[45] || 0) * 1e8 || null;
           if(pb === null) pb = +pp[46] || null;
         }
       }).catch(function(){})
