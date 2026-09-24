@@ -829,6 +829,59 @@ html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8
 }
 .ver-tag{font-size:11px;color:var(--muted);border:1px solid var(--border);padding:1px 7px;border-radius:10px;margin-left:8px;letter-spacing:.5px;}
 
+/* ===== v74 视觉体系：极简年轻化 · 轻量毛玻璃 ===== */
+header{
+  background:rgba(251,249,244,0.72);
+  backdrop-filter:blur(16px) saturate(1.5);
+  -webkit-backdrop-filter:blur(16px) saturate(1.5);
+  border-bottom:1px solid rgba(28,30,33,0.06);
+  transition:background .3s ease;
+}
+html[data-theme="dark"] header{background:rgba(14,17,22,0.70);border-bottom-color:rgba(232,234,237,0.07);}
+.add-panel,.strategy-hero,.monitor-panel,.picks-head,.review-head,.rv-sec{
+  backdrop-filter:blur(10px) saturate(1.2);
+  -webkit-backdrop-filter:blur(10px) saturate(1.2);
+}
+html[data-theme="dark"] .add-panel,
+html[data-theme="dark"] .strategy-hero,
+html[data-theme="dark"] .monitor-panel,
+html[data-theme="dark"] .picks-head,
+html[data-theme="dark"] .review-head,
+html[data-theme="dark"] .rv-sec{backdrop-filter:blur(12px) saturate(1.1);}
+.add-panel,.strategy-hero,.monitor-panel{transition:border-color .2s ease,box-shadow .25s ease;}
+.add-panel:hover,.strategy-hero:hover,.monitor-panel:hover{border-color:rgba(127,168,216,0.35);box-shadow:0 6px 24px rgba(28,30,33,0.06);}
+.btn-primary,.btn-ghost,.icon-btn,.hold-save,.core-nav,.m-nav-item{
+  transition:transform .12s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease, color .18s ease;
+}
+.btn-primary:active,.btn-ghost:active,.hold-save:active{transform:scale(0.96);}
+.icon-btn:active,.core-nav:active{transform:scale(0.92);}
+.core-card,.news-item,.imp-card,.pick-cell,.rv-idx,.detail-box{
+  transition:transform .18s ease, box-shadow .22s ease, border-color .18s ease;
+}
+@media(hover:hover){
+  .core-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(28,30,33,0.10);}
+  .news-item:hover,.imp-card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(28,30,33,0.07);border-color:rgba(127,168,216,0.4);}
+  .pick-cell:hover{border-color:rgba(127,168,216,0.45);}
+}
+@keyframes vFade{0%{opacity:0;transform:translateY(10px);}100%{opacity:1;transform:none;}}
+.view-anim{animation:vFade .3s cubic-bezier(.22,.68,.33,1);}
+html[data-theme="dark"] .view-anim{animation-duration:.32s;}
+@keyframes numFlash{0%{background:rgba(127,168,216,0.25);}100%{background:transparent;}}
+.num-flash{animation:numFlash .9s ease;}
+.loadbar{position:fixed;top:0;left:0;right:0;height:2px;z-index:999;background:transparent;pointer-events:none;}
+.loadbar::after{content:'';display:block;height:100%;width:34%;background:linear-gradient(90deg,transparent,var(--navy),var(--amber),transparent);border-radius:2px;animation:loadslide 1.1s ease-in-out infinite;}
+html[data-theme="dark"] .loadbar::after{background:linear-gradient(90deg,transparent,#7FA8D8,#E3B341,transparent);}
+@keyframes loadslide{0%{margin-left:-34%;}100%{margin-left:100%;}}
+.loadbar.hide{display:none;}
+#flash-toast{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.empty{background:rgba(127,168,216,0.06);border-radius:var(--radius);padding:22px 18px;border:1px dashed rgba(127,168,216,0.35);}
+@media(min-width:769px){
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:rgba(127,168,216,0.35);border-radius:8px;}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(127,168,216,0.55);}
+  ::-webkit-scrollbar-track{background:transparent;}
+}
+
 /* ===== 自动黑夜模式（19:00-08:00） ===== */
 html[data-theme="dark"]{
   --bg:#0E1116;
@@ -929,12 +982,13 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v73</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v74</span>
     </div>
   </div>
 </header>
 
 <main>
+  <div class="loadbar hide" id="loadbar"></div>
   <div class="tabs">
     <button class="tab on" data-action="tab" data-tab="index" id="tab-index">指数信号</button>
     <button class="tab" data-action="tab" data-tab="watch" id="tab-watch">自选股</button>
@@ -4582,6 +4636,12 @@ function renderTabs(){
   });
 }
 
+function loadBar(show){
+  var lb = document.getElementById('loadbar');
+  if(!lb) return;
+  if(show) lb.classList.remove('hide');
+  else lb.classList.add('hide');
+}
 function route(){
   var home = document.getElementById('view-home');
   var watchV = document.getElementById('view-watch');
@@ -4601,22 +4661,32 @@ function route(){
     var ev = document.getElementById('view-etf');
     if(ev) ev.style.display = 'none';
   }
+  function showAnim(el){
+    if(!el) return;
+    el.classList.remove('view-anim');
+    void el.offsetWidth;
+    el.classList.add('view-anim');
+  }
   var m = location.hash.match(/^#\/detail\?code=([\d.]+)/);
   if(m){
     hideViews();
     view.style.display = 'block';
     view.innerHTML = detailHTML(m[1]);
+    showAnim(view);
   } else if(location.hash.indexOf('#/kline') === 0){
     hideViews();
     if(klineV) klineV.style.display = 'block';
     renderKlineView();
+    showAnim(klineV);
   } else if(location.hash.indexOf('#/watch') === 0){
     hideViews();
     if(watchV) watchV.style.display = 'block';
     renderWatch();
+    showAnim(watchV);
   } else if(location.hash.indexOf('#/stock') === 0){
     hideViews();
     stockV.style.display = 'block';
+    showAnim(stockV);
     renderVerGroup();
     renderUpd();
     renderStockCards();
@@ -4627,20 +4697,24 @@ function route(){
   } else if(location.hash.indexOf('#/review') === 0){
     hideViews();
     reviewV.style.display = 'block';
+    showAnim(reviewV);
     if(Date.now() - RV_STATE.at > 3600e3) refreshReview(false);
   } else if(location.hash.indexOf('#/picks') === 0){
     hideViews();
     var picksV2 = document.getElementById('view-picks');
     if(picksV2) picksV2.style.display = 'block';
+    showAnim(picksV2);
     if(!PICKS.list.length) refreshPicks(false);
   } else if(location.hash.indexOf('#/etf') === 0){
     hideViews();
     var etfV = document.getElementById('view-etf');
     if(etfV) etfV.style.display = 'block';
+    showAnim(etfV);
     if(!ETFS.list.length) refreshEtf(false);
   } else {
     hideViews();
     home.style.display = 'block';
+    showAnim(home);
     renderHome();
   }
   renderTabs();
