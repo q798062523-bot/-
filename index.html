@@ -831,13 +831,18 @@ html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8
 
 /* ===== v75 毛玻璃体系（参考 ZAY-G 风格：渐变底 + 玻璃卡片 + 柔和光斑） ===== */
 body{
-  background:linear-gradient(168deg,#EDF3FF 0%,#ECE6FF 20%,#FCEAF6 42%,#FFF4E9 62%,#E9F7F1 82%,#EDF3FF 100%);
+  background:linear-gradient(168deg,#F4F8FF 0%,#F2EFFE 20%,#FDF3FA 42%,#FFF9F2 62%,#F1FAF7 82%,#F4F8FF 100%);
+  background-size:400% 400%;
   background-attachment:fixed;
+  animation:bgFlow 38s ease-in-out infinite;
 }
 html[data-theme="dark"] body{
-  background:linear-gradient(168deg,#0B0E18 0%,#101120 24%,#18101E 48%,#141014 72%,#0B1216 100%);
+  background:linear-gradient(168deg,#0A0D16 0%,#0F101C 24%,#171018 48%,#141013 72%,#0A1215 100%);
+  background-size:400% 400%;
+  background-attachment:fixed;
+  animation:bgFlow 38s ease-in-out infinite;
 }
-/* 背景多彩光斑：蓝紫 + 暖金 + 粉青，为毛玻璃提供可透过的色彩 */
+/* 背景多彩光斑：蓝紫 + 暖金 + 粉青（淡），为毛玻璃提供可透过的色彩 */
 body::before,
 body::after,
 .bg-blob{
@@ -846,19 +851,25 @@ body::after,
 }
 body::before{
   width:600px;height:600px;top:-200px;right:-160px;
-  background:radial-gradient(circle,rgba(96,140,220,0.42) 0%,transparent 68%);
+  background:radial-gradient(circle,rgba(96,140,220,0.30) 0%,transparent 68%);
 }
 body::after{
   width:540px;height:540px;bottom:-180px;left:-140px;
-  background:radial-gradient(circle,rgba(240,180,90,0.28) 0%,transparent 68%);
+  background:radial-gradient(circle,rgba(240,180,90,0.16) 0%,transparent 68%);
 }
 .bg-blob{
   width:480px;height:480px;top:36%;left:56%;
-  background:radial-gradient(circle,rgba(236,140,200,0.20) 0%,transparent 70%);
+  background:radial-gradient(circle,rgba(236,140,200,0.13) 0%,transparent 70%);
 }
-html[data-theme="dark"] body::before{background:radial-gradient(circle,rgba(96,140,220,0.20) 0%,transparent 68%);}
-html[data-theme="dark"] body::after{background:radial-gradient(circle,rgba(240,180,90,0.12) 0%,transparent 68%);}
-html[data-theme="dark"] .bg-blob{background:radial-gradient(circle,rgba(236,140,200,0.10) 0%,transparent 70%);}
+html[data-theme="dark"] body::before{background:radial-gradient(circle,rgba(96,140,220,0.16) 0%,transparent 68%);}
+html[data-theme="dark"] body::after{background:radial-gradient(circle,rgba(240,180,90,0.09) 0%,transparent 68%);}
+html[data-theme="dark"] .bg-blob{background:radial-gradient(circle,rgba(236,140,200,0.07) 0%,transparent 70%);}
+/* 背景缓缓流转 */
+@keyframes bgFlow{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
 
 /* 玻璃卡片：半透明 + 背景模糊 + 顶部高光 + 细白边 */
 .add-panel,.strategy-hero,.monitor-panel,.picks-head,.review-head,.rv-sec,
@@ -997,47 +1008,27 @@ html[data-theme="dark"] .m-nav-item{color:#9AA3AF;}
 html[data-theme="dark"] .m-nav-item.on::before{background:rgba(227,179,65,0.16);}
 html[data-theme="dark"] .hero-banner img{opacity:0.92;}
 
-/* ===== v76 快讯：首条放大 + 分类彩色配图 ===== */
-.news-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;align-items:stretch;}
-.news-feature .news-item.feature{
-  display:flex;flex-direction:column;padding:0;overflow:hidden;height:100%;cursor:pointer;
-  border-bottom:0;border-radius:16px;
-}
-.news-feature .news-item.feature:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(31,45,72,0.10);}
-.news-img{height:150px;background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:16px 16px 0 0;}
-.news-cat{
-  height:150px;display:flex;align-items:center;justify-content:center;
-  font-size:18px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,0.96);
-  text-shadow:0 1px 6px rgba(0,0,0,0.16);border-radius:16px 16px 0 0;
-}
-.news-cat span{background:rgba(255,255,255,0.20);padding:4px 16px;border-radius:22px;backdrop-filter:blur(5px);}
-.news-feature .news-body{padding:13px 16px 16px;min-width:0;}
-.news-feature .news-title{font-size:16px;font-weight:600;line-height:1.5;}
-.news-feature .news-digest{font-size:12px;color:var(--muted);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.news-feature .news-link{margin-top:8px;display:inline-block;}
-.news-list{display:flex;flex-direction:column;}
-.news-list .news-item{
+/* ===== v77 快讯：单列列表 + 分类小图块配图 ===== */
+.news-item{
   display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:start;
-  padding:10px 12px;border-bottom:0.5px solid rgba(28,30,33,0.05);cursor:pointer;
+  padding:11px 14px;border-bottom:0.5px solid rgba(28,30,33,0.05);cursor:pointer;
 }
-.news-list .news-item:last-child{border-bottom:0;}
-.news-list .news-item:hover{background:rgba(255,255,255,0.4);}
-.news-list .news-title{font-size:12.5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.news-list .news-digest{font-size:11px;color:var(--muted);margin-top:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
-.news-img.mini,.news-cat-mini{
+.news-item:last-child{border-bottom:0;}
+.news-item:hover{background:rgba(255,255,255,0.4);}
+.news-body{min-width:0;}
+.news-meta{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-bottom:3px;}
+.news-title{font-size:12.8px;line-height:1.5;font-weight:500;}
+.news-digest{font-size:11.5px;color:var(--muted);margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.news-link{margin-top:4px;display:inline-block;}
+.news-cat-mini{
   width:52px;height:44px;border-radius:9px;flex-shrink:0;
   background-size:cover;background-position:center;
   display:flex;align-items:center;justify-content:center;
   font-size:10.5px;font-weight:600;color:#fff;
   text-shadow:0 1px 4px rgba(0,0,0,0.18);
 }
-.news-list .news-body{min-width:0;}
-html[data-theme="dark"] .news-list .news-item:hover{background:rgba(255,255,255,0.05);}
-html[data-theme="dark"] .news-cat span{background:rgba(0,0,0,0.22);}
-@media(max-width:760px){
-  .news-grid{grid-template-columns:1fr;}
-  .news-img,.news-cat{height:120px;}
-}
+html[data-theme="dark"] .news-item:hover{background:rgba(255,255,255,0.05);}
+
 /* ===== v75 dark 覆盖（置底保证优先级） ===== */
 html[data-theme="dark"] .add-panel,
 html[data-theme="dark"] .strategy-hero,
@@ -1063,6 +1054,19 @@ html[data-theme="dark"] .pick-basis,
 html[data-theme="dark"] .ver-group{background:rgba(255,255,255,0.06);}
 html[data-theme="dark"] .strategy-tbl td.k{background:rgba(255,255,255,0.05);}
 html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
+
+/* ===== v78 快讯首条大图 + 重要动态折叠 ===== */
+.news-cat-mini.first{width:84px;height:64px;font-size:13px;border-radius:12px;letter-spacing:1px;}
+.imp-more{display:none;}
+#imp-box.expanded .imp-more{display:block;}
+.imp-toggle{
+  margin:10px 0 0;padding:9px 10px;text-align:center;font-size:12.5px;color:var(--navy);
+  cursor:pointer;border:0.5px solid rgba(127,168,216,0.35);background:rgba(127,168,216,0.06);
+  border-radius:10px;user-select:none;transition:background .18s ease;
+}
+.imp-toggle:hover{background:rgba(127,168,216,0.14);}
+.imp-toggle .arr{display:inline-block;transition:transform .25s ease;}
+#imp-box.expanded .imp-toggle .arr{transform:rotate(180deg);}
 </style>
 </head>
 <body>
@@ -1100,7 +1104,7 @@ html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v76</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v78</span>
     </div>
   </div>
 </header>
@@ -2536,7 +2540,7 @@ function rvFetchIntl(){
 
 /* 4) 关键时间节点（快讯流过滤） */
 function rvFetchEvents(){
-  return jsonp('https://newsapi.eastmoney.com/kuaixun/v1/getlist_102_ajaxResult_50_1_.html', {}, 9000)
+  return jsonp('https://newsapi.eastmoney.com/kuaixun/v1/getlist_101_ajaxResult_50_1_.html', {}, 9000)
     .then(function(j){
       var items = (j && j.LivesList) || [];
       var kw = /(下周|本周|月\s*\d+日|将\s*(于|在|于月)|美联储|议息|非农|CPI|PPI|GDP|财报|发布会|解禁|央行|降息|加息|公布|数据)/;
@@ -2898,7 +2902,7 @@ function loadEastMoneyNews(){
       else reject(new Error('empty'));
     };
     s.onerror = function(){ if(!done){ done=true; cleanup(); reject(new Error('network')); } };
-    s.src = 'https://newsapi.eastmoney.com/kuaixun/v1/getlist_102_ajaxResult_50_1_.html?callback=__iq_news';
+    s.src = 'https://newsapi.eastmoney.com/kuaixun/v1/getlist_101_ajaxResult_50_1_.html?callback=__iq_news';
     document.body.appendChild(s);
   });
 }
@@ -3036,38 +3040,26 @@ function renderNews(){
     box.innerHTML = '<div class="news-empty">快讯暂不可用，点击右上角刷新重试。</div>';
     return;
   }
-  var list = state.news.slice(0, 10);
-  function visual(n, cat, mini){
-    if(n.image){
-      return '<div class="news-img' + (mini ? ' mini' : '') + '" style="background-image:url(\'' + esc(n.image) + '\')"></div>';
-    }
-    var grad = 'linear-gradient(135deg,' + cat.g[0] + ',' + cat.g[1] + ')';
-    if(mini) return '<div class="news-cat-mini" style="background:' + grad + '">' + esc(cat.k) + '</div>';
-    return '<div class="news-cat" style="background:' + grad + '"><span>' + esc(cat.k) + '</span></div>';
-  }
-  function item(n, feature){
+  box.innerHTML = state.news.slice(0, 10).map(function(n, idx){
     var cat = newsCategory(n.title);
+    var visual;
+    var first = (idx === 0);
+    if(n.image){
+      visual = '<div class="news-cat-mini' + (first ? ' first' : '') + '" style="background-image:url(\'' + esc(n.image) + '\')"></div>';
+    } else {
+      visual = '<div class="news-cat-mini' + (first ? ' first' : '') + '" style="background:linear-gradient(135deg,' + cat.g[0] + ',' + cat.g[1] + ')">' + esc(cat.k) + '</div>';
+    }
     var meta = '<span class="news-time num">' + esc(fmtNewsTime(n.time)) + '</span>';
     if(n.source) meta += '<span class="news-src">' + esc(n.source) + '</span>';
-    var digest = n.summary ? '<div class="news-digest">' + esc(n.summary) + '</div>' : '';
-    var link = n.link ? '<a class="news-link" href="' + esc(n.link) + '" target="_blank" rel="noopener noreferrer">查看原文</a>' : '';
-    if(feature){
-      return '<div class="news-item feature" data-action="toggle-news">' +
-        visual(n, cat, false) +
-        '<div class="news-body">' +
-        '<div class="news-meta"><span class="news-idx num">TOP</span>' + meta + '</div>' +
-        '<div class="news-title">' + esc(n.title) + '</div>' + digest + link +
-        '</div></div>';
-    }
-    return '<div class="news-item" data-action="toggle-news">' + visual(n, cat, true) +
+    var extra = '';
+    if(n.summary) extra += '<div class="news-digest">' + esc(n.summary) + '</div>';
+    if(n.link) extra += '<a class="news-link" href="' + esc(n.link) + '" target="_blank" rel="noopener noreferrer">查看原文</a>';
+    return '<div class="news-item" data-action="toggle-news">' + visual +
       '<div class="news-body">' +
       '<div class="news-meta">' + meta + '</div>' +
-      '<div class="news-title">' + esc(n.title) + '</div>' + digest + link +
+      '<div class="news-title">' + esc(n.title) + '</div>' + extra +
       '</div></div>';
-  }
-  var first = item(list[0], true);
-  var rest = list.slice(1).map(function(n){ return item(n, false); }).join('');
-  box.innerHTML = '<div class="news-grid"><div class="news-feature">' + first + '</div><div class="news-list">' + rest + '</div></div>';
+  }).join('');
 }
 
 /* 重要动态渲染（四要素） */
@@ -3085,7 +3077,7 @@ function renderImpNews(){
   box.innerHTML = state.impNews.map(function(n, i){
     var srcTxt = n.source ? esc(n.source) : '东方财富 · 7×24 快讯';
     var link = n.link ? ' <span style="margin:0 4px;">·</span> <a href="' + esc(n.link) + '" target="_blank" rel="noopener noreferrer">查看原文</a>' : '';
-    return '<div class="imp-card">' +
+    return '<div class="imp-card' + (i >= 3 ? ' imp-more' : '') + '">' +
       '<div class="imp-top"><span class="imp-rank">' + (i+1) + '</span>' +
       '<span class="imp-title">' + esc(n.title) + '</span>' +
       '<span class="imp-time num">' + esc(fmtNewsTime(n.time)) + '</span></div>' +
@@ -3096,6 +3088,7 @@ function renderImpNews(){
       '<div class="imp-foot"><span class="src">来源：' + srcTxt + '</span>' + link + '</div>' +
       '</div>';
   }).join('') +
+  '<div class="imp-toggle" data-action="toggle-imp" id="imp-toggle"><span class="arr">▾</span> 展开查看更多资讯</div>' +
   '<div class="rv-warn">动态由东财 7×24 快讯自动筛选排序，市场影响为系统按关键词规则推断，仅供参考，不构成投资建议。</div>';
 }
 
@@ -4884,6 +4877,15 @@ document.addEventListener('click', function(e){
   var a = el.getAttribute('data-action');
   var secid = el.getAttribute('data-secid');
 
+  if(a === 'toggle-imp'){
+    var ib = document.getElementById('imp-box');
+    var tg = document.getElementById('imp-toggle');
+    if(ib){
+      var ex = ib.classList.toggle('expanded');
+      if(tg) tg.innerHTML = ex ? '<span class="arr">▴</span> 收起资讯' : '<span class="arr">▾</span> 展开查看更多资讯';
+    }
+    return;
+  }
   if(a === 'open-detail'){
     openKline(secid, '');
   } else if(a === 'core-open'){
