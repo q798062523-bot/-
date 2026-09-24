@@ -1067,6 +1067,36 @@ html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
 .imp-toggle:hover{background:rgba(127,168,216,0.14);}
 .imp-toggle .arr{display:inline-block;transition:transform .25s ease;}
 #imp-box.expanded .imp-toggle .arr{transform:rotate(180deg);}
+
+/* ===== v80 自选信号：通达信式紧凑表格 + 横向滑动 ===== */
+#view-watch .hint-inline{font-size:11px;color:var(--muted);font-weight:400;margin-left:8px;}
+#view-watch .watch-scroll{
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid rgba(28,30,33,0.07);border-radius:14px;
+  background:rgba(255,255,255,0.55);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+html[data-theme="dark"] #view-watch .watch-scroll{background:rgba(23,27,34,0.55);border-color:rgba(255,255,255,0.08);}
+#view-watch .watch-scroll::-webkit-scrollbar{height:6px;}
+#view-watch .watch-scroll::-webkit-scrollbar-thumb{background:rgba(127,168,216,0.35);border-radius:6px;}
+#view-watch .watch-scroll::-webkit-scrollbar-track{background:transparent;}
+#view-watch #grid{display:block;min-width:560px;}
+#view-watch .wt-row{
+  display:grid;grid-template-columns:1.35fr 0.7fr 0.85fr 0.7fr 0.95fr 0.6fr 0.8fr 0.6fr 0.8fr 0.8fr;
+  align-items:center;gap:4px;padding:8px 12px;border-bottom:0.5px solid rgba(28,30,33,0.05);
+  font-size:12.5px;cursor:pointer;transition:background .15s ease;
+}
+#view-watch .wt-row:last-child{border-bottom:0;}
+#view-watch .wt-row:hover{background:rgba(127,168,216,0.07);}
+html[data-theme="dark"] #view-watch .wt-row:hover{background:rgba(255,255,255,0.05);}
+#view-watch .wt-row.head{color:var(--muted);font-size:11px;font-weight:600;cursor:default;position:sticky;left:0;z-index:2;background:rgba(255,255,255,0.72);backdrop-filter:blur(8px);}
+html[data-theme="dark"] #view-watch .wt-row.head{background:rgba(23,27,34,0.80);}
+#view-watch .wt-row.head:hover{background:rgba(255,255,255,0.72);}
+html[data-theme="dark"] #view-watch .wt-row.head:hover{background:rgba(23,27,34,0.80);}
+#view-watch .wt-name{line-height:1.35;min-width:0;overflow:hidden;}
+#view-watch .wt-name .nm{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:110px;}
+#view-watch .wt-name .cd{font-size:10.5px;color:var(--muted);}
+#view-watch .wt-num{text-align:right;white-space:nowrap;}
+#view-watch .wt-sig{text-align:right;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -1104,7 +1134,7 @@ html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v79</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v80</span>
     </div>
   </div>
 </header>
@@ -1173,8 +1203,8 @@ html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
       <div class="hint">支持智能检索：中文名称（沪深300）、拼音首字母（hs300）、6 位代码（510300）。指数与 ETF 可加入自选信号。</div>
     </div>
 
-    <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）</div>
-    <div class="grid" id="grid"></div>
+    <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）<span class="hint-inline">← 横向滑动查看更多 →</span></div>
+    <div class="watch-scroll"><div class="grid" id="grid"></div></div>
   </section>
 
   <!-- 个股监测视图 -->
@@ -4081,13 +4111,61 @@ function cardHTML(s){
     '</div>';
 }
 
+function fmtAmt(v){
+  if(v === null || v === undefined || isNaN(v)) return '--';
+  if(v >= 1e8) return (v / 1e8).toFixed(1) + '亿';
+  if(v >= 1e4) return (v / 1e4).toFixed(0) + '万';
+  return v.toFixed(0);
+}
+function fmtDiff(v){
+  if(v === null || v === undefined || isNaN(v)) return '--';
+  var s = v > 0 ? '+' : '';
+  return s + v.toFixed(2);
+}
+function watchRowHTML(s){
+  var q = state.quotes[s.secid];
+  var sig = state.sigs[s.secid];
+  var err = state.errors[s.secid];
+  var name = (q && q.name) ? q.name : (s.name || s.code);
+  var toneMap = { bull:['bull','做多'], flat:['flat','观望'], bear:['bear','空仓'] };
+  var t = sig ? toneMap[sig.tone] : null;
+  var chg = q ? q.chg : (sig ? (sig.changePct || 0) : 0);
+  var c = cls(chg);
+  var price = q ? fmtPrice(q.price) : (sig ? fmtPrice(sig.latest) : '--');
+  var pct = q ? fmtPct(q.pct) : (sig ? fmtPct((sig.changePct || 0) * 100) : '--');
+  var diff = q ? fmtDiff(q.chg) : '--';
+  var amount = q ? fmtAmt(q.amount) : '--';
+  var turnover = q ? (q.turnover == null ? '--' : q.turnover.toFixed(2) + '%') : '--';
+  var maS = sig ? fmtPrice(sig.shortMA) : '--';
+  var maL = sig ? fmtPrice(sig.longMA) : '--';
+  var pos = sig ? sig.posPct : 0;
+  var sigHTML;
+  if(!sig && !err) sigHTML = '<span class="badge err"><span class="led"></span>加载中</span>';
+  else if(err && !sig) sigHTML = '<span class="badge err"><span class="led"></span>获取失败</span>';
+  else if(t) sigHTML = '<span class="badge ' + t[0] + '"><span class="led"></span>' + t[1] + '</span>';
+  else sigHTML = '<span class="badge err"><span class="led"></span>--</span>';
+  return '<div class="wt-row" data-action="core-open" data-secid="' + esc(s.secid) + '">' +
+    '<span class="wt-name"><span class="nm">' + esc(name) + '</span><br><span class="cd">' + esc(s.code) + '</span></span>' +
+    '<span class="wt-num num ' + c + '">' + price + '</span>' +
+    '<span class="wt-num num ' + c + '">' + pct + '</span>' +
+    '<span class="wt-num num ' + c + '">' + diff + '</span>' +
+    '<span class="wt-sig">' + sigHTML + '</span>' +
+    '<span class="wt-num num">' + (sig ? pos + '%' : '--') + '</span>' +
+    '<span class="wt-num num">' + amount + '</span>' +
+    '<span class="wt-num num">' + turnover + '</span>' +
+    '<span class="wt-num num">' + maS + '</span>' +
+    '<span class="wt-num num">' + maL + '</span>' +
+    '</div>';
+}
 function renderCards(){
   var grid = document.getElementById('grid');
+  if(!grid) return;
   if(!state.watch.length){
     grid.innerHTML = '<div class="empty">自选池还是空的。从上方预设池点一个标的，或输入代码加入，系统会自动计算模型信号。</div>';
     return;
   }
-  grid.innerHTML = state.watch.map(cardHTML).join('');
+  var head = '<div class="wt-row head"><span class="wt-name">名称</span><span class="wt-num">现价</span><span class="wt-num">涨跌幅</span><span class="wt-num">涨跌额</span><span class="wt-sig">信号</span><span class="wt-num">仓位</span><span class="wt-num">成交额</span><span class="wt-num">换手</span><span class="wt-num">MA短</span><span class="wt-num">MA长</span></div>';
+  grid.innerHTML = head + state.watch.map(watchRowHTML).join('');
 }
 
 /* ========== 渲染：详情页 ========== */
