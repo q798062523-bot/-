@@ -829,39 +829,83 @@ html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8
 }
 .ver-tag{font-size:11px;color:var(--muted);border:1px solid var(--border);padding:1px 7px;border-radius:10px;margin-left:8px;letter-spacing:.5px;}
 
-/* ===== v74 视觉体系：极简年轻化 · 轻量毛玻璃 ===== */
-header{
-  background:rgba(251,249,244,0.72);
-  backdrop-filter:blur(16px) saturate(1.5);
-  -webkit-backdrop-filter:blur(16px) saturate(1.5);
-  border-bottom:1px solid rgba(28,30,33,0.06);
-  transition:background .3s ease;
+/* ===== v75 毛玻璃体系（参考 ZAY-G 风格：渐变底 + 玻璃卡片 + 柔和光斑） ===== */
+body{
+  background:linear-gradient(168deg,#FBFBFF 0%,#F2F6FC 42%,#F8F5F0 78%,#FBFBFF 100%);
+  background-attachment:fixed;
 }
-html[data-theme="dark"] header{background:rgba(14,17,22,0.70);border-bottom-color:rgba(232,234,237,0.07);}
-.add-panel,.strategy-hero,.monitor-panel,.picks-head,.review-head,.rv-sec{
-  backdrop-filter:blur(10px) saturate(1.2);
-  -webkit-backdrop-filter:blur(10px) saturate(1.2);
+html[data-theme="dark"] body{
+  background:linear-gradient(168deg,#0C0F15 0%,#0F131C 42%,#121016 78%,#0C0F15 100%);
+}
+/* 背景柔和光斑：为毛玻璃提供可透过的色彩 */
+body::before,
+body::after{
+  content:'';position:fixed;border-radius:50%;z-index:-1;pointer-events:none;
+  filter:blur(70px);-webkit-filter:blur(70px);
+}
+body::before{
+  width:560px;height:560px;top:-180px;right:-140px;
+  background:radial-gradient(circle,rgba(127,168,216,0.34) 0%,transparent 68%);
+}
+body::after{
+  width:520px;height:520px;bottom:-160px;left:-120px;
+  background:radial-gradient(circle,rgba(227,179,65,0.20) 0%,transparent 68%);
+}
+html[data-theme="dark"] body::before{background:radial-gradient(circle,rgba(96,140,198,0.16) 0%,transparent 68%);}
+html[data-theme="dark"] body::after{background:radial-gradient(circle,rgba(227,179,65,0.09) 0%,transparent 68%);}
+
+/* 玻璃卡片：半透明 + 背景模糊 + 顶部高光 + 细白边 */
+.add-panel,.strategy-hero,.monitor-panel,.picks-head,.review-head,.rv-sec,
+.core-card,.news-item,.imp-card,.pick-cell,.detail-box,.kline-box,.hold-box,.hold-panel{
+  background:rgba(255,255,255,0.58);
+  backdrop-filter:blur(18px) saturate(1.5);
+  -webkit-backdrop-filter:blur(18px) saturate(1.5);
+  border:1px solid rgba(255,255,255,0.65);
+  box-shadow:0 8px 30px rgba(31,45,72,0.07), inset 0 1px 0 rgba(255,255,255,0.75);
 }
 html[data-theme="dark"] .add-panel,
 html[data-theme="dark"] .strategy-hero,
 html[data-theme="dark"] .monitor-panel,
 html[data-theme="dark"] .picks-head,
 html[data-theme="dark"] .review-head,
-html[data-theme="dark"] .rv-sec{backdrop-filter:blur(12px) saturate(1.1);}
-.add-panel,.strategy-hero,.monitor-panel{transition:border-color .2s ease,box-shadow .25s ease;}
-.add-panel:hover,.strategy-hero:hover,.monitor-panel:hover{border-color:rgba(127,168,216,0.35);box-shadow:0 6px 24px rgba(28,30,33,0.06);}
+html[data-theme="dark"] .rv-sec,
+html[data-theme="dark"] .core-card,
+html[data-theme="dark"] .news-item,
+html[data-theme="dark"] .imp-card,
+html[data-theme="dark"] .pick-cell,
+html[data-theme="dark"] .detail-box,
+html[data-theme="dark"] .kline-box,
+html[data-theme="dark"] .hold-box,
+html[data-theme="dark"] .hold-panel{
+  background:rgba(23,27,34,0.58);
+  border-color:rgba(255,255,255,0.07);
+  box-shadow:0 8px 30px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+/* 卡片圆角加大（参考风格） */
+.add-panel,.strategy-hero,.monitor-panel,.picks-head,.review-head,.rv-sec,.core-card{
+  border-radius:18px;
+}
+.news-item,.imp-card,.pick-cell{border-radius:14px;}
+/* 策略卡内嵌元素保持玻璃延续 */
+.dip-zone,.strategy-news,.strategy-act,.pick-basis,.ver-group{
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+/* 表格区域：数据可读性优先，半透明底 */
+.s-table thead th{background:rgba(255,255,255,0.45);}
+html[data-theme="dark"] .s-table thead th{background:rgba(255,255,255,0.04);}
+html[data-theme="dark"] .s-table tbody tr:hover{background:rgba(255,255,255,0.045);}
+
+/* v74 按钮/卡片过渡保留 */
 .btn-primary,.btn-ghost,.icon-btn,.hold-save,.core-nav,.m-nav-item{
   transition:transform .12s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease, color .18s ease;
 }
 .btn-primary:active,.btn-ghost:active,.hold-save:active{transform:scale(0.96);}
 .icon-btn:active,.core-nav:active{transform:scale(0.92);}
-.core-card,.news-item,.imp-card,.pick-cell,.rv-idx,.detail-box{
-  transition:transform .18s ease, box-shadow .22s ease, border-color .18s ease;
-}
 @media(hover:hover){
-  .core-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(28,30,33,0.10);}
-  .news-item:hover,.imp-card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(28,30,33,0.07);border-color:rgba(127,168,216,0.4);}
-  .pick-cell:hover{border-color:rgba(127,168,216,0.45);}
+  .core-card:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(31,45,72,0.12);}
+  .news-item:hover,.imp-card:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(31,45,72,0.10);border-color:rgba(127,168,216,0.45);}
+  .pick-cell:hover{border-color:rgba(127,168,216,0.5);}
 }
 @keyframes vFade{0%{opacity:0;transform:translateY(10px);}100%{opacity:1;transform:none;}}
 .view-anim{animation:vFade .3s cubic-bezier(.22,.68,.33,1);}
@@ -946,6 +990,32 @@ html[data-theme="dark"] .m-nav{background:rgba(14,17,22,0.96);}
 html[data-theme="dark"] .m-nav-item{color:#9AA3AF;}
 html[data-theme="dark"] .m-nav-item.on::before{background:rgba(227,179,65,0.16);}
 html[data-theme="dark"] .hero-banner img{opacity:0.92;}
+
+/* ===== v75 dark 覆盖（置底保证优先级） ===== */
+html[data-theme="dark"] .add-panel,
+html[data-theme="dark"] .strategy-hero,
+html[data-theme="dark"] .monitor-panel,
+html[data-theme="dark"] .picks-head,
+html[data-theme="dark"] .review-head,
+html[data-theme="dark"] .rv-sec,
+html[data-theme="dark"] .core-card,
+html[data-theme="dark"] .news-item,
+html[data-theme="dark"] .imp-card,
+html[data-theme="dark"] .pick-cell,
+html[data-theme="dark"] .detail-box,
+html[data-theme="dark"] .kline-box,
+html[data-theme="dark"] .hold-box,
+html[data-theme="dark"] .hold-panel{
+  background:rgba(23,27,34,0.60) !important;
+  border-color:rgba(255,255,255,0.08) !important;
+  box-shadow:0 8px 30px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  backdrop-filter:blur(18px) saturate(1.4);
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);
+}
+html[data-theme="dark"] .pick-basis,
+html[data-theme="dark"] .ver-group{background:rgba(255,255,255,0.06);}
+html[data-theme="dark"] .strategy-tbl td.k{background:rgba(255,255,255,0.05);}
+html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
 </style>
 </head>
 <body>
@@ -982,7 +1052,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v74</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v75</span>
     </div>
   </div>
 </header>
