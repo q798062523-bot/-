@@ -831,28 +831,34 @@ html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8
 
 /* ===== v75 毛玻璃体系（参考 ZAY-G 风格：渐变底 + 玻璃卡片 + 柔和光斑） ===== */
 body{
-  background:linear-gradient(168deg,#FBFBFF 0%,#F2F6FC 42%,#F8F5F0 78%,#FBFBFF 100%);
+  background:linear-gradient(168deg,#EDF3FF 0%,#ECE6FF 20%,#FCEAF6 42%,#FFF4E9 62%,#E9F7F1 82%,#EDF3FF 100%);
   background-attachment:fixed;
 }
 html[data-theme="dark"] body{
-  background:linear-gradient(168deg,#0C0F15 0%,#0F131C 42%,#121016 78%,#0C0F15 100%);
+  background:linear-gradient(168deg,#0B0E18 0%,#101120 24%,#18101E 48%,#141014 72%,#0B1216 100%);
 }
-/* 背景柔和光斑：为毛玻璃提供可透过的色彩 */
+/* 背景多彩光斑：蓝紫 + 暖金 + 粉青，为毛玻璃提供可透过的色彩 */
 body::before,
-body::after{
+body::after,
+.bg-blob{
   content:'';position:fixed;border-radius:50%;z-index:-1;pointer-events:none;
-  filter:blur(70px);-webkit-filter:blur(70px);
+  filter:blur(75px);-webkit-filter:blur(75px);
 }
 body::before{
-  width:560px;height:560px;top:-180px;right:-140px;
-  background:radial-gradient(circle,rgba(127,168,216,0.34) 0%,transparent 68%);
+  width:600px;height:600px;top:-200px;right:-160px;
+  background:radial-gradient(circle,rgba(96,140,220,0.42) 0%,transparent 68%);
 }
 body::after{
-  width:520px;height:520px;bottom:-160px;left:-120px;
-  background:radial-gradient(circle,rgba(227,179,65,0.20) 0%,transparent 68%);
+  width:540px;height:540px;bottom:-180px;left:-140px;
+  background:radial-gradient(circle,rgba(240,180,90,0.28) 0%,transparent 68%);
 }
-html[data-theme="dark"] body::before{background:radial-gradient(circle,rgba(96,140,198,0.16) 0%,transparent 68%);}
-html[data-theme="dark"] body::after{background:radial-gradient(circle,rgba(227,179,65,0.09) 0%,transparent 68%);}
+.bg-blob{
+  width:480px;height:480px;top:36%;left:56%;
+  background:radial-gradient(circle,rgba(236,140,200,0.20) 0%,transparent 70%);
+}
+html[data-theme="dark"] body::before{background:radial-gradient(circle,rgba(96,140,220,0.20) 0%,transparent 68%);}
+html[data-theme="dark"] body::after{background:radial-gradient(circle,rgba(240,180,90,0.12) 0%,transparent 68%);}
+html[data-theme="dark"] .bg-blob{background:radial-gradient(circle,rgba(236,140,200,0.10) 0%,transparent 70%);}
 
 /* 玻璃卡片：半透明 + 背景模糊 + 顶部高光 + 细白边 */
 .add-panel,.strategy-hero,.monitor-panel,.picks-head,.review-head,.rv-sec,
@@ -991,6 +997,47 @@ html[data-theme="dark"] .m-nav-item{color:#9AA3AF;}
 html[data-theme="dark"] .m-nav-item.on::before{background:rgba(227,179,65,0.16);}
 html[data-theme="dark"] .hero-banner img{opacity:0.92;}
 
+/* ===== v76 快讯：首条放大 + 分类彩色配图 ===== */
+.news-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;align-items:stretch;}
+.news-feature .news-item.feature{
+  display:flex;flex-direction:column;padding:0;overflow:hidden;height:100%;cursor:pointer;
+  border-bottom:0;border-radius:16px;
+}
+.news-feature .news-item.feature:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(31,45,72,0.10);}
+.news-img{height:150px;background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:16px 16px 0 0;}
+.news-cat{
+  height:150px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,0.96);
+  text-shadow:0 1px 6px rgba(0,0,0,0.16);border-radius:16px 16px 0 0;
+}
+.news-cat span{background:rgba(255,255,255,0.20);padding:4px 16px;border-radius:22px;backdrop-filter:blur(5px);}
+.news-feature .news-body{padding:13px 16px 16px;min-width:0;}
+.news-feature .news-title{font-size:16px;font-weight:600;line-height:1.5;}
+.news-feature .news-digest{font-size:12px;color:var(--muted);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.news-feature .news-link{margin-top:8px;display:inline-block;}
+.news-list{display:flex;flex-direction:column;}
+.news-list .news-item{
+  display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:start;
+  padding:10px 12px;border-bottom:0.5px solid rgba(28,30,33,0.05);cursor:pointer;
+}
+.news-list .news-item:last-child{border-bottom:0;}
+.news-list .news-item:hover{background:rgba(255,255,255,0.4);}
+.news-list .news-title{font-size:12.5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.news-list .news-digest{font-size:11px;color:var(--muted);margin-top:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.news-img.mini,.news-cat-mini{
+  width:52px;height:44px;border-radius:9px;flex-shrink:0;
+  background-size:cover;background-position:center;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:600;color:#fff;
+  text-shadow:0 1px 4px rgba(0,0,0,0.18);
+}
+.news-list .news-body{min-width:0;}
+html[data-theme="dark"] .news-list .news-item:hover{background:rgba(255,255,255,0.05);}
+html[data-theme="dark"] .news-cat span{background:rgba(0,0,0,0.22);}
+@media(max-width:760px){
+  .news-grid{grid-template-columns:1fr;}
+  .news-img,.news-cat{height:120px;}
+}
 /* ===== v75 dark 覆盖（置底保证优先级） ===== */
 html[data-theme="dark"] .add-panel,
 html[data-theme="dark"] .strategy-hero,
@@ -1019,6 +1066,7 @@ html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
 </style>
 </head>
 <body>
+<div class="bg-blob"></div>
 
 <!-- ===== 启动页（App 打开时显示，自动淡出） ===== -->
 <div class="splash" id="splash">
@@ -1052,7 +1100,7 @@ html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v75</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v76</span>
     </div>
   </div>
 </header>
@@ -2960,6 +3008,23 @@ function renderNewsError(){
   if(box) box.innerHTML = '<div class="news-empty">快讯接口暂不可用（' + esc(state.newsError || '未知错误') + '），稍后自动重试。</div>';
 }
 
+function newsCategory(t){
+  t = t || '';
+  var map = [
+    [/央行|利率|加息|降息|美联储|货币政策|流动性|离岸债|逆回购|准备金/, '金融', ['#3B82F6','#6366F1']],
+    [/AI|人工智能|芯片|半导体|科技|算力|大模型|光通信|数据中心|机器人|软件|数字化/, '科技', ['#8B5CF6','#EC4899']],
+    [/汽车|新能源|锂|电池|充电|车企|储能/, '产业', ['#10B981','#34D399']],
+    [/黄金|原油|石油|大宗|有色|铜|铝|期货|现货/, '大宗', ['#F59E0B','#F97316']],
+    [/监管|证监会|交易所|处罚|立案|退市|核准|处罚/, '监管', ['#64748B','#3B82F6']],
+    [/指数|北向|成交|两市|A股|港股|上证|创业板|沪深/, '市场', ['#F43F5E','#FB7185']],
+    [/债券|国债|转债|信用债/, '债券', ['#14B8A6','#22D3EE']],
+    [/海外|美股|欧洲|亚太|伊朗|俄罗斯|乌克兰|美元|汇率/, '海外', ['#6366F1','#A855F7']]
+  ];
+  for(var i = 0; i < map.length; i++){
+    if(map[i][0].test(t)) return {k: map[i][1], g: map[i][2]};
+  }
+  return {k: '快讯', g: ['#7FA8D8','#E3B341']};
+}
 function renderNews(){
   var box = document.getElementById('news-box');
   var upd = document.getElementById('news-upd');
@@ -2971,26 +3036,38 @@ function renderNews(){
     box.innerHTML = '<div class="news-empty">快讯暂不可用，点击右上角刷新重试。</div>';
     return;
   }
-  box.innerHTML = state.news.slice(0, 10).map(function(n, i){
-    var meta = ['<span class="news-idx num">' + (i+1) + '</span>'];
-    if(n.time) meta.push('<span class="news-time num">' + esc(fmtNewsTime(n.time)) + '</span>');
-    if(n.source) meta.push('<span class="news-src">' + esc(n.source) + '</span>');
-    var pic = n.image ? '<div class="news-pic"><img src="' + esc(n.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.style.display=\'none\'"></div>' : '';
-    var extra = '';
-    if(n.summary){
-      extra += '<div class="news-digest">' + esc(n.summary) + '</div>';
+  var list = state.news.slice(0, 10);
+  function visual(n, cat, mini){
+    if(n.image){
+      return '<div class="news-img' + (mini ? ' mini' : '') + '" style="background-image:url(\'' + esc(n.image) + '\')"></div>';
     }
-    if(n.link){
-      extra += '<a class="news-link" href="' + esc(n.link) + '" target="_blank" rel="noopener noreferrer">查看原文</a>';
+    var grad = 'linear-gradient(135deg,' + cat.g[0] + ',' + cat.g[1] + ')';
+    if(mini) return '<div class="news-cat-mini" style="background:' + grad + '">' + esc(cat.k) + '</div>';
+    return '<div class="news-cat" style="background:' + grad + '"><span>' + esc(cat.k) + '</span></div>';
+  }
+  function item(n, feature){
+    var cat = newsCategory(n.title);
+    var meta = '<span class="news-time num">' + esc(fmtNewsTime(n.time)) + '</span>';
+    if(n.source) meta += '<span class="news-src">' + esc(n.source) + '</span>';
+    var digest = n.summary ? '<div class="news-digest">' + esc(n.summary) + '</div>' : '';
+    var link = n.link ? '<a class="news-link" href="' + esc(n.link) + '" target="_blank" rel="noopener noreferrer">查看原文</a>' : '';
+    if(feature){
+      return '<div class="news-item feature" data-action="toggle-news">' +
+        visual(n, cat, false) +
+        '<div class="news-body">' +
+        '<div class="news-meta"><span class="news-idx num">TOP</span>' + meta + '</div>' +
+        '<div class="news-title">' + esc(n.title) + '</div>' + digest + link +
+        '</div></div>';
     }
-    var sum = extra ? '<div class="news-summary">' + extra + '</div>' : '';
-    return '<div class="news-item' + (n.image ? ' has-pic' : '') + '" data-action="toggle-news">' +
+    return '<div class="news-item" data-action="toggle-news">' + visual(n, cat, true) +
       '<div class="news-body">' +
-      '<div class="news-meta">' + meta.join('') + '</div>' +
-      '<div class="news-title">' + esc(n.title) + '</div>' + sum +
-      '</div>' + pic +
-      '</div>';
-  }).join('');
+      '<div class="news-meta">' + meta + '</div>' +
+      '<div class="news-title">' + esc(n.title) + '</div>' + digest + link +
+      '</div></div>';
+  }
+  var first = item(list[0], true);
+  var rest = list.slice(1).map(function(n){ return item(n, false); }).join('');
+  box.innerHTML = '<div class="news-grid"><div class="news-feature">' + first + '</div><div class="news-list">' + rest + '</div></div>';
 }
 
 /* 重要动态渲染（四要素） */
