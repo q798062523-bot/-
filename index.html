@@ -469,18 +469,19 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 }
 .hero-banner{
   position:relative;flex:1 1 auto;min-width:0;
-  background:#F1EAD7;
+  aspect-ratio:21/3;
+  background:#0E1116;
   border:1px solid rgba(42,42,40,0.12);border-radius:14px;overflow:hidden;
 }
 .hero-bull{
   position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:25% center;display:block;
+  object-fit:contain;object-position:center;display:block;
 }
 .hero-banner::before,.hero-banner::after{
-  content:'';position:absolute;top:0;bottom:0;width:22%;z-index:2;pointer-events:none;
+  content:'';position:absolute;top:0;bottom:0;width:7%;z-index:2;pointer-events:none;
 }
-.hero-banner::before{left:0;background:linear-gradient(90deg,#F1EAD7 0%,rgba(241,234,215,0) 100%);}
-.hero-banner::after{right:0;background:linear-gradient(270deg,#F1EAD7 0%,rgba(241,234,215,0) 100%);}
+.hero-banner::before{left:0;background:linear-gradient(90deg,rgba(14,17,22,0.55) 0%,rgba(14,17,22,0) 100%);}
+.hero-banner::after{right:0;background:linear-gradient(270deg,rgba(14,17,22,0.55) 0%,rgba(14,17,22,0) 100%);}
 
 /* 右侧全球快讯面板（与 banner 等高滚动窗） */
 .news-panel{
@@ -773,9 +774,9 @@ html[data-theme="dark"] .pick-cell,
 html[data-theme="dark"] .imp-txt.digest,
 html[data-theme="dark"] .pick-txt{color:#C7CDD6;}
 html[data-theme="dark"] .pick-basis{background:rgba(232,234,237,0.055);}
-html[data-theme="dark"] .hero-banner{background:#131720;border-color:rgba(232,234,237,0.13);}
-html[data-theme="dark"] .hero-banner::before{background:linear-gradient(90deg,#131720 0%,rgba(19,23,32,0) 100%);}
-html[data-theme="dark"] .hero-banner::after{background:linear-gradient(270deg,#131720 0%,rgba(19,23,32,0) 100%);}
+html[data-theme="dark"] .hero-banner{background:#0E1116;border-color:rgba(232,234,237,0.13);}
+html[data-theme="dark"] .hero-banner::before{background:linear-gradient(90deg,rgba(14,17,22,0.60) 0%,rgba(14,17,22,0) 100%);}
+html[data-theme="dark"] .hero-banner::after{background:linear-gradient(270deg,rgba(14,17,22,0.60) 0%,rgba(14,17,22,0) 100%);}
 html[data-theme="dark"] .ver-group{background:rgba(232,234,237,0.08);}
 html[data-theme="dark"] .badge.err{background:rgba(232,234,237,0.09);}
 html[data-theme="dark"] .empty{border-color:rgba(232,234,237,0.18);}
@@ -850,7 +851,7 @@ html[data-theme="dark"] .hero-banner img{opacity:0.92;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v68</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v69</span>
     </div>
   </div>
 </header>
