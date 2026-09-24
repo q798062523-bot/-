@@ -1104,7 +1104,7 @@ html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v78</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v79</span>
     </div>
   </div>
 </header>
@@ -1186,9 +1186,10 @@ html[data-theme="dark"] .dip-zone{background:rgba(47,163,126,0.10);}
         <span class="badge live"><span class="led"></span>实时数据</span>
       </div>
       <div class="add-row suggest-wrap">
-        <input class="add-input num" id="strategy-input" placeholder="输入 6 位代码，如 600519（贵州茅台）" autocomplete="off">
+        <input class="add-input num" id="strategy-input" placeholder="搜索 名称 / 拼音 / 代码，如 贵州茅台、gzmt、600519" autocomplete="off">
         <button class="btn-primary" data-action="strategy-run">生成策略</button>
         <button class="btn-ghost" data-action="strategy-refresh" title="手动刷新">刷新</button>
+        <div class="suggest-list" id="strategy-suggest"></div>
       </div>
       <div class="hint">五维智能评分（技术 / 资金 / 消息 / 基本面 / 量能）· 自动给出<b>抄底区间</b>与买卖价位 · 生成后每 60 秒自动刷新实时数据</div>
       <div id="strategy-box"></div>
@@ -1801,6 +1802,11 @@ function pickStock(it){
   var inp = document.getElementById('stock-input');
   inp.value = it.code;
   addStock(it.code, it.name, it.secid);
+}
+function pickStrategy(it){
+  var inp = document.getElementById('strategy-input');
+  inp.value = it.code;
+  strategyRun();
 }
 
 /* ========== 个股操作 ========== */
@@ -5120,6 +5126,7 @@ var mpTmpTimer = null;
 })();
 bindSuggest('code-input', 'code-suggest', ['Index','Fund'], pickCode);
 bindSuggest('stock-input', 'stock-suggest', ['AStock','Fund','Index'], pickStock);
+bindSuggest('strategy-input', 'strategy-suggest', ['AStock','Fund','Index'], pickStrategy);
 route();
 refreshKlines(false);
 refreshQuotes();
