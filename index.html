@@ -1197,7 +1197,7 @@ html[data-theme="dark"] #view-watch .wt-sum{background:rgba(23,27,34,0.78);borde
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v85</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v86</span>
     </div>
   </div>
 </header>
@@ -4246,14 +4246,14 @@ function renderWatchSum(){
     return;
   }
   box.style.display = '';
-  var sum = vals.reduce(function(a,b){ return a + b; }, 0);
-  var avg = sum / vals.length;
+  var total = vals.reduce(function(a,b){ return a + b; }, 0);
+  var avg = total / vals.length;
   var up = vals.filter(function(v){ return v > 0.0001; }).length;
   var down = vals.filter(function(v){ return v < -0.0001; }).length;
-  var c = cls(avg);
-  box.innerHTML = '<span class="ws-lbl">自选跟踪汇总 · ' + vals.length + ' 只</span>' +
-    '<span class="ws-val num ' + c + '">' + fmtPct(avg) + '</span>' +
-    '<span class="ws-sub">涨 ' + up + ' 只 · 跌 ' + down + ' 只</span>';
+  var c = cls(total);
+  box.innerHTML = '<span class="ws-lbl">自选跟踪收益率合计 · ' + vals.length + ' 只</span>' +
+    '<span class="ws-val num ' + c + '">' + fmtPct(total) + '</span>' +
+    '<span class="ws-sub">平均 ' + fmtPct(avg) + ' · 涨 ' + up + ' 只 · 跌 ' + down + ' 只</span>';
 }
 function renderCards(){
   var grid = document.getElementById('grid');
