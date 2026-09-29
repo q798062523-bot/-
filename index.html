@@ -1142,6 +1142,10 @@ html[data-theme="dark"] #view-watch .wt-row.wt-lp{background:rgba(229,72,77,0.15
 .back-fab:hover{background:rgba(255,255,255,0.95);}
 .back-fab:active{transform:scale(0.94);}
 html[data-theme="dark"] .back-fab{background:rgba(35,42,54,0.88);border-color:rgba(255,255,255,0.14);color:#E8ECF3;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
+
+/* ===== v84 指数信号台悬浮置顶（仅首页） ===== */
+header{position:sticky;top:0;z-index:20;}
+header.plain{position:static;box-shadow:none;}
 </style>
 </head>
 <body>
@@ -1179,7 +1183,7 @@ html[data-theme="dark"] .back-fab{background:rgba(35,42,54,0.88);border-color:rg
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v83</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v84</span>
     </div>
   </div>
 </header>
@@ -5000,6 +5004,13 @@ function route(){
     var hh = location.hash;
     fab.style.display = (hh.indexOf('#/kline') === 0 || hh.indexOf('#/detail') === 0) ? 'inline-flex' : 'none';
   }
+  var isHome = !(location.hash.length > 2 && location.hash.indexOf('#/') === 0);
+  var hc = document.querySelector('.head-ctrl');
+  if(hc) hc.style.display = isHome ? '' : 'none';
+  var brand = document.querySelector('.brand');
+  if(brand) brand.style.display = isHome ? '' : 'none';
+  var hd = document.querySelector('header');
+  if(hd) hd.style.display = isHome ? '' : 'none';
   renderTabs();
 }
 
