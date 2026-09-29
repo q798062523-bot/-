@@ -1146,6 +1146,20 @@ html[data-theme="dark"] .back-fab{background:rgba(35,42,54,0.88);border-color:rg
 /* ===== v84 指数信号台悬浮置顶（仅首页） ===== */
 header{position:sticky;top:0;z-index:20;}
 header.plain{position:static;box-shadow:none;}
+
+/* ===== v85 自选跟踪汇总悬浮条 ===== */
+#view-watch .wt-sum{
+  position:sticky;bottom:0;z-index:5;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-top:10px;padding:10px 16px;border-radius:14px;
+  background:rgba(255,255,255,0.72);border:1px solid rgba(28,30,33,0.08);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 2px 12px rgba(28,30,33,0.06);
+}
+html[data-theme="dark"] #view-watch .wt-sum{background:rgba(23,27,34,0.78);border-color:rgba(255,255,255,0.08);box-shadow:0 2px 12px rgba(0,0,0,0.3);}
+#view-watch .ws-lbl{font-size:12px;color:var(--muted);font-weight:600;}
+#view-watch .ws-val{font-size:17px;font-weight:700;letter-spacing:0.5px;}
+#view-watch .ws-sub{font-size:11.5px;color:var(--muted);margin-left:auto;}
 </style>
 </head>
 <body>
@@ -1183,7 +1197,7 @@ header.plain{position:static;box-shadow:none;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v84</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v85</span>
     </div>
   </div>
 </header>
@@ -1255,6 +1269,7 @@ header.plain{position:static;box-shadow:none;}
 
     <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）<span class="hint-inline">← 横向滑动查看更多 →</span></div>
     <div class="watch-scroll"><div class="grid" id="grid"></div></div>
+    <div class="wt-sum" id="wt-sum" style="display:none;"></div>
   </section>
 
   <!-- 个股监测视图 -->
@@ -4215,9 +4230,35 @@ function watchRowHTML(s){
     '<span class="wt-num num">' + maL + '</span>' +
     '</div>';
 }
+function renderWatchSum(){
+  var box = document.getElementById('wt-sum');
+  if(!box) return;
+  var vals = [];
+  state.watch.forEach(function(s){
+    var q = state.quotes[s.secid];
+    var sig = state.sigs[s.secid];
+    var at = s.addPrice || 0;
+    var cur = (q && q.price > 0) ? q.price : (sig && sig.latest > 0 ? sig.latest : 0);
+    if(at > 0 && cur > 0) vals.push((cur - at) / at * 100);
+  });
+  if(!vals.length){
+    box.style.display = 'none';
+    return;
+  }
+  box.style.display = '';
+  var sum = vals.reduce(function(a,b){ return a + b; }, 0);
+  var avg = sum / vals.length;
+  var up = vals.filter(function(v){ return v > 0.0001; }).length;
+  var down = vals.filter(function(v){ return v < -0.0001; }).length;
+  var c = cls(avg);
+  box.innerHTML = '<span class="ws-lbl">自选跟踪汇总 · ' + vals.length + ' 只</span>' +
+    '<span class="ws-val num ' + c + '">' + fmtPct(avg) + '</span>' +
+    '<span class="ws-sub">涨 ' + up + ' 只 · 跌 ' + down + ' 只</span>';
+}
 function renderCards(){
   var grid = document.getElementById('grid');
   if(!grid) return;
+  renderWatchSum();
   if(!state.watch.length){
     grid.innerHTML = '<div class="empty">自选池还是空的。从上方预设池点一个标的，或输入代码加入，系统会自动计算模型信号。</div>';
     return;
