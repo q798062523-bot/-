@@ -1128,6 +1128,20 @@ html[data-theme="dark"] #view-watch .wt-row.wt-lp{background:rgba(229,72,77,0.15
 }
 #view-watch .wt-del:active{transform:translateY(-50%) scale(0.93);}
 @keyframes delPop{from{opacity:0;transform:translateY(-50%) scale(0.85);}to{opacity:1;transform:translateY(-50%) scale(1);}}
+
+/* ===== v83 悬浮返回按钮（永不消失） ===== */
+.back-fab{
+  position:fixed;left:16px;bottom:26px;z-index:60;
+  display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:999px;
+  background:rgba(255,255,255,0.85);border:1px solid rgba(28,30,33,0.12);color:var(--ink);
+  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 4px 16px rgba(28,30,33,0.14);transition:transform .12s ease,box-shadow .15s ease;
+}
+.back-fab svg{width:16px;height:16px;}
+.back-fab:hover{background:rgba(255,255,255,0.95);}
+.back-fab:active{transform:scale(0.94);}
+html[data-theme="dark"] .back-fab{background:rgba(35,42,54,0.88);border-color:rgba(255,255,255,0.14);color:#E8ECF3;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
 </style>
 </head>
 <body>
@@ -1165,13 +1179,14 @@ html[data-theme="dark"] #view-watch .wt-row.wt-lp{background:rgba(229,72,77,0.15
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v82</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v83</span>
     </div>
   </div>
 </header>
 
 <main>
   <div class="loadbar hide" id="loadbar"></div>
+<button class="back-fab" id="back-fab" style="display:none;" data-action="fab-back"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span>返回上一级</span></button>
   <div class="tabs">
     <button class="tab on" data-action="tab" data-tab="index" id="tab-index">指数信号</button>
     <button class="tab" data-action="tab" data-tab="watch" id="tab-watch">自选股</button>
@@ -4980,6 +4995,11 @@ function route(){
     showAnim(home);
     renderHome();
   }
+  var fab = document.getElementById('back-fab');
+  if(fab){
+    var hh = location.hash;
+    fab.style.display = (hh.indexOf('#/kline') === 0 || hh.indexOf('#/detail') === 0) ? 'inline-flex' : 'none';
+  }
   renderTabs();
 }
 
@@ -5006,6 +5026,17 @@ document.addEventListener('click', function(e){
     if(ib){
       var ex = ib.classList.toggle('expanded');
       if(tg) tg.innerHTML = ex ? '<span class="arr">▴</span> 收起资讯' : '<span class="arr">▾</span> 展开查看更多资讯';
+    }
+    return;
+  }
+  if(a === 'fab-back'){
+    var h2 = location.hash;
+    if(h2.indexOf('#/kline') === 0){
+      var kb2 = '#/';
+      try{ kb2 = sessionStorage.getItem('iq_back') || '#/'; }catch(e){}
+      location.hash = kb2;
+    } else {
+      location.hash = '#/watch';
     }
     return;
   }
