@@ -1104,6 +1104,30 @@ html[data-theme="dark"] #view-watch .wt-row.head:hover{background:rgba(23,27,34,
 #view-watch .wt-name .cd{font-size:10.5px;color:var(--muted);}
 #view-watch .section-title{border-bottom:1px solid rgba(28,30,33,0.08);padding-bottom:8px;margin-bottom:10px;}
 html[data-theme="dark"] #view-watch .section-title{border-bottom-color:rgba(255,255,255,0.10);}
+
+/* ===== v82 明显返回触点 + 自选长按删除 ===== */
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:8px 16px;border-radius:999px;
+  background:rgba(255,255,255,0.72);border:1px solid rgba(28,30,33,0.10);color:var(--ink);
+  font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 2px 8px rgba(28,30,33,0.06);transition:transform .12s ease,background .15s ease;
+}
+.back-btn svg{width:14px;height:14px;}
+.back-btn:hover{background:rgba(255,255,255,0.92);border-color:var(--navy);}
+.back-btn:active{transform:scale(0.95);}
+html[data-theme="dark"] .back-btn{background:rgba(35,42,54,0.75);border-color:rgba(255,255,255,0.12);color:#E8ECF3;}
+html[data-theme="dark"] .back-btn:hover{border-color:#6ea8fe;}
+#view-watch .wt-row{position:relative;}
+#view-watch .wt-row.wt-lp{background:rgba(229,72,77,0.08);box-shadow:inset 0 0 0 1px rgba(229,72,77,0.35);}
+html[data-theme="dark"] #view-watch .wt-row.wt-lp{background:rgba(229,72,77,0.15);}
+#view-watch .wt-del{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:#e5484d;color:#fff;border:none;border-radius:999px;padding:7px 16px;
+  font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;z-index:6;
+  box-shadow:0 2px 10px rgba(229,72,77,0.4);animation:delPop .18s ease;
+}
+#view-watch .wt-del:active{transform:translateY(-50%) scale(0.93);}
+@keyframes delPop{from{opacity:0;transform:translateY(-50%) scale(0.85);}to{opacity:1;transform:translateY(-50%) scale(1);}}
 </style>
 </head>
 <body>
@@ -1141,7 +1165,7 @@ html[data-theme="dark"] #view-watch .section-title{border-bottom-color:rgba(255,
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v81</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v82</span>
     </div>
   </div>
 </header>
@@ -1306,7 +1330,7 @@ html[data-theme="dark"] #view-watch .section-title{border-bottom-color:rgba(255,
   <!-- K线视图（点击指数/自选/个股跳转） -->
   <section id="view-kline" style="display:none;">
     <div class="kline-head">
-      <button class="icon-btn" data-action="kline-back"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>返回</button>
+      <button class="back-btn" data-action="kline-back"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>返回上一级</button>
       <div class="kline-tt">
         <b id="kl-name">--</b><span id="kl-code" class="num">--</span>
         <span id="kl-sign" class="badge" style="display:none;"><span class="led"></span><span id="kl-sign-txt">--</span></span>
@@ -4186,7 +4210,7 @@ function renderCards(){
 /* ========== 渲染：详情页 ========== */
 function detailHTML(secid){
   var s = state.watch.filter(function(x){ return x.secid === secid; })[0];
-  if(!s) return '<div class="detail"><p>未找到该标的。</p><button class="btn-ghost" data-action="back">返回</button></div>';
+  if(!s) return '<div class="detail"><p>未找到该标的。</p><div class="detail-head"><button class="back-btn" data-action="back"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>返回上一级</button></div></div>';
 
   var q = state.quotes[secid];
   var sig = state.sigs[secid];
@@ -4197,7 +4221,7 @@ function detailHTML(secid){
   html += '<div class="detail">';
 
   html += '<div class="detail-head">' +
-    '<button class="icon-btn" data-action="back"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>返回</button>' +
+    '<button class="back-btn" data-action="back"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>返回上一级</button>' +
     '<span class="detail-title">' + esc(name) + '</span>' +
     '<span class="detail-code num">' + s.code + '</span>' +
     '</div>';
@@ -4985,9 +5009,21 @@ document.addEventListener('click', function(e){
     }
     return;
   }
+  if(a === 'wt-del'){
+    e.stopPropagation();
+    var ds = el.getAttribute('data-secid');
+    if(ds) removeSym(ds);
+    document.querySelectorAll('#view-watch .wt-row').forEach(function(r){
+      r.classList.remove('wt-lp');
+      var d = r.querySelector('.wt-del');
+      if(d) d.remove();
+    });
+    return;
+  }
   if(a === 'open-detail'){
     openKline(secid, '');
   } else if(a === 'core-open'){
+    if(Date.now() - lpSuppress < 800) return;
     var cn = '';
     var cc = el.querySelector('.ck-name');
     if(cc) cn = cc.textContent;
@@ -5076,6 +5112,56 @@ document.addEventListener('click', function(e){
   } else if(a === 'core-next'){
     var ci2 = document.getElementById('core-idx');
     if(ci2) ci2.scrollBy({ left: 260, behavior: 'smooth' });
+  }
+});
+
+/* ===== v82 自选股长按删除 ===== */
+var lpTimer = null, lpSecid = '', lpSuppress = 0;
+function lpCancel(){ if(lpTimer){ clearTimeout(lpTimer); lpTimer = null; } }
+function lpFire(secid){
+  var rows = document.querySelectorAll('#view-watch .wt-row');
+  rows.forEach(function(r){
+    r.classList.remove('wt-lp');
+    var d = r.querySelector('.wt-del');
+    if(d) d.remove();
+  });
+  var target = null;
+  rows.forEach(function(r){
+    if(r.getAttribute('data-secid') === secid){
+      target = r;
+      var d = document.createElement('span');
+      d.className = 'wt-del';
+      d.setAttribute('data-action', 'wt-del');
+      d.setAttribute('data-secid', secid);
+      d.textContent = '删除';
+      r.appendChild(d);
+      r.classList.add('wt-lp');
+    }
+  });
+  lpSuppress = Date.now();
+}
+function lpStart(secid){
+  lpCancel();
+  lpSecid = secid;
+  lpTimer = setTimeout(function(){ lpTimer = null; lpFire(lpSecid); }, 600);
+}
+document.addEventListener('touchstart', function(e){
+  var r = e.target && e.target.closest ? e.target.closest('.wt-row') : null;
+  if(r && r.getAttribute('data-secid')) lpStart(r.getAttribute('data-secid'));
+}, {passive:true});
+document.addEventListener('mousedown', function(e){
+  if(e.button !== 0) return;
+  var r = e.target && e.target.closest ? e.target.closest('.wt-row') : null;
+  if(r && r.getAttribute('data-secid')) lpStart(r.getAttribute('data-secid'));
+});
+document.addEventListener('touchend', lpCancel);
+document.addEventListener('touchmove', lpCancel);
+document.addEventListener('mouseup', lpCancel);
+document.addEventListener('contextmenu', function(e){
+  var r = e.target && e.target.closest ? e.target.closest('.wt-row') : null;
+  if(r && r.getAttribute('data-secid')){
+    e.preventDefault();
+    lpFire(r.getAttribute('data-secid'));
   }
 });
 
