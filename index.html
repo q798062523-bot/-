@@ -1168,6 +1168,52 @@ html[data-theme="dark"] #view-watch .wt-sum{background:rgba(23,27,34,0.78);borde
 #view-watch .ws-lbl{font-size:12px;color:var(--muted);font-weight:600;}
 #view-watch .ws-val{font-size:17px;font-weight:700;letter-spacing:0.5px;}
 #view-watch .ws-sub{font-size:11.5px;color:var(--muted);margin-left:auto;}
+
+/* ===== v88 模拟盘 ===== */
+#view-watch .paper-entry{margin-left:auto;font-size:12px;padding:5px 12px;}
+#view-paper .paper-card{
+  border:1px solid rgba(28,30,33,0.07);border-radius:16px;padding:14px;
+  background:rgba(255,255,255,0.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  margin-bottom:12px;
+}
+html[data-theme="dark"] #view-paper .paper-card{background:rgba(23,27,34,0.62);border-color:rgba(255,255,255,0.08);}
+#view-paper .paper-title{font-size:14.5px;font-weight:700;display:flex;align-items:center;margin-bottom:10px;color:var(--text-color);}
+#view-paper .paper-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px;}
+#view-paper .pstat{background:rgba(127,168,216,0.08);border-radius:12px;padding:10px 12px;}
+#view-paper .p-lbl{display:block;font-size:11.5px;color:var(--muted);margin-bottom:3px;}
+#view-paper .p-val{font-size:16.5px;font-weight:700;letter-spacing:0.3px;word-break:break-all;}
+#view-paper .pp-init-row{display:flex;gap:8px;margin-bottom:8px;}
+#view-paper .pp-init-row .add-input{flex:1;}
+#view-paper .pp-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+#view-paper .paper-tip{font-size:11.5px;color:var(--muted);}
+#view-paper .paper-order-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+#view-paper .paper-order-row .add-input{flex:1;min-width:120px;}
+#view-paper .btn-danger{background:rgba(229,72,77,0.12);color:#c62828;border:1px solid rgba(229,72,77,0.28);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;}
+html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);color:#ff8a8f;border-color:rgba(229,72,77,0.4);}
+#view-paper .btn-danger:active{transform:scale(0.97);}
+#view-paper .paper-pick{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(127,168,216,0.08);font-size:12.5px;color:var(--text-color);display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:34px;}
+#view-paper .pp-name{font-weight:700;}
+#view-paper .pp-code{color:var(--muted);font-size:12px;}
+#view-paper .pp-price{font-weight:700;}
+#view-paper .pp-hold{margin-left:auto;font-size:12px;color:var(--muted);}
+#view-paper .pos-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+#view-paper .pp-grid{display:block;min-width:640px;}
+#view-paper .pp-grid .wt-row{
+  display:grid;grid-template-columns:1.6fr 0.7fr 0.8fr 0.8fr 1fr 1fr 0.9fr 0.7fr;
+  align-items:center;gap:6px;padding:10px 12px;border-bottom:0.5px solid rgba(28,30,33,0.05);
+  font-size:12.8px;cursor:pointer;transition:background .15s ease;
+}
+#view-paper .wt-op{text-align:right;}
+#view-paper .btn-ghost.mini{padding:4px 10px;font-size:12px;}
+#view-paper .rec-row{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 2px;
+  border-bottom:0.5px solid rgba(28,30,33,0.05);font-size:12.5px;
+}
+#view-paper .rec-time{color:var(--muted);font-size:11.5px;width:96px;flex-shrink:0;}
+#view-paper .rec-dir{font-weight:700;width:34px;flex-shrink:0;}
+#view-paper .rec-name{font-weight:600;flex:1;min-width:70px;}
+#view-paper .rec-num{color:var(--muted);}
+#view-paper .rec-amt{font-weight:700;margin-left:auto;}
 </style>
 </head>
 <body>
@@ -1205,7 +1251,7 @@ html[data-theme="dark"] #view-watch .wt-sum{background:rgba(23,27,34,0.78);borde
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v87</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v88</span>
     </div>
   </div>
 </header>
@@ -1265,7 +1311,7 @@ html[data-theme="dark"] #view-watch .wt-sum{background:rgba(23,27,34,0.78);borde
   <!-- 自选股视图：添加自选 + 自选信号（独立 tab） -->
   <section id="view-watch" style="display:none;">
     <div class="add-panel">
-      <div class="add-title">添加自选</div>
+      <div class="add-title">添加自选 <button class="btn-ghost paper-entry" data-action="paper-open">进入模拟盘</button></div>
       <div class="chips" id="presets"></div>
       <div class="add-row suggest-wrap">
         <input class="add-input num" id="code-input" placeholder="搜索 名称 / 拼音 / 代码，如 沪深300、hs300、510300" autocomplete="off">
@@ -1278,6 +1324,48 @@ html[data-theme="dark"] #view-watch .wt-sum{background:rgba(23,27,34,0.78);borde
     <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）<span class="hint-inline">点击行看 K 线 · 长按可删除</span></div>
     <div class="watch-scroll"><div class="grid" id="grid"></div></div>
     <div class="wt-sum" id="wt-sum" style="display:none;"></div>
+  </section>
+
+  <!-- 模拟盘视图 -->
+  <section id="view-paper" style="display:none;">
+    <div class="paper-card">
+      <div class="paper-title"><span class="dot"></span>模拟账户</div>
+      <div class="paper-stats">
+        <div class="pstat"><span class="p-lbl">总资产</span><span class="p-val num" id="pp-total">--</span></div>
+        <div class="pstat"><span class="p-lbl">可用资金</span><span class="p-val num" id="pp-cash">--</span></div>
+        <div class="pstat"><span class="p-lbl">持仓市值</span><span class="p-val num" id="pp-mv">--</span></div>
+        <div class="pstat"><span class="p-lbl">总盈亏</span><span class="p-val num" id="pp-pnl">--</span></div>
+      </div>
+      <div class="pp-init-row" id="pp-init-row">
+        <input class="add-input num" id="pp-init" placeholder="设定初始资金，如 100000" inputmode="decimal" autocomplete="off">
+        <button class="btn-primary" data-action="paper-init">开始模拟</button>
+      </div>
+      <div class="pp-actions" id="pp-actions" style="display:none;">
+        <span class="paper-tip">按最新行情现价即时成交 · 练手不花真钱</span>
+        <button class="btn-ghost" data-action="paper-reset">重置账户</button>
+      </div>
+    </div>
+    <div class="paper-card">
+      <div class="paper-title"><span class="dot"></span>下单交易 <span class="hint-inline">支持股票 / ETF，现价即时成交</span></div>
+      <div class="add-row suggest-wrap">
+        <input class="add-input" id="paper-code" placeholder="搜索 股票 / ETF，如 贵州茅台、510300" autocomplete="off">
+        <div class="suggest-list" id="paper-suggest"></div>
+      </div>
+      <div class="paper-order-row">
+        <input class="add-input num" id="paper-qty" placeholder="数量（股 / 份）" inputmode="numeric" autocomplete="off">
+        <button class="btn-primary" data-action="paper-buy">买入</button>
+        <button class="btn-danger" data-action="paper-sell">卖出</button>
+      </div>
+      <div class="paper-pick" id="paper-pick">选择标的后显示实时价格，点持仓行可快速下单</div>
+    </div>
+    <div class="paper-card">
+      <div class="paper-title"><span class="dot"></span>当前持仓 <span class="hint-inline">点击持仓行自动带入下单</span></div>
+      <div class="pos-scroll"><div class="pp-grid" id="paper-pos-grid"></div></div>
+    </div>
+    <div class="paper-card">
+      <div class="paper-title"><span class="dot"></span>交易记录</div>
+      <div id="paper-rec-list"></div>
+    </div>
   </section>
 
   <!-- 个股监测视图 -->
@@ -4935,6 +5023,7 @@ function renderTabs(){
   var inDetail = hash.indexOf('#/detail') === 0 || hash.indexOf('#/kline') === 0;
   var inStock = hash.indexOf('#/stock') === 0;
   var inWatch = hash.indexOf('#/watch') === 0;
+  var inPaper = hash.indexOf('#/paper') === 0;
   var inReview = hash.indexOf('#/review') === 0;
   var inPicks = hash.indexOf('#/picks') === 0;
   var inEtf = hash.indexOf('#/etf') === 0;
@@ -4949,15 +5038,15 @@ function renderTabs(){
   var t4 = document.getElementById('tab-review');
   var t5 = document.getElementById('tab-picks');
   var t6 = document.getElementById('tab-etf');
-  if(t1) t1.classList.toggle('on', (!inStock && !inWatch && !inReview && !inPicks && !inEtf && !inDetail) || (inDetail && backTab.indexOf('watch') === -1 && backTab.indexOf('stock') === -1 && backTab.indexOf('picks') === -1 && backTab.indexOf('etf') === -1));
-  if(t2) t2.classList.toggle('on', inWatch || (inDetail && backTab.indexOf('#/watch') === 0));
+  if(t1) t1.classList.toggle('on', (!inStock && !inWatch && !inPaper && !inReview && !inPicks && !inEtf && !inDetail) || (inDetail && backTab.indexOf('watch') === -1 && backTab.indexOf('stock') === -1 && backTab.indexOf('picks') === -1 && backTab.indexOf('etf') === -1));
+  if(t2) t2.classList.toggle('on', inWatch || inPaper || (inDetail && backTab.indexOf('#/watch') === 0));
   if(t3) t3.classList.toggle('on', inStock || (inDetail && backTab.indexOf('#/stock') === 0));
   if(t4) t4.classList.toggle('on', inReview);
   if(t5) t5.classList.toggle('on', inPicks || (inDetail && backTab.indexOf('#/picks') === 0));
   if(t6) t6.classList.toggle('on', inEtf || (inDetail && backTab.indexOf('#/etf') === 0));
   // 移动端底部导航高亮
   var navMap = { index:'index', watch:'watch', stock:'stock', review:'review', picks:'picks', etf:'etf' };
-  var active = inWatch ? 'watch' : (inStock ? 'stock' : (inReview ? 'review' : (inPicks ? 'picks' : (inEtf ? 'etf' : (inDetail ? (backTab.indexOf('#/watch') === 0 ? 'watch' : (backTab.indexOf('#/stock') === 0 ? 'stock' : (backTab.indexOf('#/picks') === 0 ? 'picks' : (backTab.indexOf('#/etf') === 0 ? 'etf' : 'index')))) : 'index')))));
+  var active = inWatch ? 'watch' : (inPaper ? 'watch' : (inStock ? 'stock' : (inReview ? 'review' : (inPicks ? 'picks' : (inEtf ? 'etf' : (inDetail ? (backTab.indexOf('#/watch') === 0 ? 'watch' : (backTab.indexOf('#/stock') === 0 ? 'stock' : (backTab.indexOf('#/picks') === 0 ? 'picks' : (backTab.indexOf('#/etf') === 0 ? 'etf' : 'index')))) : 'index'))))));
   document.querySelectorAll('.m-nav-item').forEach(function(b){
     b.classList.toggle('on', navMap[b.getAttribute('data-tab')] === active);
   });
@@ -4987,6 +5076,8 @@ function route(){
     if(pv) pv.style.display = 'none';
     var ev = document.getElementById('view-etf');
     if(ev) ev.style.display = 'none';
+    var papV = document.getElementById('view-paper');
+    if(papV) papV.style.display = 'none';
   }
   function showAnim(el){
     if(!el) return;
@@ -5038,6 +5129,13 @@ function route(){
     if(etfV) etfV.style.display = 'block';
     showAnim(etfV);
     if(!ETFS.list.length) refreshEtf(false);
+  } else if(location.hash.indexOf('#/paper') === 0){
+    hideViews();
+    var papV2 = document.getElementById('view-paper');
+    if(papV2) papV2.style.display = 'block';
+    showAnim(papV2);
+    PAPER.render();
+    PAPER.refreshPrices(true);
   } else {
     hideViews();
     home.style.display = 'block';
@@ -5047,7 +5145,7 @@ function route(){
   var fab = document.getElementById('back-fab');
   if(fab){
     var hh = location.hash;
-    fab.style.display = (hh.indexOf('#/kline') === 0 || hh.indexOf('#/detail') === 0) ? 'inline-flex' : 'none';
+    fab.style.display = (hh.indexOf('#/kline') === 0 || hh.indexOf('#/detail') === 0 || hh.indexOf('#/paper') === 0) ? 'inline-flex' : 'none';
   }
   var isHome = !(location.hash.length > 2 && location.hash.indexOf('#/') === 0);
   var hc = document.querySelector('.head-ctrl');
@@ -5068,6 +5166,188 @@ function renderWatch(){
   renderPresets();
   renderCards();
 }
+
+/* ========== 模拟盘（v88） ========== */
+var PAPER = (function(){
+  function load(){ try{ var v = localStorage.getItem('iq_paper'); return v ? JSON.parse(v) : null; }catch(e){ return null; } }
+  var st = load() || { init: 0, cash: 0, positions: {}, records: [] };
+  function save(){ try{ localStorage.setItem('iq_paper', JSON.stringify(st)); }catch(e){} }
+  var pick = null;
+  function fmtMoney(v){
+    var n = +v;
+    if(isNaN(n)) return '--';
+    return '¥' + n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtNow(){
+    var d = new Date();
+    function p2(n){ return (n < 10 ? '0' : '') + n; }
+    return p2(d.getMonth() + 1) + '-' + p2(d.getDate()) + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()) + ':' + p2(d.getSeconds());
+  }
+  function render(){
+    var total = document.getElementById('pp-total');
+    if(!total) return;
+    var mv = 0;
+    var secids = Object.keys(st.positions);
+    secids.forEach(function(sid){
+      var q = state.quotes[sid] || {};
+      var px = q.price || 0;
+      mv += (st.positions[sid].qty || 0) * px;
+    });
+    var assets = st.cash + mv;
+    var pnl = st.init > 0 ? assets - st.init : 0;
+    total.textContent = fmtMoney(assets);
+    document.getElementById('pp-cash').textContent = fmtMoney(st.cash);
+    document.getElementById('pp-mv').textContent = fmtMoney(mv);
+    var pnlEl = document.getElementById('pp-pnl');
+    pnlEl.textContent = (pnl >= 0 ? '+' : '') + fmtMoney(pnl) + (st.init > 0 ? '（' + fmtPct(pnl / st.init * 100) + '）' : '');
+    pnlEl.className = 'p-val num ' + cls(pnl);
+    var initRow = document.getElementById('pp-init-row');
+    var act = document.getElementById('pp-actions');
+    if(st.init > 0){ initRow.style.display = 'none'; act.style.display = ''; }
+    else { initRow.style.display = ''; act.style.display = 'none'; }
+    renderPos();
+    renderRec();
+  }
+  function renderPos(){
+    var grid = document.getElementById('paper-pos-grid');
+    if(!grid) return;
+    var secids = Object.keys(st.positions);
+    if(!secids.length){
+      grid.innerHTML = '<div class="empty">暂无持仓。选个标的输入数量，点「买入」试试。</div>';
+      return;
+    }
+    var html = '<div class="wt-row head"><span class="wt-name">名称</span><span class="wt-num">持仓</span><span class="wt-num">成本价</span><span class="wt-num">现价</span><span class="wt-num">市值</span><span class="wt-num">盈亏额</span><span class="wt-num">盈亏率</span><span class="wt-num">操作</span></div>';
+    secids.forEach(function(sid){
+      var p = st.positions[sid];
+      var q = state.quotes[sid] || {};
+      var px = q.price || 0;
+      var name = q.name || p.name || p.code;
+      var mv = p.qty * px;
+      var costV = p.qty * p.cost;
+      var pnl = mv - costV;
+      var c = cls(pnl);
+      html += '<div class="wt-row" data-action="paper-sel" data-secid="' + esc(sid) + '">' +
+        '<span class="wt-name"><span class="nm">' + esc(name) + '</span><span class="cd">' + esc(p.code) + '</span></span>' +
+        '<span class="wt-num num">' + p.qty + '</span>' +
+        '<span class="wt-num num">' + fmtPrice(p.cost) + '</span>' +
+        '<span class="wt-num num">' + (px ? fmtPrice(px) : '--') + '</span>' +
+        '<span class="wt-num num">' + fmtMoney(mv) + '</span>' +
+        '<span class="wt-num num ' + c + '">' + (pnl >= 0 ? '+' : '') + fmtMoney(pnl) + '</span>' +
+        '<span class="wt-num num ' + c + '">' + (p.cost > 0 && px ? fmtPct((px - p.cost) / p.cost * 100) : '--') + '</span>' +
+        '<span class="wt-op"><button class="btn-ghost mini" data-action="paper-sel" data-secid="' + esc(sid) + '">交易</button></span>' +
+        '</div>';
+    });
+    grid.innerHTML = html;
+  }
+  function renderRec(){
+    var box = document.getElementById('paper-rec-list');
+    if(!box) return;
+    if(!st.records.length){ box.innerHTML = '<div class="empty">暂无交易记录</div>'; return; }
+    var html = '';
+    var recs = st.records.slice().reverse().slice(0, 50);
+    recs.forEach(function(r){
+      var c = r.dir === '买入' ? 'up' : 'down';
+      html += '<div class="rec-row"><span class="rec-time">' + r.t + '</span>' +
+        '<span class="rec-dir ' + c + '">' + r.dir + '</span>' +
+        '<span class="rec-name">' + esc(r.name) + '</span>' +
+        '<span class="rec-num num">' + fmtPrice(r.price) + ' × ' + r.qty + '</span>' +
+        '<span class="rec-amt num">' + fmtMoney(r.amt) + '</span></div>';
+    });
+    box.innerHTML = html;
+  }
+  function refreshPrices(renderAfter){
+    var secids = Object.keys(st.positions);
+    if(pick && secids.indexOf(pick.secid) < 0) secids.push(pick.secid);
+    if(!secids.length){ if(renderAfter) render(); return; }
+    var jobs = secids.map(function(sid){
+      return fetchQuote(sid).then(function(q){
+        state.quotes[sid] = q;
+      }).catch(function(){});
+    });
+    Promise.all(jobs).then(function(){ if(renderAfter) render(); });
+  }
+  function init(cash){
+    var v = parseFloat(String(cash).replace(/[,\s\u00a5]/g, ''));
+    if(!(v > 0)){ flash('请输入有效金额'); return; }
+    st = { init: v, cash: v, positions: {}, records: [] };
+    save();
+    render();
+    flash('模拟账户已开启，初始资金 ' + fmtMoney(v));
+  }
+  function buy(){
+    if(!pick){ flash('请先选择交易标的'); return; }
+    var qty = parseInt(document.getElementById('paper-qty').value, 10);
+    if(!(qty > 0)){ flash('请输入买入数量'); return; }
+    fetchQuote(pick.secid).then(function(q){
+      var px = q.price;
+      if(!(px > 0)){ flash('暂未取得该标的价格'); return; }
+      var amt = px * qty;
+      if(amt > st.cash){ flash('资金不足，可用 ' + fmtMoney(st.cash)); return; }
+      var p = st.positions[pick.secid] || { qty: 0, cost: 0, code: pick.code, name: q.name || pick.name };
+      var newQty = p.qty + qty;
+      p.cost = (p.qty * p.cost + amt) / newQty;
+      p.qty = newQty;
+      p.name = q.name || p.name;
+      p.code = pick.code;
+      st.positions[pick.secid] = p;
+      st.cash -= amt;
+      st.records.push({ t: fmtNow(), dir: '买入', name: q.name || pick.name, price: px, qty: qty, amt: amt });
+      save();
+      state.quotes[pick.secid] = q;
+      render();
+      flash('已买入 ' + (q.name || pick.code) + ' ' + qty + ' 股 @ ' + fmtPrice(px));
+    }).catch(function(){ flash('行情获取失败，请重试'); });
+  }
+  function sell(){
+    if(!pick){ flash('请先选择交易标的'); return; }
+    var p = st.positions[pick.secid];
+    if(!p || !(p.qty > 0)){ flash('该标的没有持仓'); return; }
+    var qtyStr = document.getElementById('paper-qty').value.trim();
+    var qty = qtyStr ? parseInt(qtyStr, 10) : p.qty;
+    if(!(qty > 0)){ flash('请输入卖出数量'); return; }
+    if(qty > p.qty){ flash('持仓不足，最多 ' + p.qty + ' 股'); return; }
+    fetchQuote(pick.secid).then(function(q){
+      var px = q.price;
+      if(!(px > 0)){ flash('暂未取得该标的价格'); return; }
+      var amt = px * qty;
+      p.qty -= qty;
+      if(p.qty <= 0) delete st.positions[pick.secid];
+      st.cash += amt;
+      st.records.push({ t: fmtNow(), dir: '卖出', name: q.name || pick.name, price: px, qty: qty, amt: amt });
+      save();
+      state.quotes[pick.secid] = q;
+      render();
+      flash('已卖出 ' + (q.name || pick.code) + ' ' + qty + ' 股 @ ' + fmtPrice(px));
+    }).catch(function(){ flash('行情获取失败，请重试'); });
+  }
+  function reset(){
+    if(!window.confirm('确定重置模拟账户吗？持仓和交易记录将全部清空。')) return;
+    st = { init: 0, cash: 0, positions: {}, records: [] };
+    pick = null;
+    save();
+    render();
+    flash('模拟账户已重置');
+  }
+  function pickSet(item){
+    if(!item || !item.secid){ flash('标的识别失败'); return; }
+    pick = { secid: item.secid, code: item.code, name: item.name };
+    var ci = document.getElementById('paper-code');
+    if(ci) ci.value = item.code;
+    var box = document.getElementById('paper-pick');
+    box.innerHTML = '<span class="pp-name">' + esc(item.name || item.code) + '</span> <span class="pp-code">' + esc(item.code) + '</span> <span class="pp-price">现价获取中…</span>';
+    fetchQuote(item.secid).then(function(q){
+      if(!pick || pick.secid !== item.secid) return;
+      state.quotes[item.secid] = q;
+      var p = st.positions[item.secid];
+      box.innerHTML = '<span class="pp-name">' + esc(q.name || item.name) + '</span> <span class="pp-code">' + esc(item.code) + '</span> <span class="pp-price num ' + cls(q.chg || 0) + '">现价 ' + fmtPrice(q.price) + '（' + fmtPct(q.pct) + '）</span>' +
+        (p && p.qty > 0 ? '<span class="pp-hold">持仓 ' + p.qty + ' 股 · 成本 ' + fmtPrice(p.cost) + '</span>' : '');
+    }).catch(function(){
+      box.innerHTML = '<span class="pp-name">' + esc(item.name || item.code) + '</span> <span class="pp-code">' + esc(item.code) + '</span> <span class="pp-price">现价暂不可用，下单时自动获取</span>';
+    });
+    renderPos();
+  }
+  return { st: st, save: save, render: render, refreshPrices: refreshPrices, init: init, buy: buy, sell: sell, reset: reset, pickSet: pickSet };
+})();
 
 /* ========== 事件委托 ========== */
 document.addEventListener('click', function(e){
@@ -5193,6 +5473,27 @@ document.addEventListener('click', function(e){
     var wf = el.getAttribute('data-from') || '';
     addCode(wc, { secid: ws, name: wn, from: wf });
     picksRender(); etfRender();
+  } else if(a === 'paper-open'){
+    location.hash = '#/paper';
+  } else if(a === 'paper-init'){
+    var pv = document.getElementById('pp-init');
+    PAPER.init(pv.value);
+  } else if(a === 'paper-buy'){
+    PAPER.buy();
+  } else if(a === 'paper-sell'){
+    PAPER.sell();
+  } else if(a === 'paper-reset'){
+    PAPER.reset();
+  } else if(a === 'paper-sel'){
+    var psid = el.getAttribute('data-secid');
+    var pp = PAPER.st.positions[psid];
+    if(pp){
+      PAPER.pickSet({ secid: psid, code: pp.code, name: pp.name || '' });
+      var pq2 = document.getElementById('paper-qty');
+      if(pq2){ pq2.value = pp.qty; }
+      var pc2 = document.getElementById('paper-code');
+      if(pc2) pc2.value = pp.code;
+    }
   } else if(a === 'core-prev'){
     var ci = document.getElementById('core-idx');
     if(ci) ci.scrollBy({ left: -260, behavior: 'smooth' });
@@ -5273,6 +5574,17 @@ document.addEventListener('keydown', function(e){
     if(sti && document.activeElement === sti){
       strategyRun();
       return;
+    }
+    var pci = document.getElementById('paper-code');
+    if(pci && document.activeElement === pci){
+      var pv2 = pci.value.trim();
+      if(/^\d{6}$/.test(pv2)){
+        var item = { secid: secidOf(pv2), code: pv2, name: '' };
+        if(item.secid) PAPER.pickSet(item);
+      } else {
+        var pb = document.getElementById('paper-suggest');
+        if(!pb.classList.contains('open')) triggerSearch(pci, pb, ['AStock','Fund'], function(it){ PAPER.pickSet(it); });
+      }
     }
   }
 });
@@ -5393,6 +5705,7 @@ var mpTmpTimer = null;
 bindSuggest('code-input', 'code-suggest', ['Index','Fund'], pickCode);
 bindSuggest('stock-input', 'stock-suggest', ['AStock','Fund','Index'], pickStock);
 bindSuggest('strategy-input', 'strategy-suggest', ['AStock','Fund','Index'], pickStrategy);
+bindSuggest('paper-code', 'paper-suggest', ['AStock','Fund'], function(it){ PAPER.pickSet(it); });
 route();
 refreshKlines(false);
 refreshQuotes();
