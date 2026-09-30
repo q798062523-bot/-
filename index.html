@@ -1214,6 +1214,23 @@ html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);
 #view-paper .rec-name{font-weight:600;flex:1;min-width:70px;}
 #view-paper .rec-num{color:var(--muted);}
 #view-paper .rec-amt{font-weight:700;margin-left:auto;}
+
+#view-paper .paper-hero-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+#view-paper .paper-mode{font-size:12.5px;font-weight:700;color:var(--navy);}
+html[data-theme="dark"] #view-paper .paper-mode{color:#7fb0e8;}
+#view-paper .paper-id{font-size:11.5px;color:var(--muted);}
+#view-paper .paper-stats{grid-template-columns:repeat(auto-fit,minmax(118px,1fr));}
+#view-paper .paper-hero-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px;margin-top:10px;}
+#view-paper .hero-btn{
+  border:1px solid rgba(28,30,33,0.1);background:rgba(127,168,216,0.10);color:var(--text-color);
+  border-radius:12px;padding:12px 8px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;
+  transition:transform .12s ease, background .15s ease;
+}
+#view-paper .hero-btn:active{transform:scale(0.95);}
+#view-paper .hero-btn.ghost{background:transparent;color:var(--muted);font-weight:500;}
+html[data-theme="dark"] #view-paper .hero-btn{border-color:rgba(255,255,255,0.12);background:rgba(127,168,216,0.14);}
+#view-paper .etf-zone{margin-top:2px;}
+.picks-head + .etf-zone{margin-top:22px;}
 </style>
 </head>
 <body>
@@ -1251,7 +1268,7 @@ html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v88</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v89</span>
     </div>
   </div>
 </header>
@@ -1265,7 +1282,7 @@ html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);
     <button class="tab" data-action="tab" data-tab="stock" id="tab-stock">个股监测</button>
     <button class="tab" data-action="tab" data-tab="review" id="tab-review">每日复盘</button>
     <button class="tab" data-action="tab" data-tab="picks" id="tab-picks">每日荐股</button>
-    <button class="tab" data-action="tab" data-tab="etf" id="tab-etf">每日ETF</button>
+    <button class="tab" data-action="tab" data-tab="paper" id="tab-etf">模拟盘</button>
   </div>
 
   <!-- 首页视图：核心指数置前 -->
@@ -1311,7 +1328,7 @@ html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);
   <!-- 自选股视图：添加自选 + 自选信号（独立 tab） -->
   <section id="view-watch" style="display:none;">
     <div class="add-panel">
-      <div class="add-title">添加自选 <button class="btn-ghost paper-entry" data-action="paper-open">进入模拟盘</button></div>
+      <div class="add-title">添加自选</div>
       <div class="chips" id="presets"></div>
       <div class="add-row suggest-wrap">
         <input class="add-input num" id="code-input" placeholder="搜索 名称 / 拼音 / 代码，如 沪深300、hs300、510300" autocomplete="off">
@@ -1328,24 +1345,31 @@ html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);
 
   <!-- 模拟盘视图 -->
   <section id="view-paper" style="display:none;">
-    <div class="paper-card">
-      <div class="paper-title"><span class="dot"></span>模拟账户</div>
+    <div class="paper-card paper-hero">
+      <div class="paper-hero-top">
+        <span class="paper-mode">模拟交易 · 普通账户</span>
+        <span class="paper-id" id="pp-id">未初始化</span>
+      </div>
       <div class="paper-stats">
-        <div class="pstat"><span class="p-lbl">总资产</span><span class="p-val num" id="pp-total">--</span></div>
-        <div class="pstat"><span class="p-lbl">可用资金</span><span class="p-val num" id="pp-cash">--</span></div>
-        <div class="pstat"><span class="p-lbl">持仓市值</span><span class="p-val num" id="pp-mv">--</span></div>
-        <div class="pstat"><span class="p-lbl">总盈亏</span><span class="p-val num" id="pp-pnl">--</span></div>
+        <div class="pstat"><span class="p-lbl">总资产(元)</span><span class="p-val num" id="pp-total">--</span></div>
+        <div class="pstat"><span class="p-lbl">总收益率</span><span class="p-val num" id="pp-ret">--</span></div>
+        <div class="pstat"><span class="p-lbl">累计收益(元)</span><span class="p-val num" id="pp-pnl">--</span></div>
+        <div class="pstat"><span class="p-lbl">今日收益(元)</span><span class="p-val num" id="pp-today">--</span></div>
+        <div class="pstat"><span class="p-lbl">可用资产(元)</span><span class="p-val num" id="pp-cash">--</span></div>
       </div>
       <div class="pp-init-row" id="pp-init-row">
         <input class="add-input num" id="pp-init" placeholder="设定初始资金，如 100000" inputmode="decimal" autocomplete="off">
         <button class="btn-primary" data-action="paper-init">开始模拟</button>
       </div>
-      <div class="pp-actions" id="pp-actions" style="display:none;">
-        <span class="paper-tip">按最新行情现价即时成交 · 练手不花真钱</span>
-        <button class="btn-ghost" data-action="paper-reset">重置账户</button>
+      <div class="paper-hero-btns" id="pp-actions" style="display:none;">
+        <button class="hero-btn" data-action="paper-go" data-target="paper-trade">买入</button>
+        <button class="hero-btn" data-action="paper-go" data-target="paper-trade">卖出</button>
+        <button class="hero-btn" data-action="paper-go" data-target="paper-pos">持仓</button>
+        <button class="hero-btn" data-action="paper-go" data-target="paper-rec">记录</button>
+        <button class="hero-btn ghost" data-action="paper-reset">重置</button>
       </div>
     </div>
-    <div class="paper-card">
+    <div class="paper-card" id="paper-trade">
       <div class="paper-title"><span class="dot"></span>下单交易 <span class="hint-inline">支持股票 / ETF，现价即时成交</span></div>
       <div class="add-row suggest-wrap">
         <input class="add-input" id="paper-code" placeholder="搜索 股票 / ETF，如 贵州茅台、510300" autocomplete="off">
@@ -1358,11 +1382,11 @@ html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);
       </div>
       <div class="paper-pick" id="paper-pick">选择标的后显示实时价格，点持仓行可快速下单</div>
     </div>
-    <div class="paper-card">
+    <div class="paper-card" id="paper-pos">
       <div class="paper-title"><span class="dot"></span>当前持仓 <span class="hint-inline">点击持仓行自动带入下单</span></div>
       <div class="pos-scroll"><div class="pp-grid" id="paper-pos-grid"></div></div>
     </div>
-    <div class="paper-card">
+    <div class="paper-card" id="paper-rec">
       <div class="paper-title"><span class="dot"></span>交易记录</div>
       <div id="paper-rec-list"></div>
     </div>
@@ -1443,15 +1467,13 @@ html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);
       <button class="btn-primary" data-action="picks-refresh" id="btn-picks-refresh">重新筛选</button>
     </div>
     <div id="picks-box"><div class="news-empty">正在从沪深全市场筛选候选股（涨幅榜 → 流动性过滤 → 技术面打分）…约需 15 秒</div></div>
-  </section>
-
-  <!-- 每日ETF视图 -->
-  <section id="view-etf" style="display:none;">
-    <div class="picks-head">
-      <div class="picks-tt"><span class="dot"></span>每日ETF · 结合全球消息面/政策面筛选<span class="picks-sub">实时数据 · 趋势/量能/资金/主题热度四维筛选 · 目标价与止损价自动计算 · 收盘后更新</span></div>
-      <button class="btn-primary" data-action="etf-refresh" id="btn-etf-refresh">重新筛选</button>
+    <div class="etf-zone">
+      <div class="picks-head">
+        <div class="picks-tt"><span class="dot"></span>每日ETF · 结合全球消息面/政策面筛选<span class="picks-sub">实时数据 · 趋势/量能/资金/主题热度四维筛选 · 目标价与止损价自动计算 · 收盘后更新</span></div>
+        <button class="btn-primary" data-action="etf-refresh" id="btn-etf-refresh">重新筛选</button>
+      </div>
+      <div id="etf-box"><div class="news-empty">正在筛选全市场 ETF（成交额榜 → 流动性过滤 → 技术面+主题热度打分）…约需 20 秒</div></div>
     </div>
-    <div id="etf-box"><div class="news-empty">正在筛选全市场 ETF（成交额榜 → 流动性过滤 → 技术面+主题热度打分）…约需 20 秒</div></div>
   </section>
 
   <!-- 详情视图 -->
@@ -1514,10 +1536,10 @@ html[data-theme="dark"] #view-paper .btn-danger{background:rgba(229,72,77,0.22);
     <svg class="ico-fill" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21zm0 3.4a7.1 7.1 0 1 1 0 14.2 7.1 7.1 0 0 1 0-14.2zM12 9.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2z" fill="currentColor"/></svg>
     <span>荐股</span>
   </button>
-  <button class="m-nav-item" data-action="tab" data-tab="etf">
-    <svg class="ico-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1.5 12h-13z"/><path d="M9 8V5a3 3 0 0 1 6 0v3"/></svg>
-    <svg class="ico-fill" viewBox="0 0 24 24"><path d="M4.2 8h15.6l-1.4 11a2 2 0 0 1-2 1.7H7.6a2 2 0 0 1-2-1.7z" fill="currentColor"/><path d="M9 8V5.2a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-    <span>ETF</span>
+  <button class="m-nav-item" data-action="tab" data-tab="paper">
+    <svg class="ico-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 7V5a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v2"/><circle cx="12" cy="13.5" r="1.6"/></svg>
+    <svg class="ico-fill" viewBox="0 0 24 24"><path d="M3.5 7.5A1.5 1.5 0 0 1 5 6h14a1.5 1.5 0 0 1 1.5 1.5V9H3.5z" fill="currentColor"/><path d="M3.5 10h17v9A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19z" fill="currentColor" opacity="0.85"/><circle cx="12" cy="14.5" r="1.8" fill="#fff" opacity="0.9"/></svg>
+    <span>模拟</span>
   </button>
 </nav>
 
@@ -5043,10 +5065,10 @@ function renderTabs(){
   if(t3) t3.classList.toggle('on', inStock || (inDetail && backTab.indexOf('#/stock') === 0));
   if(t4) t4.classList.toggle('on', inReview);
   if(t5) t5.classList.toggle('on', inPicks || (inDetail && backTab.indexOf('#/picks') === 0));
-  if(t6) t6.classList.toggle('on', inEtf || (inDetail && backTab.indexOf('#/etf') === 0));
+  if(t6) t6.classList.toggle('on', inPaper || (inDetail && backTab.indexOf('#/paper') === 0));
   // 移动端底部导航高亮
-  var navMap = { index:'index', watch:'watch', stock:'stock', review:'review', picks:'picks', etf:'etf' };
-  var active = inWatch ? 'watch' : (inPaper ? 'watch' : (inStock ? 'stock' : (inReview ? 'review' : (inPicks ? 'picks' : (inEtf ? 'etf' : (inDetail ? (backTab.indexOf('#/watch') === 0 ? 'watch' : (backTab.indexOf('#/stock') === 0 ? 'stock' : (backTab.indexOf('#/picks') === 0 ? 'picks' : (backTab.indexOf('#/etf') === 0 ? 'etf' : 'index')))) : 'index'))))));
+  var navMap = { index:'index', watch:'watch', stock:'stock', review:'review', picks:'picks', paper:'paper' };
+  var active = inWatch ? 'watch' : (inPaper ? 'paper' : (inStock ? 'stock' : (inReview ? 'review' : (inPicks ? 'picks' : (inEtf ? 'picks' : (inDetail ? (backTab.indexOf('#/watch') === 0 ? 'watch' : (backTab.indexOf('#/stock') === 0 ? 'stock' : (backTab.indexOf('#/picks') === 0 ? 'picks' : 'index'))) : 'index'))))));
   document.querySelectorAll('.m-nav-item').forEach(function(b){
     b.classList.toggle('on', navMap[b.getAttribute('data-tab')] === active);
   });
@@ -5123,12 +5145,9 @@ function route(){
     if(picksV2) picksV2.style.display = 'block';
     showAnim(picksV2);
     if(!PICKS.list.length) refreshPicks(false);
-  } else if(location.hash.indexOf('#/etf') === 0){
-    hideViews();
-    var etfV = document.getElementById('view-etf');
-    if(etfV) etfV.style.display = 'block';
-    showAnim(etfV);
     if(!ETFS.list.length) refreshEtf(false);
+  } else if(location.hash.indexOf('#/etf') === 0){
+    location.hash = '#/picks';
   } else if(location.hash.indexOf('#/paper') === 0){
     hideViews();
     var papV2 = document.getElementById('view-paper');
@@ -5186,21 +5205,32 @@ var PAPER = (function(){
   function render(){
     var total = document.getElementById('pp-total');
     if(!total) return;
-    var mv = 0;
+    var mv = 0, today = 0;
     var secids = Object.keys(st.positions);
     secids.forEach(function(sid){
+      var p = st.positions[sid];
       var q = state.quotes[sid] || {};
       var px = q.price || 0;
-      mv += (st.positions[sid].qty || 0) * px;
+      mv += (p.qty || 0) * px;
+      if(q.chg != null && q.chg !== undefined) today += q.chg * (p.qty || 0);
     });
     var assets = st.cash + mv;
     var pnl = st.init > 0 ? assets - st.init : 0;
     total.textContent = fmtMoney(assets);
     document.getElementById('pp-cash').textContent = fmtMoney(st.cash);
-    document.getElementById('pp-mv').textContent = fmtMoney(mv);
+    var retEl = document.getElementById('pp-ret');
+    if(st.init > 0){
+      retEl.textContent = fmtPct(pnl / st.init * 100);
+      retEl.className = 'p-val num ' + cls(pnl);
+    } else { retEl.textContent = '--'; retEl.className = 'p-val num'; }
     var pnlEl = document.getElementById('pp-pnl');
-    pnlEl.textContent = (pnl >= 0 ? '+' : '') + fmtMoney(pnl) + (st.init > 0 ? '（' + fmtPct(pnl / st.init * 100) + '）' : '');
+    pnlEl.textContent = (pnl >= 0 ? '+' : '') + fmtMoney(pnl);
     pnlEl.className = 'p-val num ' + cls(pnl);
+    var todayEl = document.getElementById('pp-today');
+    todayEl.textContent = (today >= 0 ? '+' : '') + fmtMoney(today);
+    todayEl.className = 'p-val num ' + cls(today);
+    var idEl = document.getElementById('pp-id');
+    if(idEl) idEl.textContent = st.init > 0 ? '初始资金 ' + fmtMoney(st.init) + ' · ' + Object.keys(st.positions).length + ' 只持仓' : '未初始化';
     var initRow = document.getElementById('pp-init-row');
     var act = document.getElementById('pp-actions');
     if(st.init > 0){ initRow.style.display = 'none'; act.style.display = ''; }
@@ -5436,7 +5466,7 @@ document.addEventListener('click', function(e){
     location.hash = bk;
   } else if(a === 'tab'){
     var tab = el.getAttribute('data-tab');
-    location.hash = tab === 'stock' ? '#/stock' : (tab === 'watch' ? '#/watch' : (tab === 'review' ? '#/review' : (tab === 'picks' ? '#/picks' : (tab === 'etf' ? '#/etf' : '#/'))));
+    location.hash = tab === 'stock' ? '#/stock' : (tab === 'watch' ? '#/watch' : (tab === 'review' ? '#/review' : (tab === 'picks' ? '#/picks' : (tab === 'paper' ? '#/paper' : (tab === 'etf' ? '#/picks' : '#/')))));
   } else if(a === 'picks-refresh'){
     refreshPicks(true);
   } else if(a === 'etf-refresh'){
@@ -5473,6 +5503,10 @@ document.addEventListener('click', function(e){
     var wf = el.getAttribute('data-from') || '';
     addCode(wc, { secid: ws, name: wn, from: wf });
     picksRender(); etfRender();
+  } else if(a === 'paper-go'){
+    var ptgt = el.getAttribute('data-target');
+    var ptEl = document.getElementById(ptgt);
+    if(ptEl) ptEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } else if(a === 'paper-open'){
     location.hash = '#/paper';
   } else if(a === 'paper-init'){
