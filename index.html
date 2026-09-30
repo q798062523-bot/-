@@ -1079,12 +1079,20 @@ html[data-theme="dark"] #view-watch .watch-scroll{background:rgba(23,27,34,0.55)
 #view-watch .watch-scroll::-webkit-scrollbar{height:6px;}
 #view-watch .watch-scroll::-webkit-scrollbar-thumb{background:rgba(127,168,216,0.35);border-radius:6px;}
 #view-watch .watch-scroll::-webkit-scrollbar-track{background:transparent;}
-#view-watch #grid{display:block;min-width:700px;}
+#view-watch #grid{display:block;min-width:540px;}
 #view-watch .wt-row{
-  display:grid;grid-template-columns:1.35fr 0.65fr 0.8fr 0.7fr 0.85fr 0.7fr 0.95fr 0.6fr 0.8fr 0.6fr 0.8fr 0.8fr;
-  align-items:center;gap:4px;padding:8px 12px;border-bottom:0.5px solid rgba(28,30,33,0.05);
-  font-size:12.5px;cursor:pointer;transition:background .15s ease;
+  display:grid;grid-template-columns:1.55fr 0.6fr 0.9fr 0.7fr 0.8fr 0.95fr 0.55fr 0.8fr;
+  align-items:center;gap:6px;padding:10px 14px;border-bottom:0.5px solid rgba(28,30,33,0.05);
+  font-size:13px;cursor:pointer;transition:background .15s ease;
 }
+#view-watch .wt-ret{font-weight:700;letter-spacing:0.3px;padding:2px 8px;border-radius:999px;white-space:nowrap;text-align:right;}
+#view-watch .wt-ret.up{background:rgba(229,72,77,0.10);color:#c62828;}
+#view-watch .wt-ret.down{background:rgba(16,142,72,0.10);color:#0a7d3e;}
+#view-watch .wt-ret.flat-c{background:rgba(128,130,135,0.12);color:#6b6f76;}
+html[data-theme="dark"] #view-watch .wt-ret.up{background:rgba(229,72,77,0.22);color:#ff8a8f;}
+html[data-theme="dark"] #view-watch .wt-ret.down{background:rgba(16,142,72,0.22);color:#7ed6a5;}
+html[data-theme="dark"] #view-watch .wt-ret.flat-c{background:rgba(128,130,135,0.18);color:#a8adb5;}
+#view-watch .wt-row.head .wt-ret{background:transparent;padding:0;font-weight:600;color:var(--muted);}
 #view-watch .wt-row:last-child{border-bottom:0;}
 #view-watch .wt-row:hover{background:rgba(127,168,216,0.07);}
 html[data-theme="dark"] #view-watch .wt-row:hover{background:rgba(255,255,255,0.05);}
@@ -1197,7 +1205,7 @@ html[data-theme="dark"] #view-watch .wt-sum{background:rgba(23,27,34,0.78);borde
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v86</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v87</span>
     </div>
   </div>
 </header>
@@ -1267,7 +1275,7 @@ html[data-theme="dark"] #view-watch .wt-sum{background:rgba(23,27,34,0.78);borde
       <div class="hint">支持智能检索：中文名称（沪深300）、拼音首字母（hs300）、6 位代码（510300）。指数与 ETF 可加入自选信号。</div>
     </div>
 
-    <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）<span class="hint-inline">← 横向滑动查看更多 →</span></div>
+    <div class="section-title"><span class="dot"></span>自选信号（当前版本参数）<span class="hint-inline">点击行看 K 线 · 长按可删除</span></div>
     <div class="watch-scroll"><div class="grid" id="grid"></div></div>
     <div class="wt-sum" id="wt-sum" style="display:none;"></div>
   </section>
@@ -4218,16 +4226,12 @@ function watchRowHTML(s){
   return '<div class="wt-row" data-action="core-open" data-secid="' + esc(s.secid) + '">' +
     '<span class="wt-name"><span class="nm">' + esc(name) + '</span><span class="cd">' + esc(s.code) + '</span></span>' +
     '<span class="wt-num num">' + atHTML + '</span>' +
-    '<span class="wt-num num ' + retCls + '">' + retHTML + '</span>' +
+    '<span class="wt-ret num ' + retCls + '">' + retHTML + '</span>' +
     '<span class="wt-num num ' + c + '">' + price + '</span>' +
     '<span class="wt-num num ' + c + '">' + pct + '</span>' +
-    '<span class="wt-num num ' + c + '">' + diff + '</span>' +
     '<span class="wt-sig">' + sigHTML + '</span>' +
     '<span class="wt-num num">' + (sig ? pos + '%' : '--') + '</span>' +
     '<span class="wt-num num">' + amount + '</span>' +
-    '<span class="wt-num num">' + turnover + '</span>' +
-    '<span class="wt-num num">' + maS + '</span>' +
-    '<span class="wt-num num">' + maL + '</span>' +
     '</div>';
 }
 function renderWatchSum(){
@@ -4263,7 +4267,7 @@ function renderCards(){
     grid.innerHTML = '<div class="empty">自选池还是空的。从上方预设池点一个标的，或输入代码加入，系统会自动计算模型信号。</div>';
     return;
   }
-  var head = '<div class="wt-row head"><span class="wt-name">名称</span><span class="wt-num">自选价</span><span class="wt-num">跟踪收益率</span><span class="wt-num">现价</span><span class="wt-num">涨跌幅</span><span class="wt-num">涨跌额</span><span class="wt-sig">信号</span><span class="wt-num">仓位</span><span class="wt-num">成交额</span><span class="wt-num">换手</span><span class="wt-num">MA短</span><span class="wt-num">MA长</span></div>';
+  var head = '<div class="wt-row head"><span class="wt-name">名称</span><span class="wt-num">自选价</span><span class="wt-ret">跟踪收益率</span><span class="wt-num">现价</span><span class="wt-num">涨跌幅</span><span class="wt-sig">信号</span><span class="wt-num">仓位</span><span class="wt-num">成交额</span></div>';
   grid.innerHTML = head + state.watch.map(watchRowHTML).join('');
 }
 
