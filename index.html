@@ -821,7 +821,8 @@ html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8
   .m-nav-item svg{width:24px;height:24px;display:block;}
   .m-nav-item .ico-fill{display:none;}
   .m-nav-item:active{transform:scale(0.90);}
-  .m-nav-item.on{color:var(--lime);font-weight:700;}
+  .m-nav-item.on{color:#1A1A1A;font-weight:700;}
+  .m-nav-item.on svg, .m-nav-item.on .ico-line, .m-nav-item.on .ico-fill{color:var(--lime);}
   .m-nav-item.on .ico-line{display:none;}
   .m-nav-item.on .ico-fill{display:block;animation:navPop .22s ease;}
   .m-nav-item.on::before{
@@ -1011,6 +1012,8 @@ html[data-theme="dark"] .pick-no,
 html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
 html[data-theme="dark"] .m-nav{background:rgba(14,17,22,0.96);}
 html[data-theme="dark"] .m-nav-item{color:#E8EAED;}
+html[data-theme="dark"] .m-nav-item.on{color:#F5F5F5;}
+html[data-theme="dark"] .m-nav-item.on svg, html[data-theme="dark"] .m-nav-item.on .ico-line, html[data-theme="dark"] .m-nav-item.on .ico-fill{color:var(--lime);}
 html[data-theme="dark"] .m-nav-item.on::before{background:rgba(200,255,0,0.16);}
 html[data-theme="dark"] .hero-banner img{opacity:0.92;}
 
@@ -1422,7 +1425,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v92.4</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v92.5</span>
     </div>
   </div>
 </header>
