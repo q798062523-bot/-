@@ -1407,20 +1407,6 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
   <img class="splash-bg" src="splash.jpg" alt="指数信号台">
 </div>
 
-<!-- ===== 顶部横幅 + 全球快讯 ===== -->
-<div class="top-row">
-  <div class="news-panel">
-    <div class="news-head">
-      <div class="news-tt"><span class="dot"></span>全球快讯 · 最新 10 条<span class="news-upd" id="news-upd"></span></div>
-      <button class="icon-btn" data-action="news-refresh" id="btn-news-refresh" title="刷新快讯">
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
-        刷新
-      </button>
-    </div>
-    <div id="news-box" class="news-box"><div class="news-empty">快讯加载中…</div></div>
-  </div>
-</div>
-
 <header>
   <div class="head-inner">
     <div class="brand">
@@ -1438,7 +1424,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <span id="theme-label">黑夜</span>
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v93</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v94</span>
     </div>
   </div>
 </header>
@@ -1457,6 +1443,16 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
 
   <!-- 首页视图：核心指数置前 -->
   <section id="view-home">
+    <div class="news-panel" style="margin-bottom:14px;">
+      <div class="news-head">
+        <div class="news-tt"><span class="dot"></span>全球快讯 · 最新 10 条<span class="news-upd" id="news-upd"></span></div>
+        <button class="icon-btn" data-action="news-refresh" id="btn-news-refresh" title="刷新快讯">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+          刷新
+        </button>
+      </div>
+      <div id="news-box" class="news-box" style="max-height:340px;"><div class="news-empty">快讯加载中…</div></div>
+    </div>
     <div class="section-title"><span class="dot"></span>核心指数<span class="core-upd" id="core-upd"></span></div>
     <div class="core-idx-wrap">
     <button class="core-nav core-prev" data-action="core-prev" aria-label="上一个">‹</button>
@@ -1635,19 +1631,6 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
   </section>
 
   <!-- 每日复盘视图 -->
-  <section id="view-review" style="display:none;">
-    <div class="review-head">
-      <div>
-        <div class="section-title" style="margin-bottom:0;"><span class="dot"></span>每日复盘 · 收盘后整理全市场</div>
-        <div class="muted" style="margin-top:2px;">交易日 16:00 后自动刷新当日复盘 · 数据来自东方财富公开接口</div>
-      </div>
-      <button class="btn-primary" data-action="review-refresh" id="btn-review">立即复盘</button>
-    </div>
-    <div id="review-body">
-      <div class="empty">点击「立即复盘」生成今日复盘，约需 10 秒。每日 16:00 后打开本页会自动刷新。</div>
-    </div>
-  </section>
-
   <!-- 每日荐股视图 -->
   <section id="view-picks" style="display:none;">
     <div class="picks-head">
