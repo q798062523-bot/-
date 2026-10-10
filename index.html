@@ -1442,7 +1442,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <span id="theme-label">黑夜</span>
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v94.6</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v94.7</span>
     </div>
   </div>
 </header>
@@ -5354,9 +5354,9 @@ function route(){
   // v94.6: 立即设置底部导航高亮，不依赖 renderTabs
   (function(){
     var h = location.hash;
-    var map = { '#/':'index', '#/watch':'watch', '#/stock':'stock', '#/picks':'picks', '#/paper':'paper' };
+    var map = [['#/watch','watch'],['#/stock','stock'],['#/picks','picks'],['#/paper','paper'],['#/','index']];
     var active = 'index';
-    for(var k in map){ if(h.indexOf(k) === 0){ active = map[k]; break; } }
+    for(var i=0;i<map.length;i++){ if(h.indexOf(map[i][0]) === 0){ active = map[i][1]; break; } }
     document.querySelectorAll('.m-nav-item').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab')===active); });
     document.querySelectorAll('.tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab')===active); });
   })();
