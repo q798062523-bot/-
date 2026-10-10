@@ -1442,7 +1442,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <span id="theme-label">黑夜</span>
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v94.3</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v94.6</span>
     </div>
   </div>
 </header>
@@ -5331,7 +5331,7 @@ function renderTabs(){
   var t5 = document.getElementById('tab-picks');
   var t6 = document.getElementById('tab-etf');
   if(t1) t1.classList.toggle('on', (!inStock && !inWatch && !inPaper && !inReview && !inPicks && !inEtf && !inDetail) || (inDetail && backTab.indexOf('watch') === -1 && backTab.indexOf('stock') === -1 && backTab.indexOf('picks') === -1 && backTab.indexOf('etf') === -1));
-  if(t2) t2.classList.toggle('on', inWatch || inPaper || (inDetail && backTab.indexOf('#/watch') === 0));
+  if(t2) t2.classList.toggle('on', inWatch || (inDetail && backTab.indexOf('#/watch') === 0));
   if(t3) t3.classList.toggle('on', inStock || (inDetail && backTab.indexOf('#/stock') === 0));
   if(t4) t4.classList.toggle('on', inReview);
   if(t5) t5.classList.toggle('on', inPicks || (inDetail && backTab.indexOf('#/picks') === 0));
@@ -5351,6 +5351,15 @@ function loadBar(show){
   else lb.classList.add('hide');
 }
 function route(){
+  // v94.6: 立即设置底部导航高亮，不依赖 renderTabs
+  (function(){
+    var h = location.hash;
+    var map = { '#/':'index', '#/watch':'watch', '#/stock':'stock', '#/picks':'picks', '#/paper':'paper' };
+    var active = 'index';
+    for(var k in map){ if(h.indexOf(k) === 0){ active = map[k]; break; } }
+    document.querySelectorAll('.m-nav-item').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab')===active); });
+    document.querySelectorAll('.tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab')===active); });
+  })();
   var home = document.getElementById('view-home');
   var watchV = document.getElementById('view-watch');
   var stockV = document.getElementById('view-stock');
@@ -5424,6 +5433,9 @@ function route(){
     showAnim(papV2);
     PAPER.render();
     PAPER.refreshPrices(true);
+    // 手动高亮模拟盘 tab（修复 renderTabs 闭包作用域问题）
+    document.querySelectorAll('.m-nav-item').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab')==='paper'); });
+    document.querySelectorAll('.tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab')==='paper'); });
   } else {
     hideViews();
     home.style.display = 'block';
