@@ -18,8 +18,17 @@
 (function(){
   try{
     var h = new Date().getHours();
-    var dark = (h >= 19 || h < 8);
+    var saved = null;
+    try { saved = localStorage.getItem('iq_theme'); } catch(e){}
+    var dark;
+    if(saved === 'dark') dark = true;
+    else if(saved === 'light') dark = false;
+    else dark = (h >= 19 || h < 8);
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    (function(){
+      var lbl = document.getElementById('theme-label');
+      if(lbl) lbl.textContent = dark ? '白天' : '黑夜';
+    })();
     var m = document.querySelector('meta[name="theme-color"]');
     if(m) m.setAttribute('content', dark ? '#0E1116' : '#F4F2EC');
   }catch(e){}
@@ -1424,8 +1433,12 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
         刷新
       </button>
+      <button class="icon-btn" data-action="theme-toggle" id="btn-theme" title="切换黑夜/白天">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <span id="theme-label">黑夜</span>
+      </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v92.5</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v93</span>
     </div>
   </div>
 </header>
@@ -1460,6 +1473,13 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
 
     <div class="section-title"><span class="dot"></span>全球股市重要动态 · 过去 24 小时<span class="core-upd" id="imp-upd"></span></div>
     <div id="imp-box"><div class="news-empty">动态分析加载中…</div></div>
+
+    <div class="section-title" style="margin-top:18px;"><span class="dot"></span>每日复盘 · 收盘后整理全市场</div>
+    <div class="review-head" style="margin-bottom:10px;">
+      <div class="muted" style="font-size:12px;">交易日 16:00 后自动刷新 · 大盘/热点/国际/明日策略</div>
+      <button class="btn-primary" data-action="review-refresh" id="btn-review-home" style="padding:8px 18px;font-size:13px;">立即复盘</button>
+    </div>
+    <div id="review-body-home"><div class="empty" style="padding:20px;text-align:center;color:var(--muted);">点击「立即复盘」生成今日复盘，约需 10 秒</div></div>
 
     <details class="rules" id="rules">
       <summary>模型规则与参数</summary>
@@ -5807,6 +5827,14 @@ document.addEventListener('click', function(e){
     var ptgt = el.getAttribute('data-target');
     var ptEl = document.getElementById(ptgt);
     if(ptEl) ptEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else if(a === 'theme-toggle'){
+    var cur = document.documentElement.getAttribute('data-theme') === 'dark';
+    var next = cur ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('iq_theme', next); } catch(e){}
+    var lbl = document.getElementById('theme-label');
+    if(lbl) lbl.textContent = next === 'dark' ? '白天' : '黑夜';
+    flash(next === 'dark' ? '已切换到黑夜模式' : '已切换到白天模式');
   } else if(a === 'paper-open'){
     location.hash = '#/paper';
   } else if(a === 'paper-init'){
@@ -6082,8 +6110,17 @@ setInterval(etfAutoTick, 60000);
 setInterval(function(){
   try{
     var h = new Date().getHours();
-    var dark = (h >= 19 || h < 8);
+    var saved = null;
+    try { saved = localStorage.getItem('iq_theme'); } catch(e){}
+    var dark;
+    if(saved === 'dark') dark = true;
+    else if(saved === 'light') dark = false;
+    else dark = (h >= 19 || h < 8);
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    (function(){
+      var lbl = document.getElementById('theme-label');
+      if(lbl) lbl.textContent = dark ? '白天' : '黑夜';
+    })();
     var m = document.querySelector('meta[name="theme-color"]');
     if(m) m.setAttribute('content', dark ? '#0E1116' : '#F4F2EC');
   }catch(e){}
