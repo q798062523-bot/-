@@ -1424,7 +1424,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <span id="theme-label">黑夜</span>
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v94</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v94.1</span>
     </div>
   </div>
 </header>
@@ -1436,7 +1436,6 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
     <button class="tab on" data-action="tab" data-tab="index" id="tab-index">指数信号</button>
     <button class="tab" data-action="tab" data-tab="watch" id="tab-watch">自选股</button>
     <button class="tab" data-action="tab" data-tab="stock" id="tab-stock">个股监测</button>
-    <button class="tab" data-action="tab" data-tab="review" id="tab-review">每日复盘</button>
     <button class="tab" data-action="tab" data-tab="picks" id="tab-picks">每日荐股</button>
     <button class="tab" data-action="tab" data-tab="paper" id="tab-etf">模拟盘</button>
   </div>
@@ -5351,7 +5350,7 @@ function route(){
     home.style.display = 'none';
     if(watchV) watchV.style.display = 'none';
     stockV.style.display = 'none';
-    reviewV.style.display = 'none';
+    if(reviewV) reviewV.style.display = 'none';
     var pv = document.getElementById('view-picks');
     if(pv) pv.style.display = 'none';
     var ev = document.getElementById('view-etf');
@@ -5393,10 +5392,9 @@ function route(){
       refreshSAll();
     }
   } else if(location.hash.indexOf('#/review') === 0){
-    hideViews();
-    reviewV.style.display = 'block';
-    showAnim(reviewV);
-    if(Date.now() - RV_STATE.at > 3600e3) refreshReview(false);
+    location.hash = '#/';
+    setTimeout(function(){ var el = document.getElementById('review-body-home'); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }, 200);
+    return;
   } else if(location.hash.indexOf('#/picks') === 0){
     hideViews();
     var picksV2 = document.getElementById('view-picks');
