@@ -1284,6 +1284,24 @@ html[data-theme="dark"] .screen-panel{background:rgba(23,27,34,0.62);border-colo
 /* ===== v91 模拟盘对标券商 ===== */
 #view-paper{padding-bottom:20px;}
 #view-paper .paper-hero{padding:18px 16px;}
+/* v94.3 手机端：开始模拟按钮不溢出 */
+@media (max-width: 640px){
+  #view-paper .pp-init-row{flex-direction:column;gap:10px;}
+  #view-paper .pp-init-row .add-input{width:100%;box-sizing:border-box;}
+  #view-paper .pp-init-row .btn-primary{width:100%;padding:12px;font-size:14px;flex-shrink:0;}
+  #view-paper .paper-hero-top{flex-direction:column;align-items:flex-start;gap:4px;}
+  #view-paper .pp-grid4{grid-template-columns:repeat(2,1fr) !important;gap:8px !important;}
+  #view-paper .pp-big-val{font-size:28px !important;}
+}
+/* v94.3 手机端：开始模拟按钮不溢出 */
+@media (max-width: 640px){
+  #view-paper .pp-init-row{flex-direction:column;gap:10px;}
+  #view-paper .pp-init-row .add-input{width:100%;box-sizing:border-box;}
+  #view-paper .pp-init-row .btn-primary{width:100%;padding:12px;font-size:14px;flex-shrink:0;}
+  #view-paper .paper-hero-top{flex-direction:column;align-items:flex-start;gap:4px;}
+  #view-paper .pp-grid4{grid-template-columns:repeat(2,1fr) !important;gap:8px !important;}
+  #view-paper .pp-big-val{font-size:28px !important;}
+}
 .pp-big{margin:8px 0 14px;}
 .pp-big-lbl{font-size:12px;color:var(--muted);margin-bottom:4px;}
 .pp-big-val{font-size:30px;font-weight:700;letter-spacing:-0.5px;line-height:1.1;}
@@ -1424,7 +1442,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <span id="theme-label">黑夜</span>
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v94.2</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v94.3</span>
     </div>
   </div>
 </header>
