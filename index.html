@@ -1231,6 +1231,37 @@ html[data-theme="dark"] #view-paper .paper-mode{color:#7fb0e8;}
 html[data-theme="dark"] #view-paper .hero-btn{border-color:rgba(255,255,255,0.12);background:rgba(127,168,216,0.14);}
 #view-paper .etf-zone{margin-top:2px;}
 .picks-head + .etf-zone{margin-top:22px;}
+
+/* ===== v90 高级选股工具 ===== */
+.screen-panel{
+  border:1px solid rgba(28,30,33,0.07);border-radius:16px;padding:14px;
+  background:rgba(255,255,255,0.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  margin-bottom:18px;
+}
+html[data-theme="dark"] .screen-panel{background:rgba(23,27,34,0.62);border-color:rgba(255,255,255,0.08);}
+.screen-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.scr-lbl{font-size:12px;color:var(--muted);width:64px;flex-shrink:0;}
+.scr-sel{
+  flex:1;min-width:150px;border:1px solid var(--line);border-radius:10px;background:var(--bg);
+  padding:9px 10px;font-size:13px;font-family:inherit;color:var(--ink);outline:none;
+}
+.scr-inputs .scr-inp{
+  flex:1;min-width:80px;border:1px solid var(--line);border-radius:10px;background:var(--bg);
+  padding:9px 10px;font-size:13px;font-family:inherit;color:var(--ink);outline:none;
+}
+.scr-sel:focus,.scr-inp:focus{border-color:var(--navy);}
+.screen-hint{font-size:11.5px;color:var(--muted);line-height:1.6;margin:4px 0 10px;}
+.screen-result{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.screen-result .scr-grid{display:block;min-width:680px;}
+.screen-result .scr-row{
+  display:grid;grid-template-columns:1.6fr 0.8fr 0.8fr 0.9fr 0.7fr 0.7fr 0.9fr;
+  align-items:center;gap:6px;padding:9px 12px;border-bottom:0.5px solid rgba(28,30,33,0.05);
+  font-size:12.8px;cursor:pointer;transition:background .15s ease;
+}
+.screen-result .scr-row:hover{background:rgba(127,168,216,0.08);}
+.screen-result .scr-name{display:flex;flex-direction:column;gap:1px;line-height:1.25;}
+.screen-result .scr-name .nm{font-weight:600;}
+.screen-result .scr-name .cd{font-size:10.5px;color:var(--muted);}
 </style>
 </head>
 <body>
@@ -1268,7 +1299,7 @@ html[data-theme="dark"] #view-paper .hero-btn{border-color:rgba(255,255,255,0.12
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v89</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v90</span>
     </div>
   </div>
 </header>
@@ -1467,6 +1498,43 @@ html[data-theme="dark"] #view-paper .hero-btn{border-color:rgba(255,255,255,0.12
       <button class="btn-primary" data-action="picks-refresh" id="btn-picks-refresh">重新筛选</button>
     </div>
     <div id="picks-box"><div class="news-empty">正在从沪深全市场筛选候选股（涨幅榜 → 流动性过滤 → 技术面打分）…约需 15 秒</div></div>
+
+    <div class="picks-head">
+      <div class="picks-tt"><span class="dot"></span>高级选股工具<span class="picks-sub">真实行情条件筛选 · 沪深全市场实时排序 · 自选策略练手</span></div>
+      <button class="btn-primary" data-action="screen-run">开始筛选</button>
+    </div>
+    <div class="screen-panel">
+      <div class="screen-row">
+        <label class="scr-lbl">市场</label>
+        <select id="scr-market" class="scr-sel">
+          <option value="m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23">全部A股</option>
+          <option value="m:1+t:2,m:1+t:23">沪市</option>
+          <option value="m:0+t:6,m:0+t:80">深市</option>
+          <option value="m:0+t:80">创业板</option>
+          <option value="m:1+t:23">科创板</option>
+        </select>
+      </div>
+      <div class="screen-row">
+        <label class="scr-lbl">策略排序</label>
+        <select id="scr-strat" class="scr-sel">
+          <option value="f3">趋势强势（按涨幅降序）</option>
+          <option value="f6">量价活跃（按成交额降序）</option>
+          <option value="f8">高换手（按换手率降序）</option>
+          <option value="f62">资金流入（按主力净额降序）</option>
+          <option value="f9">低估值（按市盈率升序）</option>
+          <option value="f20">大市值龙头（按总市值降序）</option>
+        </select>
+      </div>
+      <div class="screen-row scr-inputs">
+        <input id="scr-minamt" class="scr-inp" placeholder="成交额>亿" value="3" inputmode="decimal">
+        <input id="scr-minchg" class="scr-inp" placeholder="涨幅下限%" value="-3" inputmode="decimal">
+        <input id="scr-maxchg" class="scr-inp" placeholder="涨幅上限%" value="9.5" inputmode="decimal">
+        <input id="scr-maxpe" class="scr-inp" placeholder="PE<" value="80" inputmode="decimal">
+      </div>
+      <div class="screen-hint">条件说明：成交额下限 / 涨幅区间 / 市盈率上限（亏损股 PE 为负会被过滤）。结果最多 20 只，点击行看 K 线。</div>
+      <div id="screen-result" class="screen-result"><div class="news-empty">设置条件后点「开始筛选」，数据为沪深全市场实时行情。</div></div>
+    </div>
+
     <div class="etf-zone">
       <div class="picks-head">
         <div class="picks-tt"><span class="dot"></span>每日ETF · 结合全球消息面/政策面筛选<span class="picks-sub">实时数据 · 趋势/量能/资金/主题热度四维筛选 · 目标价与止损价自动计算 · 收盘后更新</span></div>
@@ -3904,6 +3972,57 @@ function refreshEtf(force){
     if(box2) box2.innerHTML = '<div class="news-empty">筛选失败：' + esc(e && e.message ? e.message : String(e)) + '，稍后点击「重新筛选」重试。</div>';
   });
 }
+/* ========== v90 高级选股工具 ========== */
+function screenRun(){
+  var fs = document.getElementById('scr-market').value;
+  var fid = document.getElementById('scr-strat').value;
+  var po = (fid === 'f9') ? '0' : '1';
+  var minAmt = parseFloat(document.getElementById('scr-minamt').value);
+  var minChg = parseFloat(document.getElementById('scr-minchg').value);
+  var maxChg = parseFloat(document.getElementById('scr-maxchg').value);
+  var maxPE = parseFloat(document.getElementById('scr-maxpe').value);
+  var box = document.getElementById('screen-result');
+  box.innerHTML = '<div class="news-empty">正在拉取沪深全市场实时行情筛选…</div>';
+  return jsonp('https://push2.eastmoney.com/api/qt/clist/get', {
+      pn: 1, pz: 120, po: po, np: 1, fltt: 2, invt: 2,
+      fid: fid, fs: fs,
+      fields: 'f2,f3,f6,f8,f9,f12,f13,f14,f20,f62',
+      ut: 'bd1d9ddb04089700cf9c27f6f7426281'
+    }, 12000)
+    .then(function(j){
+      var rows = ((j && j.data) || {}).diff || [];
+      if(!rows.length){ box.innerHTML = '<div class="news-empty">该条件下没有返回数据，可放宽条件重试。</div>'; return; }
+      rows = rows.filter(function(x){
+        if(minAmt > 0 && !(x.f6 >= minAmt * 1e8)) return false;
+        if(!isNaN(minChg) && x.f3 < minChg) return false;
+        if(!isNaN(maxChg) && x.f3 > maxChg) return false;
+        if(!isNaN(maxPE) && !(x.f9 > 0 && x.f9 <= maxPE)) return false;
+        return true;
+      }).slice(0, 20);
+      if(!rows.length){ box.innerHTML = '<div class="news-empty">条件太严，没有股票同时满足。可放宽涨幅 / PE / 成交额再试。</div>'; return; }
+      var html = '<div class="scr-grid"><div class="scr-row" style="cursor:default;background:transparent;"><span>名称</span><span class="num" style="text-align:right;">现价</span><span class="num" style="text-align:right;">涨跌幅</span><span class="num" style="text-align:right;">成交额</span><span class="num" style="text-align:right;">换手</span><span class="num" style="text-align:right;">PE</span><span class="num" style="text-align:right;">主力净额</span></div>';
+      rows.forEach(function(x){
+        var secid = (x.f13 === 1 ? '1.' : '0.') + x.f12;
+        var c = cls(x.f3);
+        var amt = x.f6 >= 1e8 ? (x.f6 / 1e8).toFixed(1) + '亿' : (x.f6 / 1e4).toFixed(0) + '万';
+        var main = x.f62 == null || isNaN(x.f62) ? '--' : (x.f62 >= 0 ? '+' : '') + (x.f62 / 1e4).toFixed(0) + '万';
+        var mc = (x.f62 > 0) ? 'up' : (x.f62 < 0 ? 'down' : '');
+        html += '<div class="scr-row" data-action="core-open" data-secid="' + secid + '">' +
+          '<span class="scr-name"><span class="nm">' + esc(x.f14) + '</span><span class="cd">' + esc(x.f12) + '</span></span>' +
+          '<span class="num ' + c + '" style="text-align:right;">' + fmtPrice(x.f2) + '</span>' +
+          '<span class="num ' + c + '" style="text-align:right;">' + fmtPct(x.f3) + '</span>' +
+          '<span class="num" style="text-align:right;">' + amt + '</span>' +
+          '<span class="num" style="text-align:right;">' + (x.f8 != null && !isNaN(x.f8) ? x.f8.toFixed(1) + '%' : '--') + '</span>' +
+          '<span class="num" style="text-align:right;">' + (x.f9 != null && !isNaN(x.f9) && x.f9 > 0 ? x.f9.toFixed(1) : '--') + '</span>' +
+          '<span class="num ' + mc + '" style="text-align:right;">' + main + '</span>' +
+          '</div>';
+      });
+      html += '</div>';
+      box.innerHTML = html;
+    })
+    .catch(function(e){ box.innerHTML = '<div class="news-empty">筛选接口暂时失败：' + esc(e && e.message ? e.message : String(e)) + '，稍后重试。</div>'; });
+}
+
 function etfAutoTick(){
   if(Date.now() - ETFS.at > 3600e3) refreshEtf(false);
 }
@@ -5467,6 +5586,8 @@ document.addEventListener('click', function(e){
   } else if(a === 'tab'){
     var tab = el.getAttribute('data-tab');
     location.hash = tab === 'stock' ? '#/stock' : (tab === 'watch' ? '#/watch' : (tab === 'review' ? '#/review' : (tab === 'picks' ? '#/picks' : (tab === 'paper' ? '#/paper' : (tab === 'etf' ? '#/picks' : '#/')))));
+  } else if(a === 'screen-run'){
+    screenRun();
   } else if(a === 'picks-refresh'){
     refreshPicks(true);
   } else if(a === 'etf-refresh'){
