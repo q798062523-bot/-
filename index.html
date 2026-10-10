@@ -3983,11 +3983,10 @@ function screenRun(){
   var maxPE = parseFloat(document.getElementById('scr-maxpe').value);
   var box = document.getElementById('screen-result');
   box.innerHTML = '<div class="news-empty">正在拉取沪深全市场实时行情筛选…</div>';
-  return jsonp('https://push2.eastmoney.com/api/qt/clist/get', {
+  return reqEM('https://push2.eastmoney.com/api/qt/clist/get', {
       pn: 1, pz: 120, po: po, np: 1, fltt: 2, invt: 2,
       fid: fid, fs: fs,
-      fields: 'f2,f3,f6,f8,f9,f12,f13,f14,f20,f62',
-      ut: 'bd1d9ddb04089700cf9c27f6f7426281'
+      fields: 'f2,f3,f6,f8,f9,f12,f13,f14,f20,f62'
     }, 12000)
     .then(function(j){
       var rows = ((j && j.data) || {}).diff || [];
