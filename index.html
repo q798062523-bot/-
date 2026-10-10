@@ -1262,6 +1262,63 @@ html[data-theme="dark"] .screen-panel{background:rgba(23,27,34,0.62);border-colo
 .screen-result .scr-name{display:flex;flex-direction:column;gap:1px;line-height:1.25;}
 .screen-result .scr-name .nm{font-weight:600;}
 .screen-result .scr-name .cd{font-size:10.5px;color:var(--muted);}
+
+/* ===== v91 模拟盘对标券商 ===== */
+#view-paper{padding-bottom:20px;}
+#view-paper .paper-hero{padding:18px 16px;}
+.pp-big{margin:8px 0 14px;}
+.pp-big-lbl{font-size:12px;color:var(--muted);margin-bottom:4px;}
+.pp-big-val{font-size:30px;font-weight:700;letter-spacing:-0.5px;line-height:1.1;}
+.pp-day{font-size:14px;font-weight:600;margin-top:4px;}
+.pp-grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:6px 0 4px;}
+.pp-cell{background:rgba(127,168,216,0.08);border-radius:10px;padding:9px 12px;display:flex;flex-direction:column;gap:2px;}
+html[data-theme="dark"] .pp-cell{background:rgba(127,168,216,0.12);}
+.pp-lbl,.pp-l{font-size:11.5px;color:var(--muted);}
+.pp-v{font-size:14px;font-weight:600;}
+.trade-tab{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.tt-btn{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:12px;padding:11px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s;}
+.tt-btn.buy.on{background:linear-gradient(135deg,#ff5b5b,#ff8a5b);color:#fff;border-color:transparent;}
+.tt-btn.sell.on{background:linear-gradient(135deg,#2eb872,#5bd68f);color:#fff;border-color:transparent;}
+.qty-row{display:flex;gap:8px;align-items:center;margin:10px 0;}
+.qty-step{width:56px;height:42px;border:1px solid var(--line);background:var(--bg);border-radius:10px;font-size:13px;font-weight:600;color:var(--text-color);cursor:pointer;flex-shrink:0;}
+.qty-step:active{transform:scale(0.95);}
+.qty-row .add-input{flex:1;height:42px;font-size:16px;text-align:center;}
+.pos-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
+.pos-quick button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 4px;font-size:12.5px;color:var(--text-color);cursor:pointer;font-family:inherit;}
+.pos-quick button:active{background:rgba(127,168,216,0.15);}
+.pp-est{font-size:13px;color:var(--muted);margin:6px 0 12px;text-align:right;}
+.trade-confirm{width:100%;height:48px;border:none;border-radius:12px;font-size:16px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;transition:transform .12s;}
+.trade-confirm.buy{background:linear-gradient(135deg,#ff5b5b,#ff8a5b);}
+.trade-confirm.sell{background:linear-gradient(135deg,#2eb872,#5bd68f);}
+.trade-confirm:active{transform:scale(0.98);}
+/* 持仓卡片 */
+#paper-pos-grid{display:flex;flex-direction:column;gap:8px;}
+.pp-card{border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;transition:background .15s;}
+.pp-card:active{background:rgba(127,168,216,0.08);}
+.pp-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.pp-card-name{display:flex;flex-direction:column;line-height:1.25;}
+.pp-card-name .nm{font-weight:700;font-size:14px;}
+.pp-card-name .cd{font-size:11px;color:var(--muted);}
+.pp-card-pnl{text-align:right;}
+.pp-card-pnl .amt{font-size:16px;font-weight:700;}
+.pp-card-pnl .pct{font-size:12px;}
+.pp-card-mid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:11.5px;}
+.pp-card-mid .mc{display:flex;flex-direction:column;gap:1px;}
+.pp-card-mid .mc-l{color:var(--muted);font-size:10.5px;}
+.pp-card-mid .mc-v{font-weight:600;font-size:12.5px;}
+/* 记录 */
+#paper-rec-list .rec-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:9px 4px;border-bottom:0.5px solid rgba(28,30,33,0.06);font-size:12.5px;align-items:center;}
+#paper-rec-list .rec-row .rec-time{color:var(--muted);font-size:11px;}
+#paper-rec-list .rec-row .rec-dir{font-weight:700;padding:2px 8px;border-radius:6px;font-size:11px;}
+#paper-rec-list .rec-row .rec-dir.up{background:rgba(255,91,91,0.12);color:#ff5b5b;}
+#paper-rec-list .rec-row .rec-dir.down{background:rgba(46,184,114,0.12);color:#2eb872;}
+#paper-rec-list .rec-row .rec-name{grid-column:1;}
+#paper-rec-list .rec-row .rec-num{color:var(--muted);}
+#paper-rec-list .rec-row .rec-amt{font-weight:600;}
+@media(max-width:480px){
+  .pp-big-val{font-size:26px;}
+  .pp-grid4{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 </head>
 <body>
@@ -1299,7 +1356,7 @@ html[data-theme="dark"] .screen-panel{background:rgba(23,27,34,0.62);border-colo
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v90</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v91</span>
     </div>
   </div>
 </header>
@@ -1381,44 +1438,55 @@ html[data-theme="dark"] .screen-panel{background:rgba(23,27,34,0.62);border-colo
         <span class="paper-mode">模拟交易 · 普通账户</span>
         <span class="paper-id" id="pp-id">未初始化</span>
       </div>
-      <div class="paper-stats">
-        <div class="pstat"><span class="p-lbl">总资产(元)</span><span class="p-val num" id="pp-total">--</span></div>
-        <div class="pstat"><span class="p-lbl">总收益率</span><span class="p-val num" id="pp-ret">--</span></div>
-        <div class="pstat"><span class="p-lbl">累计收益(元)</span><span class="p-val num" id="pp-pnl">--</span></div>
-        <div class="pstat"><span class="p-lbl">今日收益(元)</span><span class="p-val num" id="pp-today">--</span></div>
-        <div class="pstat"><span class="p-lbl">可用资产(元)</span><span class="p-val num" id="pp-cash">--</span></div>
+      <div class="pp-big">
+        <div class="pp-big-lbl">总资产 (元)</div>
+        <div class="pp-big-val num" id="pp-total">--</div>
+        <div class="pp-day num" id="pp-today">--</div>
+      </div>
+      <div class="pp-grid4">
+        <div class="pp-cell"><span class="pp-l">可用资金</span><span class="pp-v num" id="pp-cash">--</span></div>
+        <div class="pp-cell"><span class="pp-l">持仓市值</span><span class="pp-v num" id="pp-mv">--</span></div>
+        <div class="pp-cell"><span class="pp-l">累计收益</span><span class="pp-v num" id="pp-pnl">--</span></div>
+        <div class="pp-cell"><span class="pp-l">总收益率</span><span class="pp-v num" id="pp-ret">--</span></div>
       </div>
       <div class="pp-init-row" id="pp-init-row">
         <input class="add-input num" id="pp-init" placeholder="设定初始资金，如 100000" inputmode="decimal" autocomplete="off">
         <button class="btn-primary" data-action="paper-init">开始模拟</button>
       </div>
-      <div class="paper-hero-btns" id="pp-actions" style="display:none;">
-        <button class="hero-btn" data-action="paper-go" data-target="paper-trade">买入</button>
-        <button class="hero-btn" data-action="paper-go" data-target="paper-trade">卖出</button>
-        <button class="hero-btn" data-action="paper-go" data-target="paper-pos">持仓</button>
-        <button class="hero-btn" data-action="paper-go" data-target="paper-rec">记录</button>
-        <button class="hero-btn ghost" data-action="paper-reset">重置</button>
-      </div>
     </div>
+
     <div class="paper-card" id="paper-trade">
-      <div class="paper-title"><span class="dot"></span>下单交易 <span class="hint-inline">支持股票 / ETF，现价即时成交</span></div>
+      <div class="trade-tab">
+        <button class="tt-btn buy on" data-action="paper-mode" data-mode="buy">买入</button>
+        <button class="tt-btn sell" data-action="paper-mode" data-mode="sell">卖出</button>
+      </div>
       <div class="add-row suggest-wrap">
         <input class="add-input" id="paper-code" placeholder="搜索 股票 / ETF，如 贵州茅台、510300" autocomplete="off">
         <div class="suggest-list" id="paper-suggest"></div>
       </div>
-      <div class="paper-order-row">
-        <input class="add-input num" id="paper-qty" placeholder="数量（股 / 份）" inputmode="numeric" autocomplete="off">
-        <button class="btn-primary" data-action="paper-buy">买入</button>
-        <button class="btn-danger" data-action="paper-sell">卖出</button>
+      <div class="paper-pick" id="paper-pick">选择标的后显示实时价格</div>
+      <div class="qty-row">
+        <button class="qty-step" data-action="paper-qtystep" data-d="-100">-100</button>
+        <input class="add-input num" id="paper-qty" placeholder="数量（股/份）" inputmode="numeric" autocomplete="off">
+        <button class="qty-step" data-action="paper-qtystep" data-d="100">+100</button>
       </div>
-      <div class="paper-pick" id="paper-pick">选择标的后显示实时价格，点持仓行可快速下单</div>
+      <div class="pos-quick">
+        <button data-action="paper-posquick" data-p="0.25">1/4仓</button>
+        <button data-action="paper-posquick" data-p="0.5">半仓</button>
+        <button data-action="paper-posquick" data-p="1">全仓</button>
+        <button data-action="paper-posquick" data-p="0">清仓</button>
+      </div>
+      <div class="pp-est num" id="pp-est">预估金额：--</div>
+      <button class="trade-confirm buy" data-action="paper-confirm">确认买入</button>
     </div>
+
     <div class="paper-card" id="paper-pos">
-      <div class="paper-title"><span class="dot"></span>当前持仓 <span class="hint-inline">点击持仓行自动带入下单</span></div>
-      <div class="pos-scroll"><div class="pp-grid" id="paper-pos-grid"></div></div>
+      <div class="paper-title"><span class="dot"></span>当前持仓 <span class="hint-inline">点持仓行快速下单</span></div>
+      <div id="paper-pos-grid"></div>
     </div>
+
     <div class="paper-card" id="paper-rec">
-      <div class="paper-title"><span class="dot"></span>交易记录</div>
+      <div class="paper-title"><span class="dot"></span>交易记录 <button class="btn-ghost mini" data-action="paper-reset" style="float:right;">重置账户</button></div>
       <div id="paper-rec-list"></div>
     </div>
   </section>
@@ -5336,6 +5404,8 @@ var PAPER = (function(){
     var pnl = st.init > 0 ? assets - st.init : 0;
     total.textContent = fmtMoney(assets);
     document.getElementById('pp-cash').textContent = fmtMoney(st.cash);
+    var mvEl = document.getElementById('pp-mv');
+    if(mvEl) mvEl.textContent = fmtMoney(mv);
     var retEl = document.getElementById('pp-ret');
     if(st.init > 0){
       retEl.textContent = fmtPct(pnl / st.init * 100);
@@ -5364,7 +5434,7 @@ var PAPER = (function(){
       grid.innerHTML = '<div class="empty">暂无持仓。选个标的输入数量，点「买入」试试。</div>';
       return;
     }
-    var html = '<div class="wt-row head"><span class="wt-name">名称</span><span class="wt-num">持仓</span><span class="wt-num">成本价</span><span class="wt-num">现价</span><span class="wt-num">市值</span><span class="wt-num">盈亏额</span><span class="wt-num">盈亏率</span><span class="wt-num">操作</span></div>';
+    var html = '';
     secids.forEach(function(sid){
       var p = st.positions[sid];
       var q = state.quotes[sid] || {};
@@ -5374,16 +5444,18 @@ var PAPER = (function(){
       var costV = p.qty * p.cost;
       var pnl = mv - costV;
       var c = cls(pnl);
-      html += '<div class="wt-row" data-action="paper-sel" data-secid="' + esc(sid) + '">' +
-        '<span class="wt-name"><span class="nm">' + esc(name) + '</span><span class="cd">' + esc(p.code) + '</span></span>' +
-        '<span class="wt-num num">' + p.qty + '</span>' +
-        '<span class="wt-num num">' + fmtPrice(p.cost) + '</span>' +
-        '<span class="wt-num num">' + (px ? fmtPrice(px) : '--') + '</span>' +
-        '<span class="wt-num num">' + fmtMoney(mv) + '</span>' +
-        '<span class="wt-num num ' + c + '">' + (pnl >= 0 ? '+' : '') + fmtMoney(pnl) + '</span>' +
-        '<span class="wt-num num ' + c + '">' + (p.cost > 0 && px ? fmtPct((px - p.cost) / p.cost * 100) : '--') + '</span>' +
-        '<span class="wt-op"><button class="btn-ghost mini" data-action="paper-sel" data-secid="' + esc(sid) + '">交易</button></span>' +
-        '</div>';
+      html += '<div class="pp-card" data-action="paper-sel" data-secid="' + esc(sid) + '">' +
+        '<div class="pp-card-top">' +
+          '<span class="pp-card-name"><span class="nm">' + esc(name) + '</span><span class="cd">' + esc(p.code) + '</span></span>' +
+          '<span class="pp-card-pnl"><span class="amt num ' + c + '">' + (pnl >= 0 ? '+' : '') + fmtMoney(pnl) + '</span>' +
+          '<span class="pct num ' + c + '">' + (p.cost > 0 && px ? fmtPct((px - p.cost) / p.cost * 100) : '--') + '</span></span>' +
+        '</div>' +
+        '<div class="pp-card-mid">' +
+          '<span class="mc"><span class="mc-l">持仓</span><span class="mc-v">' + p.qty + '</span></span>' +
+          '<span class="mc"><span class="mc-l">成本</span><span class="mc-v">' + fmtPrice(p.cost) + '</span></span>' +
+          '<span class="mc"><span class="mc-l">现价</span><span class="mc-v">' + (px ? fmtPrice(px) : '--') + '</span></span>' +
+          '<span class="mc"><span class="mc-l">市值</span><span class="mc-v">' + fmtMoney(mv) + '</span></span>' +
+        '</div></div>';
     });
     grid.innerHTML = html;
   }
@@ -5489,12 +5561,51 @@ var PAPER = (function(){
       var p = st.positions[item.secid];
       box.innerHTML = '<span class="pp-name">' + esc(q.name || item.name) + '</span> <span class="pp-code">' + esc(item.code) + '</span> <span class="pp-price num ' + cls(q.chg || 0) + '">现价 ' + fmtPrice(q.price) + '（' + fmtPct(q.pct) + '）</span>' +
         (p && p.qty > 0 ? '<span class="pp-hold">持仓 ' + p.qty + ' 股 · 成本 ' + fmtPrice(p.cost) + '</span>' : '');
+      setTimeout(updateEst, 50);
     }).catch(function(){
       box.innerHTML = '<span class="pp-name">' + esc(item.name || item.code) + '</span> <span class="pp-code">' + esc(item.code) + '</span> <span class="pp-price">现价暂不可用，下单时自动获取</span>';
     });
     renderPos();
   }
-  return { st: st, save: save, render: render, refreshPrices: refreshPrices, init: init, buy: buy, sell: sell, reset: reset, pickSet: pickSet };
+  var mode = 'buy';
+  function setMode(m){
+    mode = m === 'sell' ? 'sell' : 'buy';
+    var tabs = document.querySelectorAll('#view-paper .tt-btn');
+    tabs.forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mode') === mode); });
+    var btn = document.querySelector('#view-paper .trade-confirm');
+    if(btn){ btn.textContent = mode === 'sell' ? '确认卖出' : '确认买入'; btn.className = 'trade-confirm ' + mode; }
+    updateEst();
+  }
+  function updateEst(){
+    var box = document.getElementById('pp-est');
+    if(!box) return;
+    var qty = parseInt((document.getElementById('paper-qty').value || '0'), 10) || 0;
+    if(!pick || !(qty > 0)){ box.textContent = '预估金额：--'; return; }
+    var q = state.quotes[pick.secid] || {};
+    var px = q.price;
+    if(!(px > 0)){ box.textContent = '预估金额：获取现价中…'; return; }
+    var amt = px * qty;
+    box.innerHTML = '预估金额：<b class="num">' + fmtMoney(amt) + '</b> · 可用 <span class="num">' + fmtMoney(st.cash) + '</span>';
+  }
+  function posQuick(p){
+    var qtyInput = document.getElementById('paper-qty');
+    if(!pick){ flash('请先选择标的'); return; }
+    var q = state.quotes[pick.secid] || {};
+    var px = q.price;
+    if(mode === 'sell'){
+      var pos = st.positions[pick.secid];
+      if(!pos || !(pos.qty > 0)){ flash('该标的没有持仓'); return; }
+      qtyInput.value = (p === 0) ? pos.qty : Math.floor(pos.qty * p / 100) * 100;
+      if(!(parseInt(qtyInput.value,10) > 0)) qtyInput.value = pos.qty;
+    } else {
+      if(!(px > 0)){ flash('现价暂不可用'); return; }
+      var budget = st.cash * (parseFloat(p) || 0);
+      var q = Math.floor(budget / px / 100) * 100;
+      qtyInput.value = q > 0 ? q : 0;
+    }
+    updateEst();
+  }
+  return { st: st, save: save, render: render, refreshPrices: refreshPrices, init: init, buy: buy, sell: sell, reset: reset, pickSet: pickSet, setMode: setMode, updateEst: updateEst, posQuick: posQuick, getMode: function(){ return mode; } };
 })();
 
 /* ========== 事件委托 ========== */
@@ -5636,6 +5747,18 @@ document.addEventListener('click', function(e){
     PAPER.buy();
   } else if(a === 'paper-sell'){
     PAPER.sell();
+  } else if(a === 'paper-mode'){
+    PAPER.setMode(el.getAttribute('data-mode'));
+  } else if(a === 'paper-confirm'){
+    if(PAPER.getMode() === 'sell') PAPER.sell(); else PAPER.buy();
+  } else if(a === 'paper-qtystep'){
+    var qi = document.getElementById('paper-qty');
+    var cur = parseInt(qi.value || '0', 10) || 0;
+    var d = parseInt(el.getAttribute('data-d'), 10) || 100;
+    qi.value = Math.max(0, cur + d);
+    PAPER.updateEst();
+  } else if(a === 'paper-posquick'){
+    PAPER.posQuick(el.getAttribute('data-p'));
   } else if(a === 'paper-reset'){
     PAPER.reset();
   } else if(a === 'paper-sel'){
@@ -5647,6 +5770,10 @@ document.addEventListener('click', function(e){
       if(pq2){ pq2.value = pp.qty; }
       var pc2 = document.getElementById('paper-code');
       if(pc2) pc2.value = pp.code;
+      PAPER.setMode('sell');
+      PAPER.updateEst();
+      var tt = document.getElementById('paper-trade');
+      if(tt) tt.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   } else if(a === 'core-prev'){
     var ci = document.getElementById('core-idx');
