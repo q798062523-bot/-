@@ -28,19 +28,21 @@
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;900&display=swap">
 <style>
 :root{
-  --bg:#F4F2EC;
+  --bg:#F2F2F0;
   --card:#FFFFFF;
-  --ink:#1C1E21;
-  --muted:#69707A;
-  --line:rgba(28,30,33,0.10);
-  --red:#C8402F;
-  --red-bg:rgba(200,64,47,0.08);
-  --green:#1F8A5A;
-  --green-bg:rgba(31,138,90,0.08);
-  --amber:#A97E17;
-  --amber-bg:rgba(169,126,23,0.10);
-  --navy:#2C4A6E;
-  --radius:12px;
+  --ink:#0A0A0A;
+  --muted:#8A8A8A;
+  --line:rgba(10,10,10,0.08);
+  --red:#E5484D;
+  --red-bg:rgba(229,72,77,0.10);
+  --green:#18A058;
+  --green-bg:rgba(24,160,88,0.10);
+  --amber:#B58900;
+  --amber-bg:rgba(181,137,0,0.10);
+  --navy:#1A1A1A;
+  --lime:#C8FF00;
+  --lime-ink:#0A0A0A;
+  --radius:16px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:var(--bg);color:var(--ink);}
@@ -50,7 +52,7 @@ body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;font-
 /* ===== 顶部栏 ===== */
 header{
   position:sticky;top:0;z-index:20;
-  background:rgba(244,242,236,0.92);backdrop-filter:blur(8px);
+  background:var(--bg);
   border-bottom:1px solid var(--line);
 }
 .head-inner{
@@ -66,7 +68,7 @@ header{
   border:0;background:transparent;padding:5px 13px;border-radius:999px;
   font-size:12px;font-family:inherit;color:var(--muted);cursor:pointer;
 }
-.ver-pill.on{background:var(--navy);color:#fff;font-weight:500;}
+.ver-pill.on{background:var(--lime);color:var(--lime-ink);font-weight:600;}
 .icon-btn{
   display:inline-flex;align-items:center;gap:5px;
   border:1px solid var(--line);background:var(--card);color:var(--ink);
@@ -215,7 +217,7 @@ main{max-width:1100px;margin:0 auto;padding:18px 20px 40px;}
   font-family:inherit;font-size:12.5px;padding:6px 16px;border-radius:8px;cursor:pointer;
   min-height:34px;transition:all .15s ease;
 }
-.kline-tab.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600;}
+.kline-tab.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink);font-weight:600;}
 .kline-live{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);}
 .kline-live .dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:liveBlink 1.2s ease-in-out infinite;}
 @keyframes liveBlink{0%,100%{opacity:1;}50%{opacity:0.25;}}
@@ -386,7 +388,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 .tabs{display:flex;gap:6px;margin:14px 0 14px;flex-wrap:wrap;}
 .tab{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:6px 16px;font-size:12.5px;font-family:inherit;cursor:pointer;}
 .tab:hover{border-color:var(--navy);color:var(--navy);}
-.tab.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:500;}
+.tab.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink);font-weight:600;}
 
 /* ===== 个股监测 ===== */
 .s-metrics{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
@@ -817,7 +819,7 @@ html[data-theme="dark"] .pick-add-row .icon-btn{border-color:#7FA8D8;color:#7FA8
   .m-nav-item svg{width:24px;height:24px;display:block;}
   .m-nav-item .ico-fill{display:none;}
   .m-nav-item:active{transform:scale(0.90);}
-  .m-nav-item.on{color:#E3B341;font-weight:700;}
+  .m-nav-item.on{color:var(--lime);font-weight:700;}
   .m-nav-item.on .ico-line{display:none;}
   .m-nav-item.on .ico-fill{display:block;animation:navPop .22s ease;}
   .m-nav-item.on::before{
@@ -851,19 +853,19 @@ body::after,
 }
 body::before{
   width:600px;height:600px;top:-200px;right:-160px;
-  background:radial-gradient(circle,rgba(96,140,220,0.30) 0%,transparent 68%);
+  background:transparent;
 }
 body::after{
   width:540px;height:540px;bottom:-180px;left:-140px;
-  background:radial-gradient(circle,rgba(240,180,90,0.16) 0%,transparent 68%);
+  background:transparent;
 }
 .bg-blob{
   width:480px;height:480px;top:36%;left:56%;
-  background:radial-gradient(circle,rgba(236,140,200,0.13) 0%,transparent 70%);
+  background:transparent;
 }
-html[data-theme="dark"] body::before{background:radial-gradient(circle,rgba(96,140,220,0.16) 0%,transparent 68%);}
-html[data-theme="dark"] body::after{background:radial-gradient(circle,rgba(240,180,90,0.09) 0%,transparent 68%);}
-html[data-theme="dark"] .bg-blob{background:radial-gradient(circle,rgba(236,140,200,0.07) 0%,transparent 70%);}
+html[data-theme="dark"] body::before{background:transparent;}
+html[data-theme="dark"] body::after{background:transparent;}
+html[data-theme="dark"] .bg-blob{background:transparent;}
 /* 背景缓缓流转 */
 @keyframes bgFlow{
   0%{background-position:0% 50%;}
@@ -945,18 +947,20 @@ html[data-theme="dark"] .loadbar::after{background:linear-gradient(90deg,transpa
 
 /* ===== 自动黑夜模式（19:00-08:00） ===== */
 html[data-theme="dark"]{
-  --bg:#0E1116;
-  --card:#171B22;
-  --ink:#E8EAED;
-  --muted:#9AA3AF;
-  --line:rgba(232,234,237,0.13);
+  --bg:#0A0A0A;
+  --card:#161616;
+  --ink:#F5F5F5;
+  --muted:#8A8A8A;
+  --line:rgba(255,255,255,0.10);
   --red:#FF6B5E;
-  --red-bg:rgba(255,107,94,0.13);
+  --red-bg:rgba(255,107,94,0.15);
   --green:#3ECF8E;
-  --green-bg:rgba(62,207,142,0.13);
+  --green-bg:rgba(62,207,142,0.15);
   --amber:#E3B341;
-  --amber-bg:rgba(227,179,65,0.14);
-  --navy:#7FA8D8;
+  --amber-bg:rgba(227,179,65,0.15);
+  --navy:#C8FF00;
+  --lime:#C8FF00;
+  --lime-ink:#0A0A0A;
 }
 html[data-theme="dark"] header{background:rgba(14,17,22,0.92);}
 html[data-theme="dark"] .suggest-list{background:#1B2028;box-shadow:0 10px 28px rgba(0,0,0,0.55);}
@@ -1005,7 +1009,7 @@ html[data-theme="dark"] .pick-no,
 html[data-theme="dark"] .rv-dir .dno{color:#0E1116;}
 html[data-theme="dark"] .m-nav{background:rgba(14,17,22,0.96);}
 html[data-theme="dark"] .m-nav-item{color:#9AA3AF;}
-html[data-theme="dark"] .m-nav-item.on::before{background:rgba(227,179,65,0.16);}
+html[data-theme="dark"] .m-nav-item.on::before{background:rgba(200,255,0,0.16);}
 html[data-theme="dark"] .hero-banner img{opacity:0.92;}
 
 /* ===== v77 快讯：单列列表 + 分类小图块配图 ===== */
@@ -1319,6 +1323,66 @@ html[data-theme="dark"] .pp-cell{background:rgba(127,168,216,0.12);}
   .pp-big-val{font-size:26px;}
   .pp-grid4{grid-template-columns:repeat(2,1fr);}
 }
+
+/* ===== v92 黑白+荧光绿极简风 ===== */
+body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',-apple-system,sans-serif !important;}
+body::before, body::after, .bg-blob{display:none !important;}
+.card, .paper-card, .rv-sec, .core-card, .imp-card, .pick-cell, .news-item, .detail-box, .kline-box, .hold-box, .hold-panel, .monitor-panel, .strategy-hero, .picks-head, .review-head, .add-panel{
+  border-radius:var(--radius) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+}
+.btn-primary{
+  background:var(--lime) !important;
+  color:var(--lime-ink) !important;
+  border:none !important;
+  border-radius:999px !important;
+  font-weight:700 !important;
+  padding:10px 22px !important;
+  box-shadow:none !important;
+}
+.btn-primary:active{transform:scale(0.97);}
+.btn-ghost{
+  background:transparent !important;
+  color:var(--ink) !important;
+  border:1px solid var(--line) !important;
+  border-radius:999px !important;
+}
+/* 标签 pill */
+.chip, .tag, .filter-pill{
+  border-radius:999px !important;
+  padding:5px 14px !important;
+  font-size:12px !important;
+}
+/* 模拟盘 tab 改成荧光绿高亮 */
+#view-paper .tt-btn.buy.on{background:var(--lime) !important;color:var(--lime-ink) !important;}
+#view-paper .tt-btn.sell.on{background:#1A1A1A !important;color:#C8FF00 !important;}
+html[data-theme="dark"] #view-paper .tt-btn.sell.on{background:#F5F5F5 !important;color:#0A0A0A !important;}
+#view-paper .trade-confirm.buy{background:var(--lime) !important;color:var(--lime-ink) !important;}
+#view-paper .trade-confirm.sell{background:#1A1A1A !important;color:#C8FF00 !important;}
+html[data-theme="dark"] #view-paper .trade-confirm.sell{background:#F5F5F5 !important;color:#0A0A0A !important;}
+#view-paper .pp-big-val{letter-spacing:-1px;}
+#view-paper .pp-cell{background:rgba(128,128,128,0.06) !important;border-radius:12px !important;}
+html[data-theme="dark"] #view-paper .pp-cell{background:rgba(255,255,255,0.05) !important;}
+/* 输入框 */
+.add-input, input[type="text"], input[type="number"], select{
+  border-radius:12px !important;
+  border:1px solid var(--line) !important;
+  background:var(--bg) !important;
+}
+.add-input:focus{border-color:var(--lime) !important;outline:none !important;}
+/* 底部导航 */
+.bottom-nav{background:var(--bg) !important;border-top:1px solid var(--line) !important;}
+.bottom-nav .nav-item.on{color:var(--lime) !important;}
+/* 强调色统一 */
+a, .link, .accent{color:var(--navy) !important;}
+html[data-theme="dark"] a, html[data-theme="dark"] .link{color:var(--lime) !important;}
+
+/* v92.1 底部导航选中荧光绿 */
+.bottom-nav .nav-item.on, .bottom-nav .nav-item.active{color:var(--lime) !important;}
+.bottom-nav .nav-item svg.on, .bottom-nav .nav-item .ico.on{color:var(--lime) !important;}
+html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
 </style>
 </head>
 <body>
@@ -1356,7 +1420,7 @@ html[data-theme="dark"] .pp-cell{background:rgba(127,168,216,0.12);}
         刷新
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v91</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v92.2</span>
     </div>
   </div>
 </header>
