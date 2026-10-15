@@ -1322,7 +1322,9 @@ html[data-theme="dark"] .pp-cell{background:rgba(127,168,216,0.12);}
 .pos-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
 .pos-quick button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 4px;font-size:12.5px;color:var(--text-color);cursor:pointer;font-family:inherit;}
 .pos-quick button:active{background:rgba(127,168,216,0.15);}
-.pp-est{font-size:13px;color:var(--muted);margin:6px 0 12px;text-align:right;}
+.pp-est{font-size:13px;color:var(--muted);margin:6px 0 8px;text-align:right;}
+.fee-hint{font-size:10.5px;line-height:1.5;color:var(--muted);opacity:0.75;margin-bottom:12px;padding:0 2px;}
+.pp-chart{display:block;width:100%;height:84px;margin:10px 0 4px;border-radius:10px;}
 .trade-confirm{width:100%;height:48px;border:none;border-radius:12px;font-size:16px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;transition:transform .12s;}
 .trade-confirm.buy{background:linear-gradient(135deg,#ff5b5b,#ff8a5b);}
 .trade-confirm.sell{background:linear-gradient(135deg,#2eb872,#5bd68f);}
@@ -1338,19 +1340,24 @@ html[data-theme="dark"] .pp-cell{background:rgba(127,168,216,0.12);}
 .pp-card-pnl{text-align:right;}
 .pp-card-pnl .amt{font-size:16px;font-weight:700;}
 .pp-card-pnl .pct{font-size:12px;}
-.pp-card-mid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:11.5px;}
-.pp-card-mid .mc{display:flex;flex-direction:column;gap:1px;}
+.pp-card-mid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:11px;}
+.pp-card-mid .mc{display:flex;flex-direction:column;gap:1px;min-width:0;}
 .pp-card-mid .mc-l{color:var(--muted);font-size:10.5px;}
-.pp-card-mid .mc-v{font-weight:600;font-size:12.5px;}
+.pp-card-mid .mc-v{font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pp-card-mid .mc-sub{color:var(--muted);font-size:10px;margin-top:1px;}
 /* 记录 */
-#paper-rec-list .rec-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:9px 4px;border-bottom:0.5px solid rgba(28,30,33,0.06);font-size:12.5px;align-items:center;}
-#paper-rec-list .rec-row .rec-time{color:var(--muted);font-size:11px;}
-#paper-rec-list .rec-row .rec-dir{font-weight:700;padding:2px 8px;border-radius:6px;font-size:11px;}
-#paper-rec-list .rec-row .rec-dir.up{background:rgba(255,91,91,0.12);color:#ff5b5b;}
-#paper-rec-list .rec-row .rec-dir.down{background:rgba(46,184,114,0.12);color:#2eb872;}
-#paper-rec-list .rec-row .rec-name{grid-column:1;}
-#paper-rec-list .rec-row .rec-num{color:var(--muted);}
-#paper-rec-list .rec-row .rec-amt{font-weight:600;}
+#paper-rec-list .rec-row{padding:9px 4px;border-bottom:0.5px solid rgba(28,30,33,0.08);font-size:12.5px;}
+#paper-rec-list .rec-row .rec-line1{display:flex;align-items:center;gap:8px;}
+#paper-rec-list .rec-row .rec-line2{display:flex;align-items:center;gap:10px;margin-top:3px;padding-left:2px;flex-wrap:wrap;}
+#paper-rec-list .rec-row .rec-time{color:var(--muted);font-size:11px;flex-shrink:0;}
+#paper-rec-list .rec-row .rec-dir{font-weight:700;padding:2px 7px;border-radius:6px;font-size:11px;flex-shrink:0;}
+#paper-rec-list .rec-row .rec-dir.up{background:rgba(255,91,91,0.14);color:#ff5b5b;}
+#paper-rec-list .rec-row .rec-dir.down{background:rgba(46,184,114,0.14);color:#2eb872;}
+#paper-rec-list .rec-row .rec-name{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#paper-rec-list .rec-row .rec-num{color:var(--muted);font-size:11.5px;}
+#paper-rec-list .rec-row .rec-amt{font-weight:700;font-size:12.5px;}
+#paper-rec-list .rec-row .rec-fee{color:var(--muted);font-size:11px;}
+#paper-rec-list .rec-row .rec-pnl{font-size:11.5px;font-weight:600;}
 @media(max-width:480px){
   .pp-big-val{font-size:26px;}
   .pp-grid4{grid-template-columns:repeat(2,1fr);}
@@ -1442,7 +1449,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <span id="theme-label">黑夜</span>
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v94.7</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v95.2</span>
     </div>
   </div>
 </header>
@@ -1551,6 +1558,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <div class="pp-cell"><span class="pp-l">累计收益</span><span class="pp-v num" id="pp-pnl">--</span></div>
         <div class="pp-cell"><span class="pp-l">总收益率</span><span class="pp-v num" id="pp-ret">--</span></div>
       </div>
+      <canvas class="pp-chart" id="pp-chart" style="display:none;"></canvas>
       <div class="pp-init-row" id="pp-init-row">
         <input class="add-input num" id="pp-init" placeholder="设定初始资金，如 100000" inputmode="decimal" autocomplete="off">
         <button class="btn-primary" data-action="paper-init">开始模拟</button>
@@ -1579,11 +1587,12 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <button data-action="paper-posquick" data-p="0">清仓</button>
       </div>
       <div class="pp-est num" id="pp-est">预估金额：--</div>
+      <div class="fee-hint">费用：股票 佣金万2.5（最低5元）· 印花税千0.5（卖出）· 过户费万0.1；ETF 佣金万1、免印花税。A股 T+1，买入数量为100整数倍</div>
       <button class="trade-confirm buy" data-action="paper-confirm">确认买入</button>
     </div>
 
     <div class="paper-card" id="paper-pos">
-      <div class="paper-title"><span class="dot"></span>当前持仓 <span class="hint-inline">点持仓行快速下单</span></div>
+      <div class="paper-title"><span class="dot"></span>当前持仓 <span class="hint-inline">点持仓行快速下单</span><button class="btn-ghost mini" data-action="paper-closeall" style="float:right;">一键清仓</button></div>
       <div id="paper-pos-grid"></div>
     </div>
 
@@ -5483,9 +5492,45 @@ var PAPER = (function(){
     function p2(n){ return (n < 10 ? '0' : '') + n; }
     return p2(d.getMonth() + 1) + '-' + p2(d.getDate()) + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()) + ':' + p2(d.getSeconds());
   }
+  function round2(x){ return Math.round(x * 100) / 100; }
+  function isETFCode(code){ return /^(51|56|58|50|52|15|16|18)/.test(String(code)); }
+  function dateStr(){
+    var d = new Date();
+    function p2(n){ return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+  }
+  // 费用：股票 佣金万2.5(最低5元,双向) · 印花税千0.5(卖出) · 过户费万0.1(双向)；ETF 佣金万1,免印花税
+  function calcFee(code, amt, isSell){
+    var etf = isETFCode(code);
+    var commission, stamp = 0, transfer = 0;
+    if(etf){
+      commission = round2(amt * 0.0001);
+    } else {
+      commission = round2(Math.max(amt * 0.00025, 5));
+      transfer = round2(amt * 0.00001);
+      if(isSell) stamp = round2(amt * 0.0005);
+    }
+    return { fee: round2(commission + stamp + transfer), commission: commission, stamp: stamp, transfer: transfer, etf: etf };
+  }
+  // 迁移旧数据 + T+1 跨日结算（当日买入次日可用）
+  function settle(){
+    var changed = false;
+    Object.keys(st.positions).forEach(function(sid){
+      var p = st.positions[sid];
+      if(p.avail == null){ p.avail = p.qty; changed = true; }
+    });
+    var today = dateStr();
+    if(st._day !== today){
+      Object.keys(st.positions).forEach(function(sid){ st.positions[sid].avail = st.positions[sid].qty; });
+      st._day = today;
+      changed = true;
+    }
+    return changed;
+  }
   function render(){
     var total = document.getElementById('pp-total');
     if(!total) return;
+    try{ if(settle()) save(); }catch(e){}
     var mv = 0, today = 0;
     var secids = Object.keys(st.positions);
     secids.forEach(function(sid){
@@ -5498,28 +5543,42 @@ var PAPER = (function(){
     var assets = st.cash + mv;
     var pnl = st.init > 0 ? assets - st.init : 0;
     total.textContent = fmtMoney(assets);
-    document.getElementById('pp-cash').textContent = fmtMoney(st.cash);
+    var cashEl = document.getElementById('pp-cash');
+    if(cashEl) cashEl.textContent = fmtMoney(st.cash);
     var mvEl = document.getElementById('pp-mv');
     if(mvEl) mvEl.textContent = fmtMoney(mv);
     var retEl = document.getElementById('pp-ret');
-    if(st.init > 0){
-      retEl.textContent = fmtPct(pnl / st.init * 100);
-      retEl.className = 'p-val num ' + cls(pnl);
-    } else { retEl.textContent = '--'; retEl.className = 'p-val num'; }
+    if(retEl){
+      if(st.init > 0){
+        retEl.textContent = fmtPct(pnl / st.init * 100);
+        retEl.className = 'p-val num ' + cls(pnl);
+      } else { retEl.textContent = '--'; retEl.className = 'p-val num'; }
+    }
     var pnlEl = document.getElementById('pp-pnl');
-    pnlEl.textContent = (pnl >= 0 ? '+' : '') + fmtMoney(pnl);
-    pnlEl.className = 'p-val num ' + cls(pnl);
+    if(pnlEl){
+      pnlEl.textContent = (pnl >= 0 ? '+' : '') + fmtMoney(pnl);
+      pnlEl.className = 'p-val num ' + cls(pnl);
+    }
     var todayEl = document.getElementById('pp-today');
-    todayEl.textContent = (today >= 0 ? '+' : '') + fmtMoney(today);
-    todayEl.className = 'p-val num ' + cls(today);
+    if(todayEl){
+      todayEl.textContent = (today >= 0 ? '+' : '') + fmtMoney(today);
+      todayEl.className = 'p-val num ' + cls(today);
+    }
     var idEl = document.getElementById('pp-id');
-    if(idEl) idEl.textContent = st.init > 0 ? '初始资金 ' + fmtMoney(st.init) + ' · ' + Object.keys(st.positions).length + ' 只持仓' : '未初始化';
+    if(idEl) idEl.textContent = st.init > 0 ? '初始资金 ' + fmtMoney(st.init) + ' · ' + secids.length + ' 只持仓' : '未初始化';
+    // v95: 修复旧 pp-actions 引用（已不存在），改为分别控制各卡片
+    var ready = st.init > 0;
     var initRow = document.getElementById('pp-init-row');
-    var act = document.getElementById('pp-actions');
-    if(st.init > 0){ initRow.style.display = 'none'; act.style.display = ''; }
-    else { initRow.style.display = ''; act.style.display = 'none'; }
+    var tradeCard = document.getElementById('paper-trade');
+    var posCard = document.getElementById('paper-pos');
+    var recCard = document.getElementById('paper-rec');
+    if(initRow) initRow.style.display = ready ? 'none' : '';
+    if(tradeCard) tradeCard.style.display = ready ? '' : 'none';
+    if(posCard) posCard.style.display = ready ? '' : 'none';
+    if(recCard) recCard.style.display = ready ? '' : 'none';
     renderPos();
     renderRec();
+    renderChart();
   }
   function renderPos(){
     var grid = document.getElementById('paper-pos-grid');
@@ -5546,7 +5605,7 @@ var PAPER = (function(){
           '<span class="pct num ' + c + '">' + (p.cost > 0 && px ? fmtPct((px - p.cost) / p.cost * 100) : '--') + '</span></span>' +
         '</div>' +
         '<div class="pp-card-mid">' +
-          '<span class="mc"><span class="mc-l">持仓</span><span class="mc-v">' + p.qty + '</span></span>' +
+          '<span class="mc"><span class="mc-l">持仓</span><span class="mc-v">' + p.qty + '</span><span class="mc-sub">可用 ' + (p.avail == null ? p.qty : p.avail) + '</span></span>' +
           '<span class="mc"><span class="mc-l">成本</span><span class="mc-v">' + fmtPrice(p.cost) + '</span></span>' +
           '<span class="mc"><span class="mc-l">现价</span><span class="mc-v">' + (px ? fmtPrice(px) : '--') + '</span></span>' +
           '<span class="mc"><span class="mc-l">市值</span><span class="mc-v">' + fmtMoney(mv) + '</span></span>' +
@@ -5562,13 +5621,98 @@ var PAPER = (function(){
     var recs = st.records.slice().reverse().slice(0, 50);
     recs.forEach(function(r){
       var c = r.dir === '买入' ? 'up' : 'down';
-      html += '<div class="rec-row"><span class="rec-time">' + r.t + '</span>' +
+      var feeHtml = (r.fee != null) ? '<span class="rec-fee">费用 ' + fmtMoney(r.fee) + '</span>' : '';
+      var pnlHtml = (r.realPnl != null) ? '<span class="rec-pnl num ' + cls(r.realPnl) + '">盈亏 ' + (r.realPnl >= 0 ? '+' : '') + fmtMoney(r.realPnl) + '</span>' : '';
+      html += '<div class="rec-row">' +
+        '<div class="rec-line1"><span class="rec-time">' + r.t + '</span>' +
         '<span class="rec-dir ' + c + '">' + r.dir + '</span>' +
         '<span class="rec-name">' + esc(r.name) + '</span>' +
-        '<span class="rec-num num">' + fmtPrice(r.price) + ' × ' + r.qty + '</span>' +
-        '<span class="rec-amt num">' + fmtMoney(r.amt) + '</span></div>';
+        '<span class="rec-amt num">' + fmtMoney(r.amt) + '</span></div>' +
+        '<div class="rec-line2"><span class="rec-num num">' + fmtPrice(r.price) + ' × ' + r.qty + '</span>' +
+        feeHtml + pnlHtml + '</div></div>';
     });
     box.innerHTML = html;
+  }
+  function snapshotEquity(){
+    var a = st.cash;
+    Object.keys(st.positions).forEach(function(sid){
+      var p = st.positions[sid];
+      var q = state.quotes[sid] || {};
+      if(q.price) a += q.price * p.qty;
+    });
+    st.equity = st.equity || [];
+    var last = st.equity[st.equity.length - 1];
+    if(!last || Math.abs(last.assets - a) > 0.001) st.equity.push({ t: fmtNow(), assets: round2(a) });
+    if(st.equity.length > 300) st.equity = st.equity.slice(-300);
+  }
+  function renderChart(){
+    var cv = document.getElementById('pp-chart');
+    if(!cv) return;
+    var pts = st.equity || [];
+    if(pts.length < 2){ cv.style.display = 'none'; return; }
+    cv.style.display = '';
+    var dpr = window.devicePixelRatio || 1;
+    var w = cv.clientWidth || 300, h = 84;
+    cv.width = w * dpr; cv.height = h * dpr;
+    var ctx = cv.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+    var vals = pts.map(function(p){ return p.assets; });
+    var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+    var pad = 6;
+    var span = (max - min) || Math.max(1, max * 0.01);
+    var xStep = (w - pad * 2) / (pts.length - 1);
+    function y(v){ return pad + (max - v) / span * (h - pad * 2); }
+    var baseY = y(st.init || vals[0]);
+    // 参考线（初始资金）
+    ctx.beginPath(); ctx.setLineDash([4, 4]);
+    ctx.moveTo(pad, baseY); ctx.lineTo(w - pad, baseY);
+    ctx.strokeStyle = 'rgba(120,120,120,0.5)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.setLineDash([]);
+    // 面积
+    ctx.beginPath();
+    pts.forEach(function(p, i){ var x = pad + i * xStep, yy = y(p.assets); if(i === 0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy); });
+    var lastX = pad + (pts.length - 1) * xStep;
+    ctx.lineTo(lastX, h - pad); ctx.lineTo(pad, h - pad); ctx.closePath();
+    var grd = ctx.createLinearGradient(0, 0, 0, h);
+    grd.addColorStop(0, 'rgba(200,255,0,0.25)'); grd.addColorStop(1, 'rgba(200,255,0,0)');
+    ctx.fillStyle = grd; ctx.fill();
+    // 折线
+    ctx.beginPath();
+    pts.forEach(function(p, i){ var x = pad + i * xStep, yy = y(p.assets); if(i === 0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy); });
+    ctx.strokeStyle = '#C8FF00'; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
+    var lx = lastX, ly = y(pts[pts.length - 1].assets);
+    ctx.beginPath(); ctx.arc(lx, ly, 3, 0, Math.PI * 2); ctx.fillStyle = '#C8FF00'; ctx.fill();
+  }
+  function closeAll(){
+    var sids = Object.keys(st.positions);
+    if(!sids.length){ flash('没有持仓可清'); return; }
+    var sellable = sids.filter(function(sid){
+      var p = st.positions[sid];
+      return (p.avail == null ? p.qty : p.avail) > 0;
+    });
+    if(!sellable.length){ flash('当日买入需次日才可卖，当前暂无可清仓持仓'); return; }
+    if(!window.confirm('确定将 ' + sellable.length + ' 只「可卖」持仓一键清仓吗？')) return;
+    var jobs = sids.map(function(sid){
+      var p = st.positions[sid];
+      var sellQty = (p.avail == null ? p.qty : p.avail);
+      if(!(sellQty > 0)) return Promise.resolve();
+      return fetchQuote(sid).then(function(q){
+        var px = q.price;
+        var amt = px * sellQty;
+        var f = calcFee(p.code, amt, true);
+        var net = round2(amt - f.fee);
+        var realPnl = round2(net - p.cost * sellQty);
+        p.qty -= sellQty; p.avail = 0;
+        if(p.qty <= 0) delete st.positions[sid];
+        st.cash = round2(st.cash + net);
+        st.records.push({ t: fmtNow(), dir: '卖出', name: q.name || p.name, code: p.code, price: px, qty: sellQty, amt: amt, fee: f.fee, commission: f.commission, stamp: f.stamp, transfer: f.transfer, flow: net, realPnl: realPnl });
+      }).catch(function(){});
+    });
+    Promise.all(jobs).then(function(){
+      snapshotEquity(); save(); state.quotes && render();
+      flash('已一键清仓所有可卖持仓');
+    });
   }
   function refreshPrices(renderAfter){
     var secids = Object.keys(st.positions);
@@ -5584,7 +5728,7 @@ var PAPER = (function(){
   function init(cash){
     var v = parseFloat(String(cash).replace(/[,\s\u00a5]/g, ''));
     if(!(v > 0)){ flash('请输入有效金额'); return; }
-    st = { init: v, cash: v, positions: {}, records: [] };
+    st = { init: v, cash: v, positions: {}, records: [], equity: [{ t: fmtNow(), assets: v }] };
     save();
     render();
     flash('模拟账户已开启，初始资金 ' + fmtMoney(v));
@@ -5593,46 +5737,58 @@ var PAPER = (function(){
     if(!pick){ flash('请先选择交易标的'); return; }
     var qty = parseInt(document.getElementById('paper-qty').value, 10);
     if(!(qty > 0)){ flash('请输入买入数量'); return; }
+    if(qty % 100 !== 0){ flash('A股/ETF 买入数量须为 100 的整数倍'); return; }
     fetchQuote(pick.secid).then(function(q){
       var px = q.price;
       if(!(px > 0)){ flash('暂未取得该标的价格'); return; }
       var amt = px * qty;
-      if(amt > st.cash){ flash('资金不足，可用 ' + fmtMoney(st.cash)); return; }
-      var p = st.positions[pick.secid] || { qty: 0, cost: 0, code: pick.code, name: q.name || pick.name };
+      var f = calcFee(pick.code, amt, false);
+      var need = round2(amt + f.fee);
+      if(need > st.cash){ flash('资金不足，含费用需 ' + fmtMoney(need) + '，可用 ' + fmtMoney(st.cash)); return; }
+      var p = st.positions[pick.secid] || { qty: 0, avail: 0, cost: 0, code: pick.code, name: q.name || pick.name };
+      if(p.avail == null) p.avail = p.qty;
       var newQty = p.qty + qty;
-      p.cost = (p.qty * p.cost + amt) / newQty;
+      p.cost = (p.qty * p.cost + amt + f.fee) / newQty;   // 买入费用计入成本
       p.qty = newQty;
       p.name = q.name || p.name;
       p.code = pick.code;
       st.positions[pick.secid] = p;
-      st.cash -= amt;
-      st.records.push({ t: fmtNow(), dir: '买入', name: q.name || pick.name, price: px, qty: qty, amt: amt });
-      save();
+      st.cash = round2(st.cash - need);
+      st.records.push({ t: fmtNow(), dir: '买入', name: q.name || pick.name, code: pick.code, price: px, qty: qty, amt: amt, fee: f.fee, commission: f.commission, stamp: f.stamp, transfer: f.transfer, flow: -need });
       state.quotes[pick.secid] = q;
+      snapshotEquity();
+      save();
       render();
-      flash('已买入 ' + (q.name || pick.code) + ' ' + qty + ' 股 @ ' + fmtPrice(px));
+      flash('已买入 ' + (q.name || pick.code) + ' ' + qty + ' 股 @ ' + fmtPrice(px) + '，费用 ' + fmtMoney(f.fee));
     }).catch(function(){ flash('行情获取失败，请重试'); });
   }
   function sell(){
     if(!pick){ flash('请先选择交易标的'); return; }
     var p = st.positions[pick.secid];
     if(!p || !(p.qty > 0)){ flash('该标的没有持仓'); return; }
+    if(p.avail == null) p.avail = p.qty;
     var qtyStr = document.getElementById('paper-qty').value.trim();
-    var qty = qtyStr ? parseInt(qtyStr, 10) : p.qty;
+    var qty = qtyStr ? parseInt(qtyStr, 10) : p.avail;
     if(!(qty > 0)){ flash('请输入卖出数量'); return; }
-    if(qty > p.qty){ flash('持仓不足，最多 ' + p.qty + ' 股'); return; }
+    if(qty > p.avail){ flash('T+1 可卖不足，今日可卖 ' + p.avail + ' 股（当日买入次日才能卖）'); return; }
+    var costUnit = p.cost;
     fetchQuote(pick.secid).then(function(q){
       var px = q.price;
       if(!(px > 0)){ flash('暂未取得该标的价格'); return; }
       var amt = px * qty;
+      var f = calcFee(pick.code, amt, true);
+      var net = round2(amt - f.fee);
+      var realPnl = round2(net - costUnit * qty);   // 成本已含买入费用，卖出费用已在 net 扣除
       p.qty -= qty;
+      p.avail -= qty;
       if(p.qty <= 0) delete st.positions[pick.secid];
-      st.cash += amt;
-      st.records.push({ t: fmtNow(), dir: '卖出', name: q.name || pick.name, price: px, qty: qty, amt: amt });
-      save();
+      st.cash = round2(st.cash + net);
+      st.records.push({ t: fmtNow(), dir: '卖出', name: q.name || pick.name, code: pick.code, price: px, qty: qty, amt: amt, fee: f.fee, commission: f.commission, stamp: f.stamp, transfer: f.transfer, flow: net, realPnl: realPnl });
       state.quotes[pick.secid] = q;
+      snapshotEquity();
+      save();
       render();
-      flash('已卖出 ' + (q.name || pick.code) + ' ' + qty + ' 股 @ ' + fmtPrice(px));
+      flash('已卖出 ' + (q.name || pick.code) + ' ' + qty + ' 股 @ ' + fmtPrice(px) + '，费用 ' + fmtMoney(f.fee) + '，实现盈亏 ' + (realPnl >= 0 ? '+' : '') + fmtMoney(realPnl));
     }).catch(function(){ flash('行情获取失败，请重试'); });
   }
   function reset(){
@@ -5690,17 +5846,18 @@ var PAPER = (function(){
     if(mode === 'sell'){
       var pos = st.positions[pick.secid];
       if(!pos || !(pos.qty > 0)){ flash('该标的没有持仓'); return; }
-      qtyInput.value = (p === 0) ? pos.qty : Math.floor(pos.qty * p / 100) * 100;
-      if(!(parseInt(qtyInput.value,10) > 0)) qtyInput.value = pos.qty;
+      var avail = (pos.avail == null ? pos.qty : pos.avail);
+      qtyInput.value = (p === 0) ? avail : Math.floor(avail * p / 100) * 100;
+      if(!(parseInt(qtyInput.value,10) > 0)) qtyInput.value = avail;
     } else {
       if(!(px > 0)){ flash('现价暂不可用'); return; }
       var budget = st.cash * (parseFloat(p) || 0);
-      var q = Math.floor(budget / px / 100) * 100;
+      var q = Math.floor(budget / (px * 1.0004) / 100) * 100;   // 预留买入费用
       qtyInput.value = q > 0 ? q : 0;
     }
     updateEst();
   }
-  return { st: st, save: save, render: render, refreshPrices: refreshPrices, init: init, buy: buy, sell: sell, reset: reset, pickSet: pickSet, setMode: setMode, updateEst: updateEst, posQuick: posQuick, getMode: function(){ return mode; } };
+  return { st: st, save: save, render: render, refreshPrices: refreshPrices, init: init, buy: buy, sell: sell, reset: reset, closeAll: closeAll, pickSet: pickSet, setMode: setMode, updateEst: updateEst, posQuick: posQuick, getMode: function(){ return mode; } };
 })();
 
 /* ========== 事件委托 ========== */
@@ -5864,6 +6021,8 @@ document.addEventListener('click', function(e){
     PAPER.posQuick(el.getAttribute('data-p'));
   } else if(a === 'paper-reset'){
     PAPER.reset();
+  } else if(a === 'paper-closeall'){
+    PAPER.closeAll();
   } else if(a === 'paper-sel'){
     var psid = el.getAttribute('data-secid');
     var pp = PAPER.st.positions[psid];
