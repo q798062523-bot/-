@@ -1449,7 +1449,7 @@ html[data-theme="dark"] .bottom-nav .nav-item.on{color:var(--lime) !important;}
         <span id="theme-label">黑夜</span>
       </button>
       <span class="upd" id="upd-time">尚未刷新</span>
-      <span class="ver-tag" id="ver-tag" title="页面版本">v95.2</span>
+      <span class="ver-tag" id="ver-tag" title="页面版本">v95.3</span>
     </div>
   </div>
 </header>
@@ -5578,7 +5578,23 @@ var PAPER = (function(){
     if(recCard) recCard.style.display = ready ? '' : 'none';
     renderPos();
     renderRec();
+    ensureEquity();
     renderChart();
+  }
+  function ensureEquity(){
+    if(!st.init || st.init <= 0) return;
+    if(st.equity && st.equity.length >= 2) return;
+    st.equity = st.equity || [];
+    if(!st.equity.length) st.equity.push({ t: '起点', assets: round2(st.init) });
+    var a = st.cash;
+    Object.keys(st.positions).forEach(function(sid){
+      var p = st.positions[sid];
+      var q = state.quotes[sid] || {};
+      if(q.price) a += q.price * p.qty;
+    });
+    a = round2(a);
+    st.equity.push({ t: fmtNow(), assets: a });
+    try{ save(); }catch(e){}
   }
   function renderPos(){
     var grid = document.getElementById('paper-pos-grid');
